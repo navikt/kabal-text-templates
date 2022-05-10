@@ -1,0 +1,79 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: kabal-text-templates
+  namespace: klage
+  labels:
+    team: klage
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "100M"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
+spec:
+  image: {{image}}
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12
+        maintenanceWindow:
+          day: 1
+          hour: 3
+        tier: {{db_tier}}
+        diskType: SSD
+        highAvailability: {{db_ha}}
+        diskSize: {{db_size}}
+        diskAutoresize: true
+        autoBackupTime: "02:00"
+        cascadingDelete: false
+        databases:
+          - name: kabal-text-templates
+  port: 7096
+  startup:
+    failureThreshold: 20
+    initialDelay: 30
+    path: /internal/health
+    periodSeconds: 10
+    timeout: 2
+  liveness:
+    path: /internal/health
+    initialDelay: 20
+    timeout: 1
+    periodSeconds: 5
+    failureThreshold: 10
+  readiness:
+    path: /internal/health
+    initialDelay: 20
+    timeout: 1
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 1024Mi
+    requests:
+      cpu: 400m
+      memory: 256Mi
+  replicas:
+    min: 2
+    max: 4
+    cpuThresholdPercentage: 80
+  prometheus:
+    enabled: true
+    path: /internal/prometheus
+  secureLogs:
+    enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: kabal-frontend
+        - application: kabal-api
+  azure:
+    application:
+      enabled: true
+      tenant: {{tenant}}
+      claims:
+        extra:
+          - NAVident
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: {{springProfile}}
+  {{#each envs}}
+    - name: {{name}}
+      value: {{value}}
+  {{/each}}

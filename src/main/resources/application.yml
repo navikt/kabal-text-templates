@@ -1,0 +1,67 @@
+spring:
+  application:
+    name: kabal-text-templates
+  main:
+    banner-mode: OFF
+  sleuth:
+    baggage:
+      remote-fields:
+        - Nav-Callid
+        - Nav-Consumer-Id
+      correlation-fields:
+        - Nav-Callid
+        - Nav-Consumer-Id
+  mvc:
+    throw-exception-if-no-handler-found: true
+  lifecycle:
+    timeout-per-shutdown-phase: 20s
+  servlet:
+    multipart:
+      max-request-size: 8MB
+      max-file-size: 8MB
+  codec:
+    max-in-memory-size: 16MB
+  datasource:
+    url: jdbc:postgresql://${NAIS_DATABASE_KABAL_TEXT_TEMPLATES_KABAL_TEXT_TEMPLATES_HOST}:${NAIS_DATABASE_KABAL_TEXT_TEMPLATES_KABAL_TEXT_TEMPLATES_PORT}/${NAIS_DATABASE_KABAL_TEXT_TEMPLATES_KABAL_TEXT_TEMPLATES_DATABASE}
+    username: ${NAIS_DATABASE_KABAL_TEXT_TEMPLATES_KABAL_TEXT_TEMPLATES_USERNAME}
+    password: ${NAIS_DATABASE_KABAL_TEXT_TEMPLATES_KABAL_TEXT_TEMPLATES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  flyway:
+    enabled: true
+    clean-on-validation-error: true
+    schemas: flyway_history_schema,klage
+  sql:
+    init:
+      platform: postgresql
+
+server:
+  port: 7096
+  error:
+    whitelabel:
+      enabled: false
+  shutdown: graceful
+
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints.web:
+    exposure:
+      include: info, health, metrics, prometheus
+    base-path: "/internal"
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    tags:
+      application: ${spring.application.name}
+
+no.nav.security.jwt:
+  issuer:
+    aad:
+      discoveryurl: ${AZURE_APP_WELL_KNOWN_URL}
+      accepted_audience: ${AZURE_APP_CLIENT_ID}
+
+navCallId: Nav-Callid
+navConsumerId: Nav-Consumer-Id
+
