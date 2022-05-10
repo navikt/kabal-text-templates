@@ -90,6 +90,34 @@ class TextController(
     }
 
     @ApiOperation(
+        value = "Search texts",
+        notes = "Search texts"
+    )
+    @GetMapping
+    fun searchTexts(
+        searchQueryParams: SearchQueryParams
+    ): List<TextView> {
+        logger.debug("searchTexts called with params: $searchQueryParams")
+        val texts = textService.searchTexts(
+            typer = searchQueryParams.typer,
+            ytelser = searchQueryParams.ytelser,
+            hjemler = searchQueryParams.hjemler,
+            enheter = searchQueryParams.enheter,
+
+        )
+        return texts.map {
+            mapToTextView(it)
+        }
+    }
+
+    data class SearchQueryParams(
+        val typer: List<String> = emptyList(),
+        val ytelser: List<String> = emptyList(),
+        val hjemler: List<String> = emptyList(),
+        val enheter: List<String> = emptyList(),
+    )
+
+    @ApiOperation(
         value = "Get text",
         notes = "Get text"
     )
