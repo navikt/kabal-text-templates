@@ -77,19 +77,6 @@ class TextController(
     }
 
     @ApiOperation(
-        value = "Get all texts",
-        notes = "Get all texts"
-    )
-    @GetMapping
-    fun getTexts(): List<TextView> {
-        logger.debug("getTexts called")
-        val texts = textService.getTexts()
-        return texts.map {
-            mapToTextView(it)
-        }
-    }
-
-    @ApiOperation(
         value = "Search texts",
         notes = "Search texts"
     )
