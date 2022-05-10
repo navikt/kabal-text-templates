@@ -55,8 +55,6 @@ class Text(
         if (ytelser != other.ytelser) return false
         if (utfall != other.utfall) return false
         if (enheter != other.enheter) return false
-        if (created != other.created) return false
-        if (modified != other.modified) return false
 
         return true
     }
@@ -70,8 +68,6 @@ class Text(
         result = 31 * result + ytelser.hashCode()
         result = 31 * result + utfall.hashCode()
         result = 31 * result + enheter.hashCode()
-        result = 31 * result + created.hashCode()
-        result = 31 * result + modified.hashCode()
         return result
     }
 
