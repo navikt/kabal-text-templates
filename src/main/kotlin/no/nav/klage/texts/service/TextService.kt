@@ -8,15 +8,13 @@ import java.util.*
 @Service
 class TextService(private val textRepository: TextRepository) {
 
-    fun createText(text: Text): Text {
-        return textRepository.save(text)
-    }
+    fun createText(text: Text): Text = textRepository.save(text)
 
-    fun deleteText(textId: UUID) {
-        textRepository.deleteById(textId)
-    }
+    fun deleteText(textId: UUID) = textRepository.deleteById(textId)
 
-    fun getText(textId: UUID) = textRepository.getById(textId)
+    fun getText(textId: UUID): Text = textRepository.getById(textId)
 
-    fun getTexts() = textRepository.findAll()
+    fun getTexts(): List<Text> = textRepository.findAll()
+
+    fun updateText(text: Text): Text = textRepository.save(text)
 }

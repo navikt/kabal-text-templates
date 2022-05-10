@@ -46,10 +46,22 @@ class TextController(
     @PutMapping("/{textId}")
     fun updateText(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: TextView
+        @RequestBody input: TextInput
     ): TextView {
-        logger.debug("updateText called with id $textId")
-        TODO()//mapToTextView(textService.updateText(input.toDomainModel(), json))
+        logger.debug("updateText called with id $textId and $input")
+
+        val text = textService.getText(textId).apply {
+            title = input.title
+            type = input.type
+            content = input.content
+            hjemler = input.hjemler
+            ytelser = input.ytelser
+            utfall = input.utfall
+            enheter = input.enheter
+            modified = LocalDateTime.now()
+        }
+
+        return mapToTextView(textService.updateText(text))
     }
 
     @ApiOperation(

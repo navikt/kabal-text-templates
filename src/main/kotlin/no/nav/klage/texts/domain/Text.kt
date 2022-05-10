@@ -10,31 +10,31 @@ class Text(
     @Id
     val id: UUID = UUID.randomUUID(),
     @Column(name = "title")
-    val title: String,
+    var title: String,
     @Column(name = "type")
-    val type: String,
+    var type: String,
     @Column(name = "content")
-    val content: String,
+    var content: String,
 
     @ElementCollection
     @CollectionTable(schema = "klage", name = "hjemmel", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "hjemmel")
-    val hjemler: Set<String> = emptySet(),
+    var hjemler: Set<String> = emptySet(),
 
     @ElementCollection
     @CollectionTable(schema = "klage", name = "ytelse", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "ytelse")
-    val ytelser: Set<String> = emptySet(),
+    var ytelser: Set<String> = emptySet(),
 
     @ElementCollection
     @CollectionTable(schema = "klage", name = "utfall", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "utfall")
-    val utfall: Set<String> = emptySet(),
+    var utfall: Set<String> = emptySet(),
 
     @ElementCollection
     @CollectionTable(schema = "klage", name = "enhet", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "enhet")
-    val enheter: Set<String> = emptySet(),
+    var enheter: Set<String> = emptySet(),
 
     @Column(name = "created")
     val created: LocalDateTime,
