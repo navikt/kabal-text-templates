@@ -89,11 +89,11 @@ class TextController(
         logger.debug("searchTexts called with params: $searchQueryParams")
         val texts = textService.searchTexts(
             type = searchQueryParams.type,
-            utfall = searchQueryParams.utfall,
-            ytelser = searchQueryParams.ytelser,
-            hjemler = searchQueryParams.hjemler,
-            enheter = searchQueryParams.enheter,
-            sections = searchQueryParams.sections,
+            utfall = searchQueryParams.utfall ?: emptyList(),
+            ytelser = searchQueryParams.ytelser ?: emptyList(),
+            hjemler = searchQueryParams.hjemler ?: emptyList(),
+            enheter = searchQueryParams.enheter ?: emptyList(),
+            sections = searchQueryParams.sections ?: emptyList(),
         )
         return texts.map {
             mapToTextView(it)
