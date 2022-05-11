@@ -14,17 +14,19 @@ class TextService(private val textRepository: TextRepository) {
 
     fun getText(textId: UUID): Text = textRepository.getById(textId)
 
-    fun getTexts(): List<Text> = textRepository.findAll()
-
     fun updateText(text: Text): Text = textRepository.save(text)
 
     fun searchTexts(
-        typer: List<String>,
+        utfall: List<String>,
         ytelser: List<String>,
         hjemler: List<String>,
         enheter: List<String>,
     ): List<Text> {
-        //TODO("Not yet implemented")
-        return getTexts()
+        return textRepository.searchTexts(
+            utfall = utfall,
+            ytelser = ytelser,
+            hjemler = hjemler,
+            enheter = enheter,
+        )
     }
 }

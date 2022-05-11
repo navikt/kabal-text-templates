@@ -2,6 +2,7 @@ package no.nav.klage.texts.api
 
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
+import no.nav.klage.texts.api.views.SearchQueryParams
 import no.nav.klage.texts.api.views.TextInput
 import no.nav.klage.texts.api.views.TextView
 import no.nav.klage.texts.domain.Text
@@ -86,23 +87,15 @@ class TextController(
     ): List<TextView> {
         logger.debug("searchTexts called with params: $searchQueryParams")
         val texts = textService.searchTexts(
-            typer = searchQueryParams.typer,
+            utfall = searchQueryParams.utfall,
             ytelser = searchQueryParams.ytelser,
             hjemler = searchQueryParams.hjemler,
             enheter = searchQueryParams.enheter,
-
         )
         return texts.map {
             mapToTextView(it)
         }
     }
-
-    data class SearchQueryParams(
-        val typer: List<String> = emptyList(),
-        val ytelser: List<String> = emptyList(),
-        val hjemler: List<String> = emptyList(),
-        val enheter: List<String> = emptyList(),
-    )
 
     @ApiOperation(
         value = "Get text",

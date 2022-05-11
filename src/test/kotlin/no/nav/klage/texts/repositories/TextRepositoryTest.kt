@@ -16,7 +16,7 @@ import java.time.LocalDateTime
 @DataJpaTest
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class RepositoryTest {
+class TextRepositoryTest {
 
     companion object {
         @Container
