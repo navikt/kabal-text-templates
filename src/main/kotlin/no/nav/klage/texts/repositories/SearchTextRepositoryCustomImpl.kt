@@ -17,6 +17,7 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
         ytelser: List<String>,
         hjemler: List<String>,
         enheter: List<String>,
+        sections: List<String>,
     ): List<Text> {
         val conditions = mutableListOf<String>()
 
@@ -35,11 +36,14 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
         if (enheter.isNotEmpty()) {
             conditions += "e in :enheter"
         }
+        if (sections.isNotEmpty()) {
+            conditions += "s in :sections"
+        }
 
         val innerQuery = conditions.joinToString(separator = " AND ")
 
         val selectQuery = """
-            SELECT DISTINCT t FROM Text t join t.hjemler h join t.utfall u join t.enheter e join t.ytelser y
+            SELECT DISTINCT t FROM Text t join t.hjemler h join t.utfall u join t.enheter e join t.ytelser y join t.sections s
             WHERE
                 $innerQuery 
                 ORDER BY t.created
@@ -61,6 +65,9 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
         }
         if (enheter.isNotEmpty()) {
             query = query.setParameter("enheter", enheter)
+        }
+        if (sections.isNotEmpty()) {
+            query = query.setParameter("sections", sections)
         }
 
         return query.resultList

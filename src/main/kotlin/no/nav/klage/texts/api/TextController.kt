@@ -59,6 +59,7 @@ class TextController(
             ytelser = input.ytelser
             utfall = input.utfall
             enheter = input.enheter
+            sections = input.sections
             modified = LocalDateTime.now()
         }
 
@@ -92,6 +93,7 @@ class TextController(
             ytelser = searchQueryParams.ytelser,
             hjemler = searchQueryParams.hjemler,
             enheter = searchQueryParams.enheter,
+            sections = searchQueryParams.sections,
         )
         return texts.map {
             mapToTextView(it)
@@ -120,6 +122,7 @@ class TextController(
             ytelser = text.ytelser,
             utfall = text.utfall,
             enheter = text.enheter,
+            sections = text.sections,
             created = text.created,
             modified = text.modified,
         )
@@ -132,6 +135,7 @@ class TextController(
         ytelser = ytelser,
         utfall = utfall,
         enheter = enheter,
+        sections = sections,
         created = LocalDateTime.now(),
     )
 }

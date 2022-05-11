@@ -22,6 +22,7 @@ class TextService(private val textRepository: TextRepository) {
         ytelser: List<String>,
         hjemler: List<String>,
         enheter: List<String>,
+        sections: List<String>,
     ): List<Text> {
         return textRepository.searchTexts(
             type = type,
@@ -29,6 +30,7 @@ class TextService(private val textRepository: TextRepository) {
             ytelser = ytelser,
             hjemler = hjemler,
             enheter = enheter,
+            sections = sections,
         )
     }
 }

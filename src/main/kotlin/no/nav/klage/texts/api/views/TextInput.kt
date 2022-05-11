@@ -8,4 +8,5 @@ data class TextInput(
     val ytelser: Set<String> = emptySet(),
     val utfall: Set<String> = emptySet(),
     val enheter: Set<String> = emptySet(),
+    val sections: Set<String> = emptySet(),
 )
