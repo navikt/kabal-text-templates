@@ -17,12 +17,14 @@ class TextService(private val textRepository: TextRepository) {
     fun updateText(text: Text): Text = textRepository.save(text)
 
     fun searchTexts(
+        type: String?,
         utfall: List<String>,
         ytelser: List<String>,
         hjemler: List<String>,
         enheter: List<String>,
     ): List<Text> {
         return textRepository.searchTexts(
+            type = type,
             utfall = utfall,
             ytelser = ytelser,
             hjemler = hjemler,

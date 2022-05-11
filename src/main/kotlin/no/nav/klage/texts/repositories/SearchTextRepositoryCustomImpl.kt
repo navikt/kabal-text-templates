@@ -12,12 +12,17 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
     lateinit var entityManager: EntityManager
 
     override fun searchTexts(
+        type: String?,
         utfall: List<String>,
         ytelser: List<String>,
         hjemler: List<String>,
         enheter: List<String>,
     ): List<Text> {
         val conditions = mutableListOf<String>()
+
+        if (type != null) {
+            conditions += "t.type = :type"
+        }
         if (utfall.isNotEmpty()) {
             conditions += "u in :utfall"
         }
@@ -42,6 +47,9 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
 
         var query = entityManager.createQuery(selectQuery, Text::class.java)
 
+        if (type != null) {
+            query = query.setParameter("type", type)
+        }
         if (hjemler.isNotEmpty()) {
             query = query.setParameter("hjemler", hjemler)
         }

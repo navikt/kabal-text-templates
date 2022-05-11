@@ -5,6 +5,7 @@ import no.nav.klage.texts.domain.Text
 interface SearchTextRepositoryCustom {
 
     fun searchTexts(
+        type: String?,
         utfall: List<String>,
         ytelser: List<String>,
         hjemler: List<String>,

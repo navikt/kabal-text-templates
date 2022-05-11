@@ -87,6 +87,7 @@ class TextController(
     ): List<TextView> {
         logger.debug("searchTexts called with params: $searchQueryParams")
         val texts = textService.searchTexts(
+            type = searchQueryParams.type,
             utfall = searchQueryParams.utfall,
             ytelser = searchQueryParams.ytelser,
             hjemler = searchQueryParams.hjemler,

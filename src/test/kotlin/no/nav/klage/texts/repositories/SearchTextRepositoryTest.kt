@@ -91,6 +91,7 @@ class SearchTextRepositoryTest {
         testEntityManager.clear()
 
         var foundTexts = textRepository.searchTexts(
+            type = "type",
             utfall = listOf(),
             ytelser = listOf(),
             hjemler = listOf("hb1"),
@@ -99,6 +100,7 @@ class SearchTextRepositoryTest {
         assertThat(foundTexts).containsExactlyInAnyOrder(text1)
 
         foundTexts = textRepository.searchTexts(
+            type = "type",
             utfall = listOf(),
             ytelser = listOf(),
             hjemler = listOf("hb1", "hb2"),
@@ -107,6 +109,7 @@ class SearchTextRepositoryTest {
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
 
         foundTexts = textRepository.searchTexts(
+            type = null,
             utfall = listOf("ub1", "ub2"),
             ytelser = listOf("yb1", "yb2"),
             hjemler = listOf("hb1", "hb2"),
@@ -115,6 +118,7 @@ class SearchTextRepositoryTest {
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
 
         foundTexts = textRepository.searchTexts(
+            type = "type",
             utfall = listOf("ua"),
             ytelser = listOf("ya"),
             hjemler = listOf("ha"),
@@ -123,6 +127,7 @@ class SearchTextRepositoryTest {
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2, text3, text4)
 
         foundTexts = textRepository.searchTexts(
+            type = "type",
             utfall = listOf("ua"),
             ytelser = listOf("ya"),
             hjemler = listOf("hb2"),
