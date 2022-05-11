@@ -3,8 +3,10 @@ package no.nav.klage.texts.service
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.repositories.TextRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
+@Transactional
 @Service
 class TextService(private val textRepository: TextRepository) {
 
