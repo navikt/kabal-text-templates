@@ -40,11 +40,14 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
             conditions += "s in :sections"
         }
 
-        val innerQuery = conditions.joinToString(separator = " AND ")
+        var innerQuery = conditions.joinToString(separator = " AND ")
+
+        if (innerQuery.isNotEmpty()) {
+            innerQuery = "WHERE $innerQuery"
+        }
 
         val selectQuery = """
-            SELECT DISTINCT t FROM Text t join t.hjemler h join t.utfall u join t.enheter e join t.ytelser y join t.sections s
-            WHERE
+            SELECT DISTINCT t FROM Text t join t.hjemler h join t.utfall u join t.enheter e join t.ytelser y join t.sections s            
                 $innerQuery 
                 ORDER BY t.created
         """
