@@ -1,5 +1,6 @@
 package no.nav.klage.texts.api
 
+import com.fasterxml.jackson.module.kotlin.jsonMapper
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import no.nav.klage.texts.api.views.SearchQueryParams
@@ -117,7 +118,7 @@ class TextController(
             id = text.id,
             title = text.title,
             type = text.type,
-            content = text.content,
+            content = jsonMapper().readTree(text.content),
             hjemler = text.hjemler,
             ytelser = text.ytelser,
             utfall = text.utfall,
