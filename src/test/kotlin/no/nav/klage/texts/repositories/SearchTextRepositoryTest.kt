@@ -36,7 +36,7 @@ class SearchTextRepositoryTest {
 
         val text1 = Text(
             title = "title",
-            type = "type",
+            textType = "type",
             content = "{}",
             hjemler = setOf("ha", "hb1"),
             ytelser = setOf("ya", "yb1"),
@@ -49,7 +49,7 @@ class SearchTextRepositoryTest {
 
         val text2 = Text(
             title = "title",
-            type = "type",
+            textType = "type",
             content = "{}",
             hjemler = setOf("ha", "hb2"),
             ytelser = setOf("ya", "yb2"),
@@ -62,7 +62,7 @@ class SearchTextRepositoryTest {
 
         val text3 = Text(
             title = "title",
-            type = "type",
+            textType = "type",
             content = "{}",
             hjemler = setOf("ha", "hb3"),
             ytelser = setOf("ya", "yb3"),
@@ -75,7 +75,7 @@ class SearchTextRepositoryTest {
 
         val text4 = Text(
             title = "title",
-            type = "type",
+            textType = "type",
             content = "{}",
             hjemler = setOf("ha", "hb4"),
             ytelser = setOf("ya", "yb4"),

@@ -11,8 +11,8 @@ class Text(
     val id: UUID = UUID.randomUUID(),
     @Column(name = "title")
     var title: String,
-    @Column(name = "type")
-    var type: String,
+    @Column(name = "text_type")
+    var textType: String,
     @Column(name = "content")
     var content: String,
 
@@ -54,7 +54,7 @@ class Text(
 
         if (id != other.id) return false
         if (title != other.title) return false
-        if (type != other.type) return false
+        if (textType != other.textType) return false
         if (content != other.content) return false
         if (hjemler != other.hjemler) return false
         if (ytelser != other.ytelser) return false
@@ -68,7 +68,7 @@ class Text(
     override fun hashCode(): Int {
         var result = id.hashCode()
         result = 31 * result + title.hashCode()
-        result = 31 * result + type.hashCode()
+        result = 31 * result + textType.hashCode()
         result = 31 * result + content.hashCode()
         result = 31 * result + hjemler.hashCode()
         result = 31 * result + ytelser.hashCode()
@@ -79,7 +79,7 @@ class Text(
     }
 
     override fun toString(): String {
-        return "Text(id=$id, title='$title', type='$type', content='$content', hjemler=$hjemler, ytelser=$ytelser, utfall=$utfall, enheter=$enheter, sections=$sections, created=$created, modified=$modified)"
+        return "Text(id=$id, title='$title', type='$textType', content='$content', hjemler=$hjemler, ytelser=$ytelser, utfall=$utfall, enheter=$enheter, sections=$sections, created=$created, modified=$modified)"
     }
 
 

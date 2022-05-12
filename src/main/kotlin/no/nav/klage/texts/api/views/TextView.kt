@@ -7,7 +7,7 @@ import java.util.*
 data class TextView(
     val id: UUID,
     val title: String,
-    val type: String,
+    val textType: String,
     val content: JsonNode,
     val hjemler: Set<String> = emptySet(),
     val ytelser: Set<String> = emptySet(),

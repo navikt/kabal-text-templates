@@ -54,7 +54,7 @@ class TextController(
 
         val text = textService.getText(textId).apply {
             title = input.title
-            type = input.type
+            textType = input.textType
             content = input.content.toString()
             hjemler = input.hjemler
             ytelser = input.ytelser
@@ -117,7 +117,7 @@ class TextController(
         TextView(
             id = text.id,
             title = text.title,
-            type = text.type,
+            textType = text.textType,
             content = jsonMapper().readTree(text.content),
             hjemler = text.hjemler,
             ytelser = text.ytelser,
@@ -130,7 +130,7 @@ class TextController(
 
     private fun TextInput.toDomainModel() = Text(
         title = title,
-        type = type,
+        textType = textType,
         content = content.toString(),
         hjemler = hjemler,
         ytelser = ytelser,
