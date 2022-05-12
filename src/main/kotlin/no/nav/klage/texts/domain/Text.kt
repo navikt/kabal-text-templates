@@ -79,8 +79,7 @@ class Text(
     }
 
     override fun toString(): String {
-        return "Text(id=$id, title='$title', type='$textType', content='$content', hjemler=$hjemler, ytelser=$ytelser, utfall=$utfall, enheter=$enheter, sections=$sections, created=$created, modified=$modified)"
+        return "Text(id=$id, title='$title', textType='$textType', content='$content', hjemler=$hjemler, ytelser=$ytelser, utfall=$utfall, enheter=$enheter, sections=$sections, created=$created, modified=$modified)"
     }
-
 
 }
