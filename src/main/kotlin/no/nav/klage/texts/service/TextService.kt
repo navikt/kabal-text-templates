@@ -19,7 +19,7 @@ class TextService(private val textRepository: TextRepository) {
     fun updateText(text: Text): Text = textRepository.save(text)
 
     fun searchTexts(
-        type: String?,
+        textType: String?,
         utfall: List<String>,
         ytelser: List<String>,
         hjemler: List<String>,
@@ -27,7 +27,7 @@ class TextService(private val textRepository: TextRepository) {
         sections: List<String>,
     ): List<Text> {
         return textRepository.searchTexts(
-            type = type,
+            textType = textType,
             utfall = utfall,
             ytelser = ytelser,
             hjemler = hjemler,

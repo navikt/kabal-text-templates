@@ -1,5 +1,6 @@
 package no.nav.klage.texts.api
 
+import com.fasterxml.jackson.module.kotlin.jsonMapper
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import no.nav.klage.texts.api.views.SearchQueryParams
@@ -53,8 +54,8 @@ class TextController(
 
         val text = textService.getText(textId).apply {
             title = input.title
-            type = input.type
-            content = input.content
+            textType = input.textType
+            content = input.content.toString()
             hjemler = input.hjemler
             ytelser = input.ytelser
             utfall = input.utfall
@@ -88,7 +89,7 @@ class TextController(
     ): List<TextView> {
         logger.debug("searchTexts called with params: $searchQueryParams")
         val texts = textService.searchTexts(
-            type = searchQueryParams.type,
+            textType = searchQueryParams.textType,
             utfall = searchQueryParams.utfall ?: emptyList(),
             ytelser = searchQueryParams.ytelser ?: emptyList(),
             hjemler = searchQueryParams.hjemler ?: emptyList(),
@@ -116,8 +117,8 @@ class TextController(
         TextView(
             id = text.id,
             title = text.title,
-            type = text.type,
-            content = text.content,
+            textType = text.textType,
+            content = jsonMapper().readTree(text.content),
             hjemler = text.hjemler,
             ytelser = text.ytelser,
             utfall = text.utfall,
@@ -129,8 +130,8 @@ class TextController(
 
     private fun TextInput.toDomainModel() = Text(
         title = title,
-        type = type,
-        content = content,
+        textType = textType,
+        content = content.toString(),
         hjemler = hjemler,
         ytelser = ytelser,
         utfall = utfall,

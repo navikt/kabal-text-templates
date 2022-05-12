@@ -36,7 +36,7 @@ class TextRepositoryTest {
 
         val text = Text(
             title = "title",
-            type = "type",
+            textType = "type",
             content = "{}",
             hjemler = setOf("a", "b"),
             created = now,
