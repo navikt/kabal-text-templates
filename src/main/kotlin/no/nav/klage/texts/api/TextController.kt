@@ -55,7 +55,7 @@ class TextController(
         val text = textService.getText(textId).apply {
             title = input.title
             type = input.type
-            content = input.content
+            content = input.content.toString()
             hjemler = input.hjemler
             ytelser = input.ytelser
             utfall = input.utfall
@@ -131,7 +131,7 @@ class TextController(
     private fun TextInput.toDomainModel() = Text(
         title = title,
         type = type,
-        content = content,
+        content = content.toString(),
         hjemler = hjemler,
         ytelser = ytelser,
         utfall = utfall,
