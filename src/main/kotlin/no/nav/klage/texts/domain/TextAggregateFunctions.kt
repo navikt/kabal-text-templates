@@ -70,21 +70,21 @@ object TextAggregateFunctions {
         )
     }
 
-    fun Text.updateType(
-        newValueType: String,
+    fun Text.updateTextType(
+        newValueTextType: String,
         saksbehandlerident: String
     ): TextChangedEvent {
         val timestamp = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
-        val oldValueType = type
-        type = newValueType
+        val oldValueTextType = textType
+        textType = newValueTextType
         modified = timestamp
 
         changelog(
             saksbehandlerident = saksbehandlerident,
-            field = Field.TYPE,
-            fromValue = oldValueType,
-            toValue = newValueType,
+            field = Field.TEXT_TYPE,
+            fromValue = oldValueTextType,
+            toValue = newValueTextType,
             timestamp = timestamp,
         )?.let { changelogEntries.add(it) }
 

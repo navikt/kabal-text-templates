@@ -19,7 +19,7 @@ import java.util.*
 @RestController
 @Api(tags = ["kabal-text-templates"])
 @RequestMapping("/texts")
-//@ProtectedWithClaims(issuer = ISSUER_AAD)
+@ProtectedWithClaims(issuer = ISSUER_AAD)
 class TextController(
     private val textService: TextService,
     private val tokenUtil: TokenUtil,
@@ -80,23 +80,23 @@ class TextController(
     }
 
     @ApiOperation(
-        value = "Update type",
-        notes = "Update type"
+        value = "Update text type",
+        notes = "Update text type"
     )
-    @PutMapping("/{textId}/type")
-    fun updateType(
+    @PutMapping("/{textId}/texttype")
+    fun updateTextType(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: String
     ): TextView {
         logTextMethodDetails(
-            methodName = ::updateType.name,
+            methodName = ::updateTextType.name,
             innloggetIdent = tokenUtil.getIdent(),
             textId = textId,
             logger = logger,
         )
 
         return mapToTextView(
-            textService.updateType(
+            textService.updateTextType(
                 input = input,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -195,19 +195,6 @@ class TextController(
             logger = logger,
         )
 
-        val text = textService.getText(textId).apply {
-            title = input.title
-            textType = input.textType
-            content = input.content.toString()
-            hjemler = input.hjemler
-            ytelser = input.ytelser
-            utfall = input.utfall
-            enheter = input.enheter
-            sections = input.sections
-            modified = LocalDateTime.now()
-        }
-
-        return mapToTextView(textService.updateText(text))
         return mapToTextView(
             textService.updateUtfall(
                 input = input.utfall,

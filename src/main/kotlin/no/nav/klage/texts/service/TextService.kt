@@ -7,7 +7,7 @@ import no.nav.klage.texts.domain.TextAggregateFunctions.updateEnheter
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateHjemler
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateSections
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateTitle
-import no.nav.klage.texts.domain.TextAggregateFunctions.updateType
+import no.nav.klage.texts.domain.TextAggregateFunctions.updateTextType
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateUtfall
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateYtelser
 import no.nav.klage.texts.repositories.TextRepository
@@ -58,14 +58,14 @@ class TextService(
         return text
     }
 
-    fun updateType(
+    fun updateTextType(
         input: String,
         textId: UUID,
         saksbehandlerIdent: String,
     ): Text {
         val text = getText(textId)
         val event =
-            text.updateType(
+            text.updateTextType(
                 input,
                 saksbehandlerIdent,
             )
