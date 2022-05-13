@@ -26,24 +26,24 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
             conditions += "t.textType = :textType"
         }
         if (utfall.isNotEmpty()) {
-            conditions += "u in :utfall"
-            joins += "join t.utfall u"
+            conditions += "(u in :utfall or u is null)"
+            joins += "left join t.utfall u"
         }
         if (ytelser.isNotEmpty()) {
-            conditions += "y in :ytelser"
-            joins += "join t.ytelser y"
+            conditions += "(y in :ytelser or y is null)"
+            joins += "left join t.ytelser y"
         }
         if (hjemler.isNotEmpty()) {
-            conditions += "h in :hjemler"
-            joins += "join t.hjemler h"
+            conditions += "(h in :hjemler or h is null)"
+            joins += "left join t.hjemler h"
         }
         if (enheter.isNotEmpty()) {
-            conditions += "e in :enheter"
-            joins += "join t.enheter e"
+            conditions += "(e in :enheter or e is null)"
+            joins += "left join t.enheter e"
         }
         if (sections.isNotEmpty()) {
-            conditions += "s in :sections"
-            joins += "join t.sections s"
+            conditions += "(s in :sections or s is null)"
+            joins += "left join t.sections s"
         }
 
         val innerJoins = joins.joinToString(separator = " ")

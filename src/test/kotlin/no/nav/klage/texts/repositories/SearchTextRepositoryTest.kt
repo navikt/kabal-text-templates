@@ -145,4 +145,79 @@ class SearchTextRepositoryTest {
         assertThat(foundTexts).containsExactlyInAnyOrder(text2)
     }
 
+    @Test
+    fun `texts with no specifications are also returned`() {
+        val now = LocalDateTime.now()
+
+        val text1 = Text(
+            title = "title",
+            textType = "type",
+            content = "{}",
+            hjemler = setOf(),
+            ytelser = setOf(),
+            utfall = setOf(),
+            enheter = setOf(),
+            sections = setOf(),
+            created = now,
+            modified = now,
+        )
+
+        val text2 = Text(
+            title = "title",
+            textType = "type",
+            content = "{}",
+            hjemler = setOf("ha", "hb2"),
+            ytelser = setOf(),
+            utfall = setOf(),
+            enheter = setOf(),
+            sections = setOf(),
+            created = now,
+            modified = now,
+        )
+
+        val text3 = Text(
+            title = "title",
+            textType = "type",
+            content = "{}",
+            hjemler = setOf(),
+            ytelser = setOf(),
+            utfall = setOf(),
+            enheter = setOf(),
+            sections = setOf("sa", "sb2"),
+            created = now,
+            modified = now,
+        )
+
+        val text4 = Text(
+            title = "title",
+            textType = "type",
+            content = "{}",
+            hjemler = setOf(),
+            ytelser = setOf(),
+            utfall = setOf(),
+            enheter = setOf(),
+            sections = setOf("s10"),
+            created = now,
+            modified = now,
+        )
+
+        textRepository.save(text1)
+        textRepository.save(text2)
+        textRepository.save(text3)
+        textRepository.save(text4)
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
+        val foundTexts = textRepository.searchTexts(
+            textType = "type",
+            utfall = listOf(),
+            ytelser = listOf(),
+            hjemler = listOf("ha"),
+            enheter = listOf(),
+            sections = listOf("sa"),
+        )
+        assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2, text3)
+    }
+
 }
