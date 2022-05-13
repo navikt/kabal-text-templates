@@ -8,7 +8,7 @@ object TextAggregateFunctions {
         input: Text,
         saksbehandlerident: String
     ): TextChangedEvent {
-        val timestamp = LocalDateTime.now()
+        val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
 
         changelog(
@@ -16,7 +16,7 @@ object TextAggregateFunctions {
             field = Field.TEXT,
             fromValue = null,
             toValue = input.id.toString(),
-            timestamp = timestamp,
+            created = now,
         )?.let { changelogEntries.add(it) }
 
         return TextChangedEvent(
@@ -29,15 +29,15 @@ object TextAggregateFunctions {
         input: Text,
         saksbehandlerident: String
     ): TextChangedEvent {
-        val timestamp = LocalDateTime.now()
+        val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
 
         changelog(
             saksbehandlerident = saksbehandlerident,
-            field = Field.DELETION,
+            field = Field.TEXT,
             fromValue = input.id.toString(),
             toValue = null,
-            timestamp = timestamp,
+            created = now,
         )?.let { changelogEntries.add(it) }
 
         return TextChangedEvent(
@@ -50,18 +50,18 @@ object TextAggregateFunctions {
         newValueTitle: String,
         saksbehandlerident: String
     ): TextChangedEvent {
-        val timestamp = LocalDateTime.now()
+        val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
         val oldValueTitle = title
         title = newValueTitle
-        modified = timestamp
+        modified = now
 
         changelog(
             saksbehandlerident = saksbehandlerident,
             field = Field.TITLE,
             fromValue = oldValueTitle,
             toValue = newValueTitle,
-            timestamp = timestamp,
+            created = now,
         )?.let { changelogEntries.add(it) }
 
         return TextChangedEvent(
@@ -74,18 +74,18 @@ object TextAggregateFunctions {
         newValueTextType: String,
         saksbehandlerident: String
     ): TextChangedEvent {
-        val timestamp = LocalDateTime.now()
+        val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
         val oldValueTextType = textType
         textType = newValueTextType
-        modified = timestamp
+        modified = now
 
         changelog(
             saksbehandlerident = saksbehandlerident,
             field = Field.TEXT_TYPE,
             fromValue = oldValueTextType,
             toValue = newValueTextType,
-            timestamp = timestamp,
+            created = now,
         )?.let { changelogEntries.add(it) }
 
         return TextChangedEvent(
@@ -98,18 +98,18 @@ object TextAggregateFunctions {
         newValueContent: String,
         saksbehandlerident: String
     ): TextChangedEvent {
-        val timestamp = LocalDateTime.now()
+        val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
         val oldValueContent = content
         content = newValueContent
-        modified = timestamp
+        modified = now
 
         changelog(
             saksbehandlerident = saksbehandlerident,
             field = Field.CONTENT,
             fromValue = oldValueContent,
             toValue = newValueContent,
-            timestamp = timestamp,
+            created = now,
         )?.let { changelogEntries.add(it) }
 
         return TextChangedEvent(
@@ -122,18 +122,18 @@ object TextAggregateFunctions {
         newValueHjemler: Set<String>,
         saksbehandlerident: String
     ): TextChangedEvent {
-        val timestamp = LocalDateTime.now()
+        val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
         val oldValueHjemler = hjemler
         hjemler = newValueHjemler
-        modified = timestamp
+        modified = now
 
         changelog(
             saksbehandlerident = saksbehandlerident,
             field = Field.HJEMLER,
             fromValue = oldValueHjemler.joinToString(),
             toValue = newValueHjemler.joinToString(),
-            timestamp = timestamp,
+            created = now,
         )?.let { changelogEntries.add(it) }
 
         return TextChangedEvent(
@@ -146,18 +146,18 @@ object TextAggregateFunctions {
         newValueYtelser: Set<String>,
         saksbehandlerident: String
     ): TextChangedEvent {
-        val timestamp = LocalDateTime.now()
+        val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
         val oldValueYtelser = ytelser
         ytelser = newValueYtelser
-        modified = timestamp
+        modified = now
 
         changelog(
             saksbehandlerident = saksbehandlerident,
             field = Field.YTELSER,
             fromValue = oldValueYtelser.joinToString(),
             toValue = newValueYtelser.joinToString(),
-            timestamp = timestamp,
+            created = now,
         )?.let { changelogEntries.add(it) }
 
         return TextChangedEvent(
@@ -170,18 +170,18 @@ object TextAggregateFunctions {
         newValueUtfall: Set<String>,
         saksbehandlerident: String
     ): TextChangedEvent {
-        val timestamp = LocalDateTime.now()
+        val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
         val oldValueUtfall = utfall
         utfall = newValueUtfall
-        modified = timestamp
+        modified = now
 
         changelog(
             saksbehandlerident = saksbehandlerident,
             field = Field.UTFALL,
             fromValue = oldValueUtfall.joinToString(),
             toValue = newValueUtfall.joinToString(),
-            timestamp = timestamp,
+            created = now,
         )?.let { changelogEntries.add(it) }
 
         return TextChangedEvent(
@@ -194,18 +194,18 @@ object TextAggregateFunctions {
         newValueEnheter: Set<String>,
         saksbehandlerident: String
     ): TextChangedEvent {
-        val timestamp = LocalDateTime.now()
+        val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
         val oldValueEnheter = enheter
         enheter = newValueEnheter
-        modified = timestamp
+        modified = now
 
         changelog(
             saksbehandlerident = saksbehandlerident,
-            field = Field.UTFALL,
+            field = Field.ENHETER,
             fromValue = oldValueEnheter.joinToString(),
             toValue = newValueEnheter.joinToString(),
-            timestamp = timestamp,
+            created = now,
         )?.let { changelogEntries.add(it) }
 
         return TextChangedEvent(
@@ -218,18 +218,18 @@ object TextAggregateFunctions {
         newValueSections: Set<String>,
         saksbehandlerident: String
     ): TextChangedEvent {
-        val timestamp = LocalDateTime.now()
+        val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
         val oldValueSections = sections
         sections = newValueSections
-        modified = timestamp
+        modified = now
 
         changelog(
             saksbehandlerident = saksbehandlerident,
-            field = Field.UTFALL,
+            field = Field.SECTIONS,
             fromValue = oldValueSections.joinToString(),
             toValue = newValueSections.joinToString(),
-            timestamp = timestamp,
+            created = now,
         )?.let { changelogEntries.add(it) }
 
         return TextChangedEvent(
@@ -243,15 +243,15 @@ object TextAggregateFunctions {
         field: Field,
         fromValue: String?,
         toValue: String?,
-        timestamp: LocalDateTime
+        created: LocalDateTime
     ): ChangelogEntry? {
         return ChangelogEntry.changelog(
-            saksbehandlerident,
-            field,
-            fromValue,
-            toValue,
-            this.id,
-            timestamp
+            saksbehandlerident = saksbehandlerident,
+            field = field,
+            fromValue = fromValue,
+            toValue = toValue,
+            textId = this.id,
+            created = created,
         )
     }
 }

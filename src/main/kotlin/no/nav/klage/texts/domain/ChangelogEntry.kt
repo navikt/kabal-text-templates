@@ -5,7 +5,7 @@ import java.util.*
 import javax.persistence.*
 
 @Entity
-@Table(name = "changelogentry", schema = "klage")
+@Table(name = "changelog_entry", schema = "klage")
 class ChangelogEntry(
     @Column(name = "saksbehandlerident")
     val saksbehandlerident: String?, //subjekt?
@@ -15,16 +15,16 @@ class ChangelogEntry(
     @Enumerated(EnumType.STRING)
     @Column(name = "field")
     val field: Field,
-    @Column(name = "fromvalue")
+    @Column(name = "from_value")
     val fromValue: String?,
-    @Column(name = "tovalue")
+    @Column(name = "to_value")
     val toValue: String?,
-    @Column(name = "text")
+    @Column(name = "text_id")
     val textId: UUID,
     @Id
     val id: UUID = UUID.randomUUID(),
-    @Column(name = "timestamp")
-    val timestamp: LocalDateTime = LocalDateTime.now()
+    @Column(name = "created")
+    val created: LocalDateTime = LocalDateTime.now()
 ) {
     companion object {
 
@@ -34,7 +34,7 @@ class ChangelogEntry(
             fromValue: String?,
             toValue: String?,
             textId: UUID,
-            timestamp: LocalDateTime
+            created: LocalDateTime
         ): ChangelogEntry? {
             if ((fromValue == null && toValue == null) || fromValue == toValue) {
                 return null
@@ -51,7 +51,7 @@ class ChangelogEntry(
                     fromValue = fromValue,
                     toValue = toValue,
                     textId = textId,
-                    timestamp = timestamp
+                    created = created
                 )
             }
         }
@@ -63,5 +63,5 @@ enum class Action {
 }
 
 enum class Field {
-    TITLE, TEXT_TYPE, CONTENT, HJEMLER, YTELSER, UTFALL, ENHETER, TEXT, DELETION
+    TITLE, TEXT_TYPE, CONTENT, HJEMLER, YTELSER, UTFALL, ENHETER, SECTIONS, TEXT
 }

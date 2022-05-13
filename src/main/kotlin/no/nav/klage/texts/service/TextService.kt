@@ -2,6 +2,7 @@ package no.nav.klage.texts.service
 
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.domain.TextAggregateFunctions.logCreation
+import no.nav.klage.texts.domain.TextAggregateFunctions.logDeletion
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateContent
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateEnheter
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateHjemler
@@ -37,8 +38,17 @@ class TextService(
         return text
     }
 
-    fun deleteText(textId: UUID) {
+    fun deleteText(
+        textId: UUID,
+        saksbehandlerIdent: String,
+    ) {
+        val text = getText(textId)
+        val event = text.logDeletion(
+            text,
+            saksbehandlerIdent
+        )
         textRepository.deleteById(textId)
+        applicationEventPublisher.publishEvent(event)
     }
 
     fun getText(textId: UUID): Text = textRepository.getById(textId)

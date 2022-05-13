@@ -13,6 +13,6 @@ fun logTextMethodDetails(methodName: String, innloggetIdent: String, textId: UUI
         "{} is requested by ident {} for textId {}",
         methodName,
         innloggetIdent,
-        textId ?: "null",
+        textId,
     )
 }

@@ -269,7 +269,10 @@ class TextController(
             logger = logger,
         )
 
-        textService.deleteText(textId)
+        textService.deleteText(
+            textId = textId,
+            saksbehandlerIdent = tokenUtil.getIdent(),
+        )
     }
 
     @ApiOperation(
