@@ -61,7 +61,7 @@ class TextController(
     @PutMapping("/{textId}/title")
     fun updateTitle(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: String
+        @RequestBody input: TitleInput
     ): TextView {
         logTextMethodDetails(
             methodName = ::updateTitle.name,
@@ -72,7 +72,7 @@ class TextController(
 
         return mapToTextView(
             textService.updateTitle(
-                input = input,
+                input = input.title,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
@@ -86,7 +86,7 @@ class TextController(
     @PutMapping("/{textId}/texttype")
     fun updateTextType(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: String
+        @RequestBody input: TextTypeInput
     ): TextView {
         logTextMethodDetails(
             methodName = ::updateTextType.name,
@@ -97,7 +97,7 @@ class TextController(
 
         return mapToTextView(
             textService.updateTextType(
-                input = input,
+                input = input.textType,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
@@ -111,7 +111,7 @@ class TextController(
     @PutMapping("/{textId}/content")
     fun updateContent(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: String
+        @RequestBody input: ContentInput
     ): TextView {
         logTextMethodDetails(
             methodName = ::updateContent.name,
@@ -122,7 +122,7 @@ class TextController(
 
         return mapToTextView(
             textService.updateContent(
-                input = input,
+                input = input.content.toString(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )

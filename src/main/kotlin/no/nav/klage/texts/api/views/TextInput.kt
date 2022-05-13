@@ -13,6 +13,18 @@ data class TextInput(
     val sections: Set<String> = emptySet(),
 )
 
+data class TitleInput(
+    val title: String
+)
+
+data class TextTypeInput(
+    val textType: String
+)
+
+data class ContentInput(
+    val content: JsonNode
+)
+
 data class HjemlerInput(
     val hjemler: Set<String>
 )
