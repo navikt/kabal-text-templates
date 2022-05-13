@@ -40,7 +40,7 @@ class TextController(
         @RequestBody input: TextInput
     ): TextView {
         logTextMethodDetails(
-            methodName = ::updateTitle.name,
+            methodName = ::createText.name,
             innloggetIdent = tokenUtil.getIdent(),
             textId = null,
             logger = logger,
@@ -139,7 +139,7 @@ class TextController(
         @RequestBody input: HjemlerInput
     ): TextView {
         logTextMethodDetails(
-            methodName = ::updateContent.name,
+            methodName = ::updateHjemler.name,
             innloggetIdent = tokenUtil.getIdent(),
             textId = textId,
             logger = logger,
@@ -281,7 +281,7 @@ class TextController(
         searchQueryParams: SearchQueryParams
     ): List<TextView> {
         logTextMethodDetails(
-            methodName = ::deleteText.name,
+            methodName = ::searchTexts.name,
             innloggetIdent = tokenUtil.getIdent(),
             textId = null,
             logger = logger,
@@ -308,7 +308,12 @@ class TextController(
     fun getText(
         @PathVariable("textId") textId: UUID,
     ): TextView {
-        logger.debug("getText called with id $textId")
+        logTextMethodDetails(
+            methodName = ::getText.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            textId = textId,
+            logger = logger,
+        )
         return mapToTextView(textService.getText(textId))
     }
 
