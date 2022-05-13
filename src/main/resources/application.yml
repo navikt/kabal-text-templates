@@ -33,6 +33,9 @@ spring:
   sql:
     init:
       platform: postgresql
+  web:
+    resources:
+      add-mappings: false
 
 server:
   port: 7096
