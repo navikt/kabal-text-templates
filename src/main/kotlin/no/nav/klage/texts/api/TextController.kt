@@ -10,6 +10,7 @@ import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
+import no.nav.security.token.support.core.api.Unprotected
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 import java.util.*
@@ -17,6 +18,7 @@ import java.util.*
 @RestController
 @Api(tags = ["kabal-text-templates"])
 @RequestMapping("/texts")
+@Unprotected
 class TextController(
     private val textService: TextService,
 ) {
