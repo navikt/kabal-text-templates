@@ -11,6 +11,7 @@ import no.nav.klage.texts.domain.TextAggregateFunctions.updateTitle
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateTextType
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateUtfall
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateYtelser
+import no.nav.klage.texts.exceptions.TextNotFoundException
 import no.nav.klage.texts.repositories.TextRepository
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
@@ -51,7 +52,8 @@ class TextService(
         applicationEventPublisher.publishEvent(event)
     }
 
-    fun getText(textId: UUID): Text = textRepository.getById(textId)
+    fun getText(textId: UUID): Text = textRepository.findById(textId)
+        .orElseThrow { TextNotFoundException("Text with id $textId not found") }
 
     fun updateTitle(
         input: String,

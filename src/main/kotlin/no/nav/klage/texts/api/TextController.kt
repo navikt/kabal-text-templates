@@ -246,7 +246,7 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateUtfall(
+            textService.updateSections(
                 input = input.sections,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),

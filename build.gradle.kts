@@ -6,6 +6,7 @@ val springVersion = "2.5.5"
 val testContainersVersion = "1.16.0"
 val springFoxVersion = "3.0.0"
 val tokenValidationVersion = "1.3.9"
+val problemSpringWebStartVersion = "0.26.2"
 
 repositories {
     mavenCentral()
@@ -38,6 +39,7 @@ dependencies {
     implementation("org.flywaydb:flyway-core")
     implementation("com.zaxxer:HikariCP")
     implementation("org.postgresql:postgresql")
+    implementation("org.zalando:problem-spring-web-starter:$problemSpringWebStartVersion")
 
     implementation("ch.qos.logback:logback-classic:1.2.6")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
