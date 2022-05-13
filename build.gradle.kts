@@ -30,7 +30,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
-//    implementation("no.nav.security:token-validation-spring:$tokenValidationVersion")
+    implementation("no.nav.security:token-validation-spring:$tokenValidationVersion")
+    implementation("no.nav.security:token-client-spring:$tokenValidationVersion")
 
     implementation("io.springfox:springfox-boot-starter:$springFoxVersion")
 

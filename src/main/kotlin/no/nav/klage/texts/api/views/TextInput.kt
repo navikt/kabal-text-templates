@@ -12,3 +12,23 @@ data class TextInput(
     val enheter: Set<String> = emptySet(),
     val sections: Set<String> = emptySet(),
 )
+
+data class HjemlerInput(
+    val hjemler: Set<String>
+)
+
+data class YtelserInput(
+    val ytelser: Set<String>
+)
+
+data class UtfallInput(
+    val utfall: Set<String>
+)
+
+data class EnheterInput(
+    val enheter: Set<String>
+)
+
+data class SectionsInput(
+    val sections: Set<String>
+)
