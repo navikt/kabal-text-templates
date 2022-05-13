@@ -18,7 +18,7 @@ import java.util.*
 
 @RestController
 @Api(tags = ["kabal-text-templates"])
-@RequestMapping("/texts/secure")
+@RequestMapping("/texts")
 @ProtectedWithClaims(issuer = ISSUER_AAD)
 class TextController(
     private val textService: TextService,
