@@ -3,15 +3,13 @@ package no.nav.klage.texts.api
 import com.fasterxml.jackson.module.kotlin.jsonMapper
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
-import no.nav.klage.texts.api.views.*
-import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
+import no.nav.klage.texts.api.views.SearchQueryParams
+import no.nav.klage.texts.api.views.TextInput
+import no.nav.klage.texts.api.views.TextView
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.service.TextService
-import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
-import no.nav.klage.texts.util.logTextMethodDetails
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 import java.util.*
@@ -19,10 +17,8 @@ import java.util.*
 @RestController
 @Api(tags = ["kabal-text-templates"])
 @RequestMapping("/texts")
-@ProtectedWithClaims(issuer = ISSUER_AAD)
 class TextController(
     private val textService: TextService,
-    private val tokenUtil: TokenUtil,
 ) {
 
     companion object {
@@ -39,219 +35,36 @@ class TextController(
     fun createText(
         @RequestBody input: TextInput
     ): TextView {
-        logTextMethodDetails(
-            methodName = ::updateTitle.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            textId = null,
-            logger = logger,
-        )
-
+        logger.debug("createText: $input")
         return mapToTextView(
-            textService.createText(
-                text = input.toDomainModel(),
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            textService.createText(input.toDomainModel())
         )
     }
 
     @ApiOperation(
-        value = "Update title",
-        notes = "Update title"
+        value = "Update text",
+        notes = "Update text"
     )
-    @PutMapping("/{textId}/title")
-    fun updateTitle(
+    @PutMapping("/{textId}")
+    fun updateText(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: String
+        @RequestBody input: TextInput
     ): TextView {
-        logTextMethodDetails(
-            methodName = ::updateTitle.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
-            logger = logger,
-        )
+        logger.debug("updateText called with id $textId and $input")
 
-        return mapToTextView(
-            textService.updateTitle(
-                input = input,
-                textId = textId,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            )
-        )
-    }
+        val text = textService.getText(textId).apply {
+            title = input.title
+            textType = input.textType
+            content = input.content.toString()
+            hjemler = input.hjemler
+            ytelser = input.ytelser
+            utfall = input.utfall
+            enheter = input.enheter
+            sections = input.sections
+            modified = LocalDateTime.now()
+        }
 
-    @ApiOperation(
-        value = "Update text type",
-        notes = "Update text type"
-    )
-    @PutMapping("/{textId}/texttype")
-    fun updateTextType(
-        @PathVariable("textId") textId: UUID,
-        @RequestBody input: String
-    ): TextView {
-        logTextMethodDetails(
-            methodName = ::updateTextType.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
-            logger = logger,
-        )
-
-        return mapToTextView(
-            textService.updateTextType(
-                input = input,
-                textId = textId,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            )
-        )
-    }
-
-    @ApiOperation(
-        value = "Update content",
-        notes = "Update content"
-    )
-    @PutMapping("/{textId}/content")
-    fun updateContent(
-        @PathVariable("textId") textId: UUID,
-        @RequestBody input: String
-    ): TextView {
-        logTextMethodDetails(
-            methodName = ::updateContent.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
-            logger = logger,
-        )
-
-        return mapToTextView(
-            textService.updateContent(
-                input = input,
-                textId = textId,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            )
-        )
-    }
-
-    @ApiOperation(
-        value = "Update hjemler",
-        notes = "Update hjemler"
-    )
-    @PutMapping("/{textId}/hjemler")
-    fun updateHjemler(
-        @PathVariable("textId") textId: UUID,
-        @RequestBody input: HjemlerInput
-    ): TextView {
-        logTextMethodDetails(
-            methodName = ::updateContent.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
-            logger = logger,
-        )
-
-        return mapToTextView(
-            textService.updateHjemler(
-                input = input.hjemler,
-                textId = textId,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            )
-        )
-    }
-
-    @ApiOperation(
-        value = "Update ytelser",
-        notes = "Update ytelser"
-    )
-    @PutMapping("/{textId}/ytelser")
-    fun updateYtelser(
-        @PathVariable("textId") textId: UUID,
-        @RequestBody input: YtelserInput
-    ): TextView {
-        logTextMethodDetails(
-            methodName = ::updateYtelser.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
-            logger = logger,
-        )
-
-        return mapToTextView(
-            textService.updateYtelser(
-                input = input.ytelser,
-                textId = textId,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            )
-        )
-    }
-
-    @ApiOperation(
-        value = "Update utfall",
-        notes = "Update utfall"
-    )
-    @PutMapping("/{textId}/utfall")
-    fun updateUtfall(
-        @PathVariable("textId") textId: UUID,
-        @RequestBody input: UtfallInput
-    ): TextView {
-        logTextMethodDetails(
-            methodName = ::updateUtfall.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
-            logger = logger,
-        )
-
-        return mapToTextView(
-            textService.updateUtfall(
-                input = input.utfall,
-                textId = textId,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            )
-        )
-    }
-
-    @ApiOperation(
-        value = "Update enheter",
-        notes = "Update enheter"
-    )
-    @PutMapping("/{textId}/enheter")
-    fun updateEnheter(
-        @PathVariable("textId") textId: UUID,
-        @RequestBody input: EnheterInput
-    ): TextView {
-        logTextMethodDetails(
-            methodName = ::updateEnheter.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
-            logger = logger,
-        )
-
-        return mapToTextView(
-            textService.updateEnheter(
-                input = input.enheter,
-                textId = textId,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            )
-        )
-    }
-
-    @ApiOperation(
-        value = "Update sections",
-        notes = "Update sections"
-    )
-    @PutMapping("/{textId}/sections")
-    fun updateSections(
-        @PathVariable("textId") textId: UUID,
-        @RequestBody input: SectionsInput
-    ): TextView {
-        logTextMethodDetails(
-            methodName = ::updateSections.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
-            logger = logger,
-        )
-
-        return mapToTextView(
-            textService.updateUtfall(
-                input = input.sections,
-                textId = textId,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            )
-        )
+        return mapToTextView(textService.updateText(text))
     }
 
     @ApiOperation(
@@ -262,13 +75,7 @@ class TextController(
     fun deleteText(
         @PathVariable("textId") textId: UUID,
     ) {
-        logTextMethodDetails(
-            methodName = ::deleteText.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
-            logger = logger,
-        )
-
+        logger.debug("deleteText called with id $textId")
         textService.deleteText(textId)
     }
 
