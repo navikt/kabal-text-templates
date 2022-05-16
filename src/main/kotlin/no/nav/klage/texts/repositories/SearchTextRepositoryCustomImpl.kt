@@ -18,6 +18,7 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
         hjemler: List<String>,
         enheter: List<String>,
         sections: List<String>,
+        templates: List<String>,
     ): List<Text> {
         val conditions = mutableListOf<String>()
         val joins = mutableListOf<String>()
@@ -44,6 +45,10 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
         if (sections.isNotEmpty()) {
             conditions += "(s in :sections or s is null)"
             joins += "left join t.sections s"
+        }
+        if (templates.isNotEmpty()) {
+            conditions += "(ts in :templates or ts is null)"
+            joins += "left join t.templates ts"
         }
 
         val innerJoins = joins.joinToString(separator = " ")
@@ -79,6 +84,9 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
         }
         if (sections.isNotEmpty()) {
             query = query.setParameter("sections", sections)
+        }
+        if (templates.isNotEmpty()) {
+            query = query.setParameter("templates", templates)
         }
 
         return query.resultList

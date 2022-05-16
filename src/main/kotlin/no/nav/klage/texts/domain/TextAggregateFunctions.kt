@@ -238,6 +238,30 @@ object TextAggregateFunctions {
         )
     }
 
+    fun Text.updateTemplates(
+        newValueSections: Set<String>,
+        saksbehandlerident: String
+    ): TextChangedEvent {
+        val now = LocalDateTime.now()
+        val changelogEntries = mutableListOf<ChangelogEntry>()
+        val oldValueSections = templates
+        templates = newValueSections
+        modified = now
+
+        changelog(
+            saksbehandlerident = saksbehandlerident,
+            field = Field.TEMPLATES,
+            fromValue = oldValueSections.joinToString(),
+            toValue = newValueSections.joinToString(),
+            created = now,
+        )?.let { changelogEntries.add(it) }
+
+        return TextChangedEvent(
+            text = this,
+            changelogEntries = changelogEntries,
+        )
+    }
+
     private fun Text.changelog(
         saksbehandlerident: String,
         field: Field,

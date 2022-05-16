@@ -11,6 +11,7 @@ data class TextInput(
     val utfall: Set<String> = emptySet(),
     val enheter: Set<String> = emptySet(),
     val sections: Set<String> = emptySet(),
+    val templates: Set<String> = emptySet(),
 )
 
 data class TitleInput(
@@ -43,4 +44,8 @@ data class EnheterInput(
 
 data class SectionsInput(
     val sections: Set<String>
+)
+
+data class TemplatesInput(
+    val templates: Set<String>
 )

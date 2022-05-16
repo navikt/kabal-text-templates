@@ -41,6 +41,11 @@ class Text(
     @Column(name = "section")
     var sections: Set<String> = emptySet(),
 
+    @ElementCollection
+    @CollectionTable(schema = "klage", name = "template", joinColumns = [JoinColumn(name = "text_id")])
+    @Column(name = "template")
+    var templates: Set<String> = emptySet(),
+
     @Column(name = "created")
     val created: LocalDateTime,
     @Column(name = "modified")
@@ -61,6 +66,7 @@ class Text(
         if (utfall != other.utfall) return false
         if (enheter != other.enheter) return false
         if (sections != other.sections) return false
+        if (templates != other.templates) return false
 
         return true
     }
@@ -75,11 +81,12 @@ class Text(
         result = 31 * result + utfall.hashCode()
         result = 31 * result + enheter.hashCode()
         result = 31 * result + sections.hashCode()
+        result = 31 * result + templates.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "Text(id=$id, title='$title', textType='$textType', content='$content', hjemler=$hjemler, ytelser=$ytelser, utfall=$utfall, enheter=$enheter, sections=$sections, created=$created, modified=$modified)"
+        return "Text(id=$id, title='$title', textType='$textType', content='$content', hjemler=$hjemler, ytelser=$ytelser, utfall=$utfall, enheter=$enheter, sections=$sections, templates=$templates, created=$created, modified=$modified)"
     }
 
 }

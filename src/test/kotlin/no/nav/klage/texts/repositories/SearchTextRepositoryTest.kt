@@ -43,6 +43,7 @@ class SearchTextRepositoryTest {
             utfall = setOf("ua", "ub1"),
             enheter = setOf("ea", "eb1"),
             sections = setOf("sa", "sb1"),
+            templates = setOf("ta", "tb1"),
             created = now,
             modified = now,
         )
@@ -56,6 +57,7 @@ class SearchTextRepositoryTest {
             utfall = setOf("ua", "ub2"),
             enheter = setOf("ea", "eb2"),
             sections = setOf("sa", "sb2"),
+            templates = setOf("ta", "tb2"),
             created = now,
             modified = now,
         )
@@ -69,6 +71,7 @@ class SearchTextRepositoryTest {
             utfall = setOf("ua", "ub3"),
             enheter = setOf("ea", "eb3"),
             sections = setOf("sa", "sb3"),
+            templates = setOf("ta", "tb3"),
             created = now,
             modified = now,
         )
@@ -82,6 +85,7 @@ class SearchTextRepositoryTest {
             utfall = setOf("ua", "ub4"),
             enheter = setOf("ea", "eb4"),
             sections = setOf("sa", "sb4"),
+            templates = setOf("ta", "tb4"),
             created = now,
             modified = now,
         )
@@ -101,6 +105,7 @@ class SearchTextRepositoryTest {
             hjemler = listOf("hb1"),
             enheter = listOf(),
             sections = listOf(),
+            templates = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1)
 
@@ -111,6 +116,7 @@ class SearchTextRepositoryTest {
             hjemler = listOf("hb1", "hb2"),
             enheter = listOf(),
             sections = listOf(),
+            templates = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
 
@@ -121,6 +127,7 @@ class SearchTextRepositoryTest {
             hjemler = listOf("hb1", "hb2"),
             enheter = listOf("eb1", "eb2"),
             sections = listOf("sb1", "sb2"),
+            templates = listOf("tb1", "tb2"),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
 
@@ -131,6 +138,7 @@ class SearchTextRepositoryTest {
             hjemler = listOf("ha"),
             enheter = listOf("ea"),
             sections = listOf("sa"),
+            templates = listOf("ta"),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2, text3, text4)
 
@@ -141,6 +149,7 @@ class SearchTextRepositoryTest {
             hjemler = listOf("hb2"),
             enheter = listOf("ea"),
             sections = listOf("sa"),
+            templates = listOf("ta"),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text2)
     }
@@ -158,6 +167,7 @@ class SearchTextRepositoryTest {
             utfall = setOf(),
             enheter = setOf(),
             sections = setOf(),
+            templates = setOf(),
             created = now,
             modified = now,
         )
@@ -171,6 +181,7 @@ class SearchTextRepositoryTest {
             utfall = setOf(),
             enheter = setOf(),
             sections = setOf(),
+            templates = setOf(),
             created = now,
             modified = now,
         )
@@ -184,6 +195,7 @@ class SearchTextRepositoryTest {
             utfall = setOf(),
             enheter = setOf(),
             sections = setOf("sa", "sb2"),
+            templates = setOf(),
             created = now,
             modified = now,
         )
@@ -197,6 +209,7 @@ class SearchTextRepositoryTest {
             utfall = setOf(),
             enheter = setOf(),
             sections = setOf("s10"),
+            templates = setOf(),
             created = now,
             modified = now,
         )
@@ -216,6 +229,7 @@ class SearchTextRepositoryTest {
             hjemler = listOf("ha"),
             enheter = listOf(),
             sections = listOf("sa"),
+            templates = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2, text3)
     }
