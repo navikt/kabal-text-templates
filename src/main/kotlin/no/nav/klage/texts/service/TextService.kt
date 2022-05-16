@@ -7,6 +7,7 @@ import no.nav.klage.texts.domain.TextAggregateFunctions.updateContent
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateEnheter
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateHjemler
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateSections
+import no.nav.klage.texts.domain.TextAggregateFunctions.updateTemplates
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateTitle
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateTextType
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateUtfall
@@ -175,6 +176,21 @@ class TextService(
         return text
     }
 
+    fun updateTemplates(
+        input: Set<String>,
+        textId: UUID,
+        saksbehandlerIdent: String,
+    ): Text {
+        val text = getText(textId)
+        val event =
+            text.updateTemplates(
+                input,
+                saksbehandlerIdent,
+            )
+        applicationEventPublisher.publishEvent(event)
+        return text
+    }
+
     fun searchTexts(
         textType: String?,
         utfall: List<String>,
@@ -182,6 +198,7 @@ class TextService(
         hjemler: List<String>,
         enheter: List<String>,
         sections: List<String>,
+        templates: List<String>,
     ): List<Text> {
         return textRepository.searchTexts(
             textType = textType,
@@ -190,6 +207,7 @@ class TextService(
             hjemler = hjemler,
             enheter = enheter,
             sections = sections,
+            templates = templates,
         )
     }
 }

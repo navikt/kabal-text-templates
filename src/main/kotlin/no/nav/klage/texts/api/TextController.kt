@@ -255,6 +255,31 @@ class TextController(
     }
 
     @ApiOperation(
+        value = "Update templates",
+        notes = "Update templates"
+    )
+    @PutMapping("/{textId}/templates")
+    fun updateTemplates(
+        @PathVariable("textId") textId: UUID,
+        @RequestBody input: TemplatesInput
+    ): TextView {
+        logTextMethodDetails(
+            methodName = ::updateTemplates.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            textId = textId,
+            logger = logger,
+        )
+
+        return mapToTextView(
+            textService.updateTemplates(
+                input = input.templates,
+                textId = textId,
+                saksbehandlerIdent = tokenUtil.getIdent(),
+            )
+        )
+    }
+
+    @ApiOperation(
         value = "Delete text",
         notes = "Delete text"
     )
@@ -297,6 +322,7 @@ class TextController(
             hjemler = searchQueryParams.hjemler ?: emptyList(),
             enheter = searchQueryParams.enheter ?: emptyList(),
             sections = searchQueryParams.sections ?: emptyList(),
+            templates = searchQueryParams.templates ?: emptyList(),
         )
         return texts.map {
             mapToTextView(it)
