@@ -357,6 +357,7 @@ class TextController(
             utfall = text.utfall,
             enheter = text.enheter,
             sections = text.sections,
+            templates = text.templates,
             created = text.created,
             modified = text.modified,
         )
