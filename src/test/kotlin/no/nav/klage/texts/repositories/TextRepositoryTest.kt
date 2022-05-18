@@ -1,5 +1,8 @@
 package no.nav.klage.texts.repositories
 
+import no.nav.klage.texts.domain.Action
+import no.nav.klage.texts.domain.ChangelogEntry
+import no.nav.klage.texts.domain.Field
 import no.nav.klage.texts.domain.Text
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -30,6 +33,9 @@ class TextRepositoryTest {
     @Autowired
     lateinit var textRepository: TextRepository
 
+    @Autowired
+    lateinit var changelogRepository: ChangelogRepository
+
     @Test
     fun `add text works`() {
         val now = LocalDateTime.now()
@@ -50,6 +56,43 @@ class TextRepositoryTest {
 
         val foundText = textRepository.findById(text.id).get()
         assertThat(foundText).isEqualTo(text)
+    }
+
+    @Test
+    fun `delete text works, and log remains`() {
+        val now = LocalDateTime.now()
+
+        val text = Text(
+            title = "title",
+            textType = "type",
+            content = "{}",
+            hjemler = setOf("a", "b"),
+            created = now,
+            modified = now,
+        )
+
+        val logEntry = ChangelogEntry(
+            saksbehandlerident = "abc",
+            action = Action.NEW,
+            field = Field.TEXT,
+            fromValue = null,
+            toValue = null,
+            textId = text.id
+        )
+
+        textRepository.save(text)
+        changelogRepository.save(logEntry)
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
+        textRepository.deleteById(text.id)
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
+        assertThat(textRepository.findAll()).isEmpty()
+        assertThat(changelogRepository.findAll()).hasSize(1)
     }
 
 }
