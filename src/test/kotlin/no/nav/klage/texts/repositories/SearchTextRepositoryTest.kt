@@ -100,6 +100,7 @@ class SearchTextRepositoryTest {
 
         var foundTexts = textRepository.searchTexts(
             textType = "type",
+            requiredSection = null,
             utfall = listOf(),
             ytelser = listOf(),
             hjemler = listOf("hb1"),
@@ -111,6 +112,19 @@ class SearchTextRepositoryTest {
 
         foundTexts = textRepository.searchTexts(
             textType = "type",
+            requiredSection = "sb4",
+            utfall = listOf(),
+            ytelser = listOf(),
+            hjemler = listOf(),
+            enheter = listOf(),
+            sections = listOf(),
+            templates = listOf(),
+        )
+        assertThat(foundTexts).containsExactlyInAnyOrder(text4)
+
+        foundTexts = textRepository.searchTexts(
+            textType = "type",
+            requiredSection = null,
             utfall = listOf(),
             ytelser = listOf(),
             hjemler = listOf("hb1", "hb2"),
@@ -122,6 +136,7 @@ class SearchTextRepositoryTest {
 
         foundTexts = textRepository.searchTexts(
             textType = null,
+            requiredSection = null,
             utfall = listOf("ub1", "ub2"),
             ytelser = listOf("yb1", "yb2"),
             hjemler = listOf("hb1", "hb2"),
@@ -133,6 +148,7 @@ class SearchTextRepositoryTest {
 
         foundTexts = textRepository.searchTexts(
             textType = "type",
+            requiredSection = null,
             utfall = listOf("ua"),
             ytelser = listOf("ya"),
             hjemler = listOf("ha"),
@@ -144,6 +160,7 @@ class SearchTextRepositoryTest {
 
         foundTexts = textRepository.searchTexts(
             textType = "type",
+            requiredSection = null,
             utfall = listOf("ua"),
             ytelser = listOf("ya"),
             hjemler = listOf("hb2"),
@@ -224,6 +241,7 @@ class SearchTextRepositoryTest {
 
         val foundTexts = textRepository.searchTexts(
             textType = "type",
+            requiredSection = null,
             utfall = listOf(),
             ytelser = listOf(),
             hjemler = listOf("ha"),

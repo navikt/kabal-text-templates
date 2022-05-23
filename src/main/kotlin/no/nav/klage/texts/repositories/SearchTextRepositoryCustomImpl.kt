@@ -13,6 +13,7 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
 
     override fun searchTexts(
         textType: String?,
+        requiredSection: String?,
         utfall: List<String>,
         ytelser: List<String>,
         hjemler: List<String>,
@@ -25,6 +26,10 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
 
         if (textType != null) {
             conditions += "t.textType = :textType"
+        }
+        if (requiredSection != null) {
+            conditions += "s in :sections"
+            joins += "join t.sections s"
         }
         if (utfall.isNotEmpty()) {
             conditions += "(u in :utfall or u is null)"
@@ -69,6 +74,9 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
 
         if (textType != null) {
             query = query.setParameter("textType", textType)
+        }
+        if (requiredSection != null) {
+            query = query.setParameter("sections", listOf(requiredSection))
         }
         if (hjemler.isNotEmpty()) {
             query = query.setParameter("hjemler", hjemler)
