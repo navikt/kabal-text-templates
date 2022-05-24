@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiOperation
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.domain.Text
+import no.nav.klage.texts.exceptions.ClientErrorException
 import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
@@ -315,8 +316,13 @@ class TextController(
             logger = logger,
         )
 
+        if (searchQueryParams.requiredSection != null && !searchQueryParams.sections.isNullOrEmpty()) {
+            throw ClientErrorException("Cannot use both 'requiredSection' and 'sections' when searching.")
+        }
+
         val texts = textService.searchTexts(
             textType = searchQueryParams.textType,
+            requiredSection = searchQueryParams.requiredSection,
             utfall = searchQueryParams.utfall ?: emptyList(),
             ytelser = searchQueryParams.ytelser ?: emptyList(),
             hjemler = searchQueryParams.hjemler ?: emptyList(),

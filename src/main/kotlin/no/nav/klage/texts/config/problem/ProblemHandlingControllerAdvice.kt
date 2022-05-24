@@ -1,5 +1,6 @@
 package no.nav.klage.texts.config.problem
 
+import no.nav.klage.texts.exceptions.ClientErrorException
 import no.nav.klage.texts.exceptions.TextNotFoundException
 import no.nav.klage.texts.util.getLogger
 import org.springframework.http.ResponseEntity
@@ -27,5 +28,12 @@ interface OurOwnExceptionAdviceTrait : AdviceTrait {
         request: NativeWebRequest
     ): ResponseEntity<Problem> =
         create(Status.NOT_FOUND, ex, request)
+
+    @ExceptionHandler
+    fun handleClientError(
+        ex: ClientErrorException,
+        request: NativeWebRequest
+    ): ResponseEntity<Problem> =
+        create(Status.BAD_REQUEST, ex, request)
 
 }
