@@ -1,8 +1,10 @@
 package no.nav.klage.texts.api.views
 
 import com.fasterxml.jackson.databind.JsonNode
+import java.util.*
 
 data class TextInput(
+    val id: UUID? = null,
     val title: String,
     val textType: String,
     val content: JsonNode,

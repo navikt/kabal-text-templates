@@ -377,23 +377,6 @@ class TextController(
         return mapToTextView(textService.getText(textId))
     }
 
-    private fun mapToTextView(text: Text): TextView =
-        TextView(
-            id = text.id,
-            title = text.title,
-            textType = text.textType,
-            content = jsonMapper().readTree(text.content),
-            smartEditorVersion = text.smartEditorVersion,
-            hjemler = text.hjemler,
-            ytelser = text.ytelser,
-            utfall = text.utfall,
-            enheter = text.enheter,
-            sections = text.sections,
-            templates = text.templates,
-            created = text.created,
-            modified = text.modified,
-        )
-
     private fun TextInput.toDomainModel() = Text(
         title = title,
         textType = textType,
@@ -407,4 +390,21 @@ class TextController(
         created = LocalDateTime.now(),
     )
 }
+
+fun mapToTextView(text: Text): TextView =
+    TextView(
+        id = text.id,
+        title = text.title,
+        textType = text.textType,
+        content = jsonMapper().readTree(text.content),
+        smartEditorVersion = text.smartEditorVersion,
+        hjemler = text.hjemler,
+        ytelser = text.ytelser,
+        utfall = text.utfall,
+        enheter = text.enheter,
+        sections = text.sections,
+        templates = text.templates,
+        created = text.created,
+        modified = text.modified,
+    )
 
