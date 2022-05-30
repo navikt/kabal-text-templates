@@ -15,6 +15,8 @@ class Text(
     var textType: String,
     @Column(name = "content")
     var content: String,
+    @Column(name = "smarteditor_version")
+    var smartEditorVersion: Int?,
 
     @ElementCollection
     @CollectionTable(schema = "klage", name = "hjemmel", joinColumns = [JoinColumn(name = "text_id")])

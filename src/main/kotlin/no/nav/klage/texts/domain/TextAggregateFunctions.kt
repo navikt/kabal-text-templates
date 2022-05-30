@@ -118,6 +118,30 @@ object TextAggregateFunctions {
         )
     }
 
+    fun Text.updateSmartEditorVersion(
+        newValueContent: Int,
+        saksbehandlerident: String
+    ): TextChangedEvent {
+        val now = LocalDateTime.now()
+        val changelogEntries = mutableListOf<ChangelogEntry>()
+        val oldValueContent = smartEditorVersion
+        smartEditorVersion = newValueContent
+        modified = now
+
+        changelog(
+            saksbehandlerident = saksbehandlerident,
+            field = Field.SMARTEDITOR_VERSION,
+            fromValue = oldValueContent?.toString(),
+            toValue = newValueContent.toString(),
+            created = now,
+        )?.let { changelogEntries.add(it) }
+
+        return TextChangedEvent(
+            text = this,
+            changelogEntries = changelogEntries,
+        )
+    }
+
     fun Text.updateHjemler(
         newValueHjemler: Set<String>,
         saksbehandlerident: String

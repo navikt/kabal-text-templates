@@ -6,6 +6,7 @@ data class TextInput(
     val title: String,
     val textType: String,
     val content: JsonNode,
+    val smartEditorVersion: Int?,
     val hjemler: Set<String> = emptySet(),
     val ytelser: Set<String> = emptySet(),
     val utfall: Set<String> = emptySet(),
@@ -24,6 +25,10 @@ data class TextTypeInput(
 
 data class ContentInput(
     val content: JsonNode
+)
+
+data class SmartEditorVersionInput(
+    val smartEditorVersion: Int
 )
 
 data class HjemlerInput(
