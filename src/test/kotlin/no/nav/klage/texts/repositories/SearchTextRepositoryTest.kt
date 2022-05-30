@@ -37,6 +37,7 @@ class SearchTextRepositoryTest {
         val text1 = Text(
             title = "title",
             textType = "type",
+            smartEditorVersion = 1,
             content = "{}",
             hjemler = setOf("ha", "hb1"),
             ytelser = setOf("ya", "yb1"),
@@ -51,6 +52,7 @@ class SearchTextRepositoryTest {
         val text2 = Text(
             title = "title",
             textType = "type",
+            smartEditorVersion = 1,
             content = "{}",
             hjemler = setOf("ha", "hb2"),
             ytelser = setOf("ya", "yb2"),
@@ -65,6 +67,7 @@ class SearchTextRepositoryTest {
         val text3 = Text(
             title = "title",
             textType = "type",
+            smartEditorVersion = 1,
             content = "{}",
             hjemler = setOf("ha", "hb3"),
             ytelser = setOf("ya", "yb3"),
@@ -79,6 +82,7 @@ class SearchTextRepositoryTest {
         val text4 = Text(
             title = "title",
             textType = "type",
+            smartEditorVersion = 1,
             content = "{}",
             hjemler = setOf("ha", "hb4"),
             ytelser = setOf("ya", "yb4"),
@@ -178,6 +182,7 @@ class SearchTextRepositoryTest {
         val text1 = Text(
             title = "title",
             textType = "type",
+            smartEditorVersion = 1,
             content = "{}",
             hjemler = setOf(),
             ytelser = setOf(),
@@ -192,6 +197,7 @@ class SearchTextRepositoryTest {
         val text2 = Text(
             title = "title",
             textType = "type",
+            smartEditorVersion = 1,
             content = "{}",
             hjemler = setOf("ha", "hb2"),
             ytelser = setOf(),
@@ -206,6 +212,7 @@ class SearchTextRepositoryTest {
         val text3 = Text(
             title = "title",
             textType = "type",
+            smartEditorVersion = 1,
             content = "{}",
             hjemler = setOf(),
             ytelser = setOf(),
@@ -220,6 +227,7 @@ class SearchTextRepositoryTest {
         val text4 = Text(
             title = "title",
             textType = "type",
+            smartEditorVersion = 1,
             content = "{}",
             hjemler = setOf(),
             ytelser = setOf(),
