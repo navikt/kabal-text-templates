@@ -43,6 +43,7 @@ class TextRepositoryTest {
         val text = Text(
             title = "title",
             textType = "type",
+            smartEditorVersion = 1,
             content = "{}",
             hjemler = setOf("a", "b"),
             created = now,
@@ -65,6 +66,7 @@ class TextRepositoryTest {
         val text = Text(
             title = "title",
             textType = "type",
+            smartEditorVersion = 1,
             content = "{}",
             hjemler = setOf("a", "b"),
             created = now,

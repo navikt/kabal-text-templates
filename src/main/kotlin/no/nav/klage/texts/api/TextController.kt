@@ -131,6 +131,31 @@ class TextController(
     }
 
     @ApiOperation(
+        value = "Update smartEditorVersion",
+        notes = "Update smartEditorVersion"
+    )
+    @PutMapping("/{textId}/content")
+    fun updateSmartEditorVersion(
+        @PathVariable("textId") textId: UUID,
+        @RequestBody input: SmartEditorVersionInput
+    ): TextView {
+        logTextMethodDetails(
+            methodName = ::updateSmartEditorVersion.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            textId = textId,
+            logger = logger,
+        )
+
+        return mapToTextView(
+            textService.updateSmartEditorVersion(
+                input = input.smartEditorVersion,
+                textId = textId,
+                saksbehandlerIdent = tokenUtil.getIdent(),
+            )
+        )
+    }
+
+    @ApiOperation(
         value = "Update hjemler",
         notes = "Update hjemler"
     )
@@ -352,26 +377,11 @@ class TextController(
         return mapToTextView(textService.getText(textId))
     }
 
-    private fun mapToTextView(text: Text): TextView =
-        TextView(
-            id = text.id,
-            title = text.title,
-            textType = text.textType,
-            content = jsonMapper().readTree(text.content),
-            hjemler = text.hjemler,
-            ytelser = text.ytelser,
-            utfall = text.utfall,
-            enheter = text.enheter,
-            sections = text.sections,
-            templates = text.templates,
-            created = text.created,
-            modified = text.modified,
-        )
-
     private fun TextInput.toDomainModel() = Text(
         title = title,
         textType = textType,
         content = content.toString(),
+        smartEditorVersion = smartEditorVersion,
         hjemler = hjemler,
         ytelser = ytelser,
         utfall = utfall,
@@ -380,4 +390,21 @@ class TextController(
         created = LocalDateTime.now(),
     )
 }
+
+fun mapToTextView(text: Text): TextView =
+    TextView(
+        id = text.id,
+        title = text.title,
+        textType = text.textType,
+        content = jsonMapper().readTree(text.content),
+        smartEditorVersion = text.smartEditorVersion,
+        hjemler = text.hjemler,
+        ytelser = text.ytelser,
+        utfall = text.utfall,
+        enheter = text.enheter,
+        sections = text.sections,
+        templates = text.templates,
+        created = text.created,
+        modified = text.modified,
+    )
 

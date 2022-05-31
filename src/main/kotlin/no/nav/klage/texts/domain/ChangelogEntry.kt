@@ -40,8 +40,8 @@ class ChangelogEntry(
                 return null
             } else {
                 val action = when {
-                    fromValue == null && toValue != null -> Action.NEW
-                    fromValue != null && toValue == null -> Action.DELETION
+                    fromValue == null -> Action.NEW
+                    toValue == null -> Action.DELETION
                     else -> Action.CHANGE
                 }
                 return ChangelogEntry(
@@ -63,5 +63,5 @@ enum class Action {
 }
 
 enum class Field {
-    TITLE, TEXT_TYPE, CONTENT, HJEMLER, YTELSER, UTFALL, ENHETER, SECTIONS, TEMPLATES, TEXT
+    TITLE, TEXT_TYPE, CONTENT, HJEMLER, YTELSER, UTFALL, ENHETER, SECTIONS, TEMPLATES, TEXT, SMARTEDITOR_VERSION,
 }

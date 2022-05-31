@@ -7,9 +7,10 @@ import no.nav.klage.texts.domain.TextAggregateFunctions.updateContent
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateEnheter
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateHjemler
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateSections
+import no.nav.klage.texts.domain.TextAggregateFunctions.updateSmartEditorVersion
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateTemplates
-import no.nav.klage.texts.domain.TextAggregateFunctions.updateTitle
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateTextType
+import no.nav.klage.texts.domain.TextAggregateFunctions.updateTitle
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateUtfall
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateYtelser
 import no.nav.klage.texts.exceptions.TextNotFoundException
@@ -79,6 +80,21 @@ class TextService(
         val text = getText(textId)
         val event =
             text.updateTextType(
+                input,
+                saksbehandlerIdent,
+            )
+        applicationEventPublisher.publishEvent(event)
+        return text
+    }
+
+    fun updateSmartEditorVersion(
+        input: Int,
+        textId: UUID,
+        saksbehandlerIdent: String,
+    ): Text {
+        val text = getText(textId)
+        val event =
+            text.updateSmartEditorVersion(
                 input,
                 saksbehandlerIdent,
             )
@@ -212,4 +228,10 @@ class TextService(
             templates = templates,
         )
     }
+
+    fun getAllTexts(): List<Text> = textRepository.findAll()
+
+    fun getTextsById(ids: List<UUID>): List<Text> = textRepository.findAllById(ids)
+
+    fun updateAll(texts: List<Text>): List<Text> = textRepository.saveAll(texts)
 }
