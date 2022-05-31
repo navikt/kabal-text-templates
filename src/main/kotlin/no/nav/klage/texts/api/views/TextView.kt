@@ -9,7 +9,7 @@ data class TextView(
     val title: String,
     val textType: String,
     val content: JsonNode,
-    val smartEditorVersion: Int?,
+    val version: Int?,
     val hjemler: Set<String> = emptySet(),
     val ytelser: Set<String> = emptySet(),
     val utfall: Set<String> = emptySet(),

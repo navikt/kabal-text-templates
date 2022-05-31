@@ -52,7 +52,7 @@ class MigrationsController(
         value = "Update texts",
         notes = "Update texts"
     )
-    @PutMapping()
+    @PutMapping
     fun updateTexts(
         @RequestBody input: List<TextInput>
     ): List<TextView> {

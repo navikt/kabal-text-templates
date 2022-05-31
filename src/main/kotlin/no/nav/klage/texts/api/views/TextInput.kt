@@ -30,7 +30,7 @@ data class ContentInput(
 )
 
 data class SmartEditorVersionInput(
-    val smartEditorVersion: Int
+    val version: Int
 )
 
 data class HjemlerInput(
