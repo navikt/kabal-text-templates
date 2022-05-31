@@ -134,7 +134,7 @@ class TextController(
         value = "Update smartEditorVersion",
         notes = "Update smartEditorVersion"
     )
-    @PutMapping("/{textId}/content")
+    @PutMapping("/{textId}/version")
     fun updateSmartEditorVersion(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: SmartEditorVersionInput
@@ -148,7 +148,7 @@ class TextController(
 
         return mapToTextView(
             textService.updateSmartEditorVersion(
-                input = input.smartEditorVersion,
+                input = input.version,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
@@ -397,7 +397,7 @@ fun mapToTextView(text: Text): TextView =
         title = text.title,
         textType = text.textType,
         content = jsonMapper().readTree(text.content),
-        smartEditorVersion = text.smartEditorVersion,
+        version = text.smartEditorVersion,
         hjemler = text.hjemler,
         ytelser = text.ytelser,
         utfall = text.utfall,
