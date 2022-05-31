@@ -76,6 +76,7 @@ class MigrationsController(
                 enheter = currentTextInput.enheter
                 sections = currentTextInput.sections
                 modified = LocalDateTime.now()
+                smartEditorVersion = currentTextInput.smartEditorVersion
             }
         }
 
