@@ -381,7 +381,7 @@ class TextController(
         title = title,
         textType = textType,
         content = content.toString(),
-        smartEditorVersion = smartEditorVersion,
+        smartEditorVersion = version,
         hjemler = hjemler,
         ytelser = ytelser,
         utfall = utfall,
