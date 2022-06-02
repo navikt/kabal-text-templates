@@ -6,6 +6,10 @@ db_size: 10
 db_ha: true
 tenant: nav.no
 
+roles:
+  - 1edfbdf1-c1bc-4dc6-9cab-4fff1cb7e2a8 # ROLE_KLAGE_FAGANSVARLIG
+  - cd78b8e8-73a3-4fb6-8234-7bebb5e5b9e9 # ROLE_ADMIN
+
 envs:
   - name: JAVA_OPTS
     value: "-Xms512m -Xmx4096m"

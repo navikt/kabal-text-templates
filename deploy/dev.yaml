@@ -7,6 +7,10 @@ db_size: 10
 db_ha: true
 tenant: trygdeetaten.no
 
+roles:
+  - 94d34f17-e325-4ed6-9667-d23041a3f40c # ROLE_KLAGE_FAGANSVARLIG
+  - a9f5ef81-4e81-42e8-b368-0273071b64b9 # ROLE_ADMIN / ROLE_GOSYS_OPPGAVE_BEHANDLER (dev is weird)
+
 envs:
   - name: JAVA_TOOL_OPTIONS
     value: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005

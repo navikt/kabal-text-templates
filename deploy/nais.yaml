@@ -74,6 +74,10 @@ spec:
       claims:
         extra:
           - NAVident
+        groups:
+        {{#each roles as |role|}}
+          - id: {{role}}
+        {{/each}}
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: {{springProfile}}
