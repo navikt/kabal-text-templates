@@ -134,7 +134,7 @@ class TextController(
         value = "Update plainText",
         notes = "Update plainText"
     )
-    @PutMapping("/{textId}/plainText")
+    @PutMapping("/{textId}/plaintext")
     fun updatePlainText(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: PlainTextInput
