@@ -70,6 +70,7 @@ class MigrationsController(
                 title = currentTextInput.title
                 textType = currentTextInput.textType
                 content = currentTextInput.content.toString()
+                plainText = currentTextInput.plainText
                 hjemler = currentTextInput.hjemler
                 ytelser = currentTextInput.ytelser
                 utfall = currentTextInput.utfall

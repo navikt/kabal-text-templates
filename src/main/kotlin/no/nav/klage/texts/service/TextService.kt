@@ -6,6 +6,7 @@ import no.nav.klage.texts.domain.TextAggregateFunctions.logDeletion
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateContent
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateEnheter
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateHjemler
+import no.nav.klage.texts.domain.TextAggregateFunctions.updatePlainText
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateSections
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateSmartEditorVersion
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateTemplates
@@ -110,6 +111,21 @@ class TextService(
         val text = getText(textId)
         val event =
             text.updateContent(
+                input,
+                saksbehandlerIdent,
+            )
+        applicationEventPublisher.publishEvent(event)
+        return text
+    }
+
+    fun updatePlainText(
+        input: String,
+        textId: UUID,
+        saksbehandlerIdent: String,
+    ): Text {
+        val text = getText(textId)
+        val event =
+            text.updatePlainText(
                 input,
                 saksbehandlerIdent,
             )

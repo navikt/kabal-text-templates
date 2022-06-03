@@ -131,6 +131,31 @@ class TextController(
     }
 
     @ApiOperation(
+        value = "Update plainText",
+        notes = "Update plainText"
+    )
+    @PutMapping("/{textId}/plaintext")
+    fun updatePlainText(
+        @PathVariable("textId") textId: UUID,
+        @RequestBody input: PlainTextInput
+    ): TextView {
+        logTextMethodDetails(
+            methodName = ::updatePlainText.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            textId = textId,
+            logger = logger,
+        )
+
+        return mapToTextView(
+            textService.updatePlainText(
+                input = input.plainText,
+                textId = textId,
+                saksbehandlerIdent = tokenUtil.getIdent(),
+            )
+        )
+    }
+
+    @ApiOperation(
         value = "Update smartEditorVersion",
         notes = "Update smartEditorVersion"
     )
@@ -380,7 +405,8 @@ class TextController(
     private fun TextInput.toDomainModel() = Text(
         title = title,
         textType = textType,
-        content = content.toString(),
+        content = content?.toString(),
+        plainText = plainText,
         smartEditorVersion = version,
         hjemler = hjemler,
         ytelser = ytelser,
@@ -396,7 +422,8 @@ fun mapToTextView(text: Text): TextView =
         id = text.id,
         title = text.title,
         textType = text.textType,
-        content = jsonMapper().readTree(text.content),
+        content = if (text.content != null) jsonMapper().readTree(text.content) else null,
+        plainText = text.plainText,
         version = text.smartEditorVersion,
         hjemler = text.hjemler,
         ytelser = text.ytelser,
