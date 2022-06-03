@@ -7,7 +7,8 @@ data class TextInput(
     val id: UUID? = null,
     val title: String,
     val textType: String,
-    val content: JsonNode,
+    val content: JsonNode?,
+    val plainText: String?,
     val version: Int?,
     val hjemler: Set<String> = emptySet(),
     val ytelser: Set<String> = emptySet(),
@@ -27,6 +28,10 @@ data class TextTypeInput(
 
 data class ContentInput(
     val content: JsonNode
+)
+
+data class PlainTextInput(
+    val plainText: String
 )
 
 data class SmartEditorVersionInput(

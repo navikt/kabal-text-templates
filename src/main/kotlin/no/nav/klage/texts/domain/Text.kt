@@ -14,7 +14,9 @@ class Text(
     @Column(name = "text_type")
     var textType: String,
     @Column(name = "content")
-    var content: String,
+    var content: String?,
+    @Column(name = "plain_text")
+    var plainText: String?,
     @Column(name = "smarteditor_version")
     var smartEditorVersion: Int?,
 
@@ -63,6 +65,7 @@ class Text(
         if (title != other.title) return false
         if (textType != other.textType) return false
         if (content != other.content) return false
+        if (plainText != other.plainText) return false
         if (hjemler != other.hjemler) return false
         if (ytelser != other.ytelser) return false
         if (utfall != other.utfall) return false
@@ -78,6 +81,7 @@ class Text(
         result = 31 * result + title.hashCode()
         result = 31 * result + textType.hashCode()
         result = 31 * result + content.hashCode()
+        result = 31 * result + plainText.hashCode()
         result = 31 * result + hjemler.hashCode()
         result = 31 * result + ytelser.hashCode()
         result = 31 * result + utfall.hashCode()
@@ -88,7 +92,7 @@ class Text(
     }
 
     override fun toString(): String {
-        return "Text(id=$id, title='$title', textType='$textType', content='$content', hjemler=$hjemler, ytelser=$ytelser, utfall=$utfall, enheter=$enheter, sections=$sections, templates=$templates, created=$created, modified=$modified)"
+        return "Text(id=$id, title='$title', textType='$textType', content=$content, plainText=$plainText, smartEditorVersion=$smartEditorVersion, hjemler=$hjemler, ytelser=$ytelser, utfall=$utfall, enheter=$enheter, sections=$sections, templates=$templates, created=$created, modified=$modified)"
     }
 
 }
