@@ -13,17 +13,17 @@ repositories {
 }
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.6.0"
+    id("org.jetbrains.kotlin.jvm") version "1.7.10"
     id("org.springframework.boot") version "2.5.12"
-    id("org.jetbrains.kotlin.plugin.spring") version "1.6.0"
-    id("org.jetbrains.kotlin.plugin.jpa") version "1.6.0"
+    id("org.jetbrains.kotlin.plugin.spring") version "1.7.10"
+    id("org.jetbrains.kotlin.plugin.jpa") version "1.7.10"
     idea
 }
 
 apply(plugin = "io.spring.dependency-management")
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.10")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
