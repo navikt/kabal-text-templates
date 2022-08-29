@@ -42,7 +42,7 @@ dependencies {
     implementation("org.zalando:problem-spring-web-starter:$problemSpringWebStartVersion")
 
     implementation("io.micrometer:micrometer-registry-prometheus")
-    implementation("ch.qos.logback:logback-classic:1.2.11")
+    implementation("ch.qos.logback:logback-classic:1.4.0")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
 
