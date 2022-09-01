@@ -1,7 +1,7 @@
 package no.nav.klage.texts.api
 
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.TextInput
 import no.nav.klage.texts.api.views.TextView
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
 @RestController
-@Api(tags = ["kabal-text-templates"])
+@Tag(name = "kabal-text-templates")
 @RequestMapping("/migrations/texts")
 @ProtectedWithClaims(issuer = ISSUER_AAD)
 class MigrationsController(
@@ -29,9 +29,9 @@ class MigrationsController(
         private val secureLogger = getSecureLogger()
     }
 
-    @ApiOperation(
-        value = "Get all texts",
-        notes = "Get all texts"
+    @Operation(
+        summary = "Get all texts",
+        description = "Get all texts"
     )
     @GetMapping
     fun getTexts(): List<TextView> {
@@ -48,9 +48,9 @@ class MigrationsController(
         }
     }
 
-    @ApiOperation(
-        value = "Update texts",
-        notes = "Update texts"
+    @Operation(
+        summary = "Update texts",
+        description = "Update texts"
     )
     @PutMapping
     fun updateTexts(

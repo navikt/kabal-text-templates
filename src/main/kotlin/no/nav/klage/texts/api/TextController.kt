@@ -1,8 +1,8 @@
 package no.nav.klage.texts.api
 
 import com.fasterxml.jackson.module.kotlin.jsonMapper
-import io.swagger.annotations.Api
-import io.swagger.annotations.ApiOperation
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.domain.Text
@@ -18,7 +18,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 @RestController
-@Api(tags = ["kabal-text-templates"])
+@Tag(name = "kabal-text-templates", description = "API for template texts")
 @RequestMapping("/texts")
 @ProtectedWithClaims(issuer = ISSUER_AAD)
 class TextController(
@@ -32,9 +32,9 @@ class TextController(
         private val secureLogger = getSecureLogger()
     }
 
-    @ApiOperation(
-        value = "Create text",
-        notes = "Create text"
+    @Operation(
+        summary = "Create text",
+        description = "Create text"
     )
     @PostMapping
     fun createText(
@@ -55,9 +55,9 @@ class TextController(
         )
     }
 
-    @ApiOperation(
-        value = "Update title",
-        notes = "Update title"
+    @Operation(
+        summary = "Update title",
+        description = "Update title"
     )
     @PutMapping("/{textId}/title")
     fun updateTitle(
@@ -80,9 +80,9 @@ class TextController(
         )
     }
 
-    @ApiOperation(
-        value = "Update text type",
-        notes = "Update text type"
+    @Operation(
+        summary = "Update text type",
+        description = "Update text type"
     )
     @PutMapping("/{textId}/texttype")
     fun updateTextType(
@@ -105,9 +105,9 @@ class TextController(
         )
     }
 
-    @ApiOperation(
-        value = "Update content",
-        notes = "Update content"
+    @Operation(
+        summary = "Update content",
+        description = "Update content"
     )
     @PutMapping("/{textId}/content")
     fun updateContent(
@@ -130,9 +130,9 @@ class TextController(
         )
     }
 
-    @ApiOperation(
-        value = "Update plainText",
-        notes = "Update plainText"
+    @Operation(
+        summary = "Update plainText",
+        description = "Update plainText"
     )
     @PutMapping("/{textId}/plaintext")
     fun updatePlainText(
@@ -155,9 +155,9 @@ class TextController(
         )
     }
 
-    @ApiOperation(
-        value = "Update smartEditorVersion",
-        notes = "Update smartEditorVersion"
+    @Operation(
+        summary = "Update smartEditorVersion",
+        description = "Update smartEditorVersion"
     )
     @PutMapping("/{textId}/version")
     fun updateSmartEditorVersion(
@@ -180,9 +180,9 @@ class TextController(
         )
     }
 
-    @ApiOperation(
-        value = "Update hjemler",
-        notes = "Update hjemler"
+    @Operation(
+        summary = "Update hjemler",
+        description = "Update hjemler"
     )
     @PutMapping("/{textId}/hjemler")
     fun updateHjemler(
@@ -205,9 +205,9 @@ class TextController(
         )
     }
 
-    @ApiOperation(
-        value = "Update ytelser",
-        notes = "Update ytelser"
+    @Operation(
+        summary = "Update ytelser",
+        description = "Update ytelser"
     )
     @PutMapping("/{textId}/ytelser")
     fun updateYtelser(
@@ -230,9 +230,9 @@ class TextController(
         )
     }
 
-    @ApiOperation(
-        value = "Update utfall",
-        notes = "Update utfall"
+    @Operation(
+        summary = "Update utfall",
+        description = "Update utfall"
     )
     @PutMapping("/{textId}/utfall")
     fun updateUtfall(
@@ -255,9 +255,9 @@ class TextController(
         )
     }
 
-    @ApiOperation(
-        value = "Update enheter",
-        notes = "Update enheter"
+    @Operation(
+        summary = "Update enheter",
+        description = "Update enheter"
     )
     @PutMapping("/{textId}/enheter")
     fun updateEnheter(
@@ -280,9 +280,9 @@ class TextController(
         )
     }
 
-    @ApiOperation(
-        value = "Update sections",
-        notes = "Update sections"
+    @Operation(
+        summary = "Update sections",
+        description = "Update sections"
     )
     @PutMapping("/{textId}/sections")
     fun updateSections(
@@ -305,9 +305,9 @@ class TextController(
         )
     }
 
-    @ApiOperation(
-        value = "Update templates",
-        notes = "Update templates"
+    @Operation(
+        summary = "Update templates",
+        description = "Update templates"
     )
     @PutMapping("/{textId}/templates")
     fun updateTemplates(
@@ -330,9 +330,9 @@ class TextController(
         )
     }
 
-    @ApiOperation(
-        value = "Delete text",
-        notes = "Delete text"
+    @Operation(
+        summary = "Delete text",
+        description = "Delete text"
     )
     @DeleteMapping("/{textId}")
     fun deleteText(
@@ -351,9 +351,9 @@ class TextController(
         )
     }
 
-    @ApiOperation(
-        value = "Search texts",
-        notes = "Search texts"
+    @Operation(
+        summary = "Search texts",
+        description = "Search texts"
     )
     @GetMapping
     fun searchTexts(
@@ -385,9 +385,9 @@ class TextController(
         }
     }
 
-    @ApiOperation(
-        value = "Get text",
-        notes = "Get text"
+    @Operation(
+        summary = "Get text",
+        description = "Get text"
     )
     @GetMapping("/{textId}")
     fun getText(

@@ -4,7 +4,7 @@ val mockkVersion = "1.12.7"
 val logstashVersion = "7.2"
 val springVersion = "2.5.5"
 val testContainersVersion = "1.17.3"
-val springFoxVersion = "3.0.0"
+val springDocVersion = "1.6.11"
 val tokenValidationVersion = "2.1.4"
 val problemSpringWebStartVersion = "0.26.2"
 
@@ -14,7 +14,7 @@ repositories {
 
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.7.10"
-    id("org.springframework.boot") version "2.5.12"
+    id("org.springframework.boot") version "2.7.3"
     id("org.jetbrains.kotlin.plugin.spring") version "1.7.10"
     id("org.jetbrains.kotlin.plugin.jpa") version "1.7.10"
     idea
@@ -34,7 +34,7 @@ dependencies {
     implementation("no.nav.security:token-validation-spring:$tokenValidationVersion")
     implementation("no.nav.security:token-client-spring:$tokenValidationVersion")
 
-    implementation("io.springfox:springfox-boot-starter:$springFoxVersion")
+    implementation("org.springdoc:springdoc-openapi-ui:$springDocVersion")
 
     implementation("org.flywaydb:flyway-core")
     implementation("com.zaxxer:HikariCP")
@@ -42,7 +42,7 @@ dependencies {
     implementation("org.zalando:problem-spring-web-starter:$problemSpringWebStartVersion")
 
     implementation("io.micrometer:micrometer-registry-prometheus")
-    implementation("ch.qos.logback:logback-classic:1.2.11")
+    implementation("ch.qos.logback:logback-classic")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
 
