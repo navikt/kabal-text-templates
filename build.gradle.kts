@@ -6,7 +6,7 @@ val springVersion = "2.5.5"
 val testContainersVersion = "1.17.3"
 val springDocVersion = "1.6.11"
 val tokenValidationVersion = "2.1.4"
-val problemSpringWebStartVersion = "0.26.2"
+val problemSpringWebStartVersion = "0.27.0"
 
 repositories {
     mavenCentral()
