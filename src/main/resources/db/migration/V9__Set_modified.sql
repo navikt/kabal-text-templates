@@ -1,6 +1,6 @@
 UPDATE klage.text
 SET modified = created
-WHERE modified is null;
+WHERE modified IS NULL;
 
 ALTER TABLE klage.text
     ALTER COLUMN modified SET NOT NULL;
