@@ -18,5 +18,5 @@ data class TextView(
     val sections: Set<String> = emptySet(),
     val templates: Set<String> = emptySet(),
     val created: LocalDateTime,
-    var modified: LocalDateTime?,
+    var modified: LocalDateTime,
 )
