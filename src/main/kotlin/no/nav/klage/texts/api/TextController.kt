@@ -402,19 +402,23 @@ class TextController(
         return mapToTextView(textService.getText(textId))
     }
 
-    private fun TextInput.toDomainModel() = Text(
-        title = title,
-        textType = textType,
-        content = content?.toString(),
-        plainText = plainText,
-        smartEditorVersion = version,
-        hjemler = hjemler,
-        ytelser = ytelser,
-        utfall = utfall,
-        enheter = enheter,
-        sections = sections,
-        created = LocalDateTime.now(),
-    )
+    private fun TextInput.toDomainModel(): Text {
+        val now = LocalDateTime.now()
+        return Text(
+            title = title,
+            textType = textType,
+            content = content?.toString(),
+            plainText = plainText,
+            smartEditorVersion = version,
+            hjemler = hjemler,
+            ytelser = ytelser,
+            utfall = utfall,
+            enheter = enheter,
+            sections = sections,
+            created = now,
+            modified = now,
+        )
+    }
 }
 
 fun mapToTextView(text: Text): TextView =

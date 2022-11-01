@@ -53,7 +53,7 @@ class Text(
     @Column(name = "created")
     val created: LocalDateTime,
     @Column(name = "modified")
-    var modified: LocalDateTime? = null,
+    var modified: LocalDateTime,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
