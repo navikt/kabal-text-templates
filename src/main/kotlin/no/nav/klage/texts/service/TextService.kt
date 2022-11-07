@@ -1,5 +1,6 @@
 package no.nav.klage.texts.service
 
+import com.fasterxml.jackson.databind.JsonNode
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.domain.TextAggregateFunctions.logCreation
 import no.nav.klage.texts.domain.TextAggregateFunctions.logDeletion
@@ -57,6 +58,103 @@ class TextService(
 
     fun getText(textId: UUID): Text = textRepository.findById(textId)
         .orElseThrow { TextNotFoundException("Text with id $textId not found") }
+
+    fun updateText(
+        textId: UUID,
+        saksbehandlerIdent: String,
+        title: String,
+        textType: String,
+        content: JsonNode?,
+        plainText: String?,
+        hjemler: Set<String>,
+        ytelser: Set<String>,
+        utfall: Set<String>,
+        enheter: Set<String>,
+        sections: Set<String>,
+        templates: Set<String>,
+    ): Text {
+        if (content != null && plainText != null) {
+            error("there can only be one of content or plainText")
+        }
+
+        val text = getText(textId)
+
+        applicationEventPublisher.publishEvent(
+            text.updateTitle(
+                newValueTitle = title,
+                saksbehandlerident = saksbehandlerIdent
+            )
+        )
+
+        applicationEventPublisher.publishEvent(
+            text.updateTextType(
+                newValueTextType = textType,
+                saksbehandlerident = saksbehandlerIdent
+            )
+        )
+
+        if (content != null) {
+            applicationEventPublisher.publishEvent(
+                text.updateContent(
+                    newValueContent = content.toString(),
+                    saksbehandlerident = saksbehandlerIdent
+                )
+            )
+        }
+
+        if (plainText != null) {
+            applicationEventPublisher.publishEvent(
+                text.updatePlainText(
+                    newValuePlainText = plainText,
+                    saksbehandlerident = saksbehandlerIdent
+                )
+            )
+        }
+
+        applicationEventPublisher.publishEvent(
+            text.updateHjemler(
+                newValueHjemler = hjemler,
+                saksbehandlerident = saksbehandlerIdent
+            )
+        )
+
+        applicationEventPublisher.publishEvent(
+            text.updateYtelser(
+                newValueYtelser = ytelser,
+                saksbehandlerident = saksbehandlerIdent
+            )
+        )
+
+        applicationEventPublisher.publishEvent(
+            text.updateUtfall(
+                newValueUtfall = utfall,
+                saksbehandlerident = saksbehandlerIdent
+            )
+        )
+
+        applicationEventPublisher.publishEvent(
+            text.updateEnheter(
+                newValueEnheter = enheter,
+                saksbehandlerident = saksbehandlerIdent
+            )
+        )
+
+        applicationEventPublisher.publishEvent(
+            text.updateSections(
+                newValueSections = sections,
+                saksbehandlerident = saksbehandlerIdent
+            )
+        )
+
+        applicationEventPublisher.publishEvent(
+            text.updateTemplates(
+                newValueTemplates = templates,
+                saksbehandlerident = saksbehandlerIdent
+            )
+        )
+
+        return text
+    }
 
     fun updateTitle(
         input: String,
