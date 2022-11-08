@@ -119,20 +119,20 @@ object TextAggregateFunctions {
     }
 
     fun Text.updatePlainText(
-        newValueContent: String,
+        newValuePlainText: String,
         saksbehandlerident: String
     ): TextChangedEvent {
         val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
         val oldValueContent = plainText
-        plainText = newValueContent
+        plainText = newValuePlainText
         modified = now
 
         changelog(
             saksbehandlerident = saksbehandlerident,
             field = Field.PLAIN_TEXT,
             fromValue = oldValueContent,
-            toValue = newValueContent,
+            toValue = newValuePlainText,
             created = now,
         )?.let { changelogEntries.add(it) }
 
@@ -287,20 +287,20 @@ object TextAggregateFunctions {
     }
 
     fun Text.updateTemplates(
-        newValueSections: Set<String>,
+        newValueTemplates: Set<String>,
         saksbehandlerident: String
     ): TextChangedEvent {
         val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
         val oldValueSections = templates
-        templates = newValueSections
+        templates = newValueTemplates
         modified = now
 
         changelog(
             saksbehandlerident = saksbehandlerident,
             field = Field.TEMPLATES,
             fromValue = oldValueSections.joinToString(),
-            toValue = newValueSections.joinToString(),
+            toValue = newValueTemplates.joinToString(),
             created = now,
         )?.let { changelogEntries.add(it) }
 

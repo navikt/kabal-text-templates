@@ -56,6 +56,40 @@ class TextController(
     }
 
     @Operation(
+        summary = "Update text",
+        description = "Update text"
+    )
+    @PutMapping("/{textId}")
+    fun updateText(
+        @PathVariable("textId") textId: UUID,
+        @RequestBody input: TextInput
+    ): TextView {
+        logTextMethodDetails(
+            methodName = ::updateText.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            textId = textId,
+            logger = logger,
+        )
+
+        return mapToTextView(
+            textService.updateText(
+                textId = textId,
+                saksbehandlerIdent = tokenUtil.getIdent(),
+                title = input.title,
+                textType = input.textType,
+                content = input.content,
+                plainText = input.plainText,
+                hjemler = input.hjemler,
+                ytelser = input.ytelser,
+                utfall = input.utfall,
+                enheter = input.enheter,
+                sections = input.sections,
+                templates = input.templates,
+            )
+        )
+    }
+
+    @Operation(
         summary = "Update title",
         description = "Update title"
     )
