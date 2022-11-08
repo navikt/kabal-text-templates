@@ -18,6 +18,19 @@ data class TextInput(
     val templates: Set<String> = emptySet(),
 )
 
+data class UpdateTextInput(
+    val title: String,
+    val textType: String,
+    val content: String?,
+    val plainText: String?,
+    val hjemler: Set<String> = emptySet(),
+    val ytelser: Set<String> = emptySet(),
+    val utfall: Set<String> = emptySet(),
+    val enheter: Set<String> = emptySet(),
+    val sections: Set<String> = emptySet(),
+    val templates: Set<String> = emptySet(),
+)
+
 data class TitleInput(
     val title: String
 )

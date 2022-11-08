@@ -17,6 +17,8 @@ import no.nav.klage.texts.domain.TextAggregateFunctions.updateUtfall
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateYtelser
 import no.nav.klage.texts.exceptions.TextNotFoundException
 import no.nav.klage.texts.repositories.TextRepository
+import no.nav.klage.texts.util.getLogger
+import no.nav.klage.texts.util.getSecureLogger
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -28,6 +30,12 @@ class TextService(
     private val textRepository: TextRepository,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
+
+    companion object {
+        @Suppress("JAVA_CLASS_ON_COMPANION")
+        private val logger = getLogger(javaClass.enclosingClass)
+        private val secureLogger = getSecureLogger()
+    }
 
     fun createText(
         text: Text,
