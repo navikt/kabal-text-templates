@@ -62,7 +62,7 @@ class TextController(
     @PutMapping("/{textId}")
     fun updateText(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: TextInput
+        @RequestBody input: UpdateTextInput
     ): TextView {
         logTextMethodDetails(
             methodName = ::updateText.name,
@@ -71,15 +71,13 @@ class TextController(
             logger = logger,
         )
 
-        secureLogger.debug("updateText: {}", input)
-
         return mapToTextView(
             textService.updateText(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
                 title = input.title,
                 textType = input.textType,
-                content = input.content,
+                content = if (input.content != null) jsonMapper().readTree(input.content) else null,
                 plainText = input.plainText,
                 hjemler = input.hjemler,
                 ytelser = input.ytelser,

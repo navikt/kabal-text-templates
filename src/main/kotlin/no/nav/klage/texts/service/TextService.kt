@@ -82,10 +82,6 @@ class TextService(
         templates: Set<String>,
     ): Text {
         if (content != null && plainText != null) {
-            secureLogger.debug("there can only be one.. content: {}, plainText: {}", content, plainText)
-            secureLogger.debug("content.asText: " + content.asText())
-            secureLogger.debug("content.textValue: " + content.textValue())
-
             error("there can only be one of content or plainText")
         }
 
