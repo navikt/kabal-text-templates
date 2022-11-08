@@ -71,6 +71,8 @@ class TextController(
             logger = logger,
         )
 
+        secureLogger.debug("updateText: {}", input)
+
         return mapToTextView(
             textService.updateText(
                 textId = textId,
