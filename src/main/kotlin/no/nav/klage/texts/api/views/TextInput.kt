@@ -1,5 +1,6 @@
 package no.nav.klage.texts.api.views
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.JsonNode
 import java.util.*
 
@@ -18,6 +19,7 @@ data class TextInput(
     val templates: Set<String> = emptySet(),
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class UpdateTextInput(
     val title: String,
     val textType: String,
