@@ -77,7 +77,7 @@ class TextController(
                 saksbehandlerIdent = tokenUtil.getIdent(),
                 title = input.title,
                 textType = input.textType,
-                content = if (input.content != null) jsonMapper().readTree(input.content) else null,
+                content = if (input.content == null || input.content.isNull) null else input.content,
                 plainText = input.plainText,
                 hjemler = input.hjemler,
                 ytelser = input.ytelser,

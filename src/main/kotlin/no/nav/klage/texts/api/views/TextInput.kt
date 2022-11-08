@@ -23,7 +23,7 @@ data class TextInput(
 data class UpdateTextInput(
     val title: String,
     val textType: String,
-    val content: String?,
+    val content: JsonNode?,
     val plainText: String?,
     val hjemler: Set<String> = emptySet(),
     val ytelser: Set<String> = emptySet(),
