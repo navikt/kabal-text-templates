@@ -53,7 +53,7 @@ dependencies {
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("org.springframework:spring-mock:2.0.8")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.mockito:mockito-inline:4.8.1")
+    testImplementation("org.mockito:mockito-inline:4.9.0")
 }
 
 tasks.withType<KotlinCompile> {
