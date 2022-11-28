@@ -5,7 +5,7 @@ val logstashVersion = "7.2"
 val springVersion = "2.5.5"
 val testContainersVersion = "1.17.6"
 val springDocVersion = "1.6.13"
-val tokenValidationVersion = "2.1.8"
+val tokenValidationVersion = "3.0.0"
 val problemSpringWebStartVersion = "0.27.0"
 
 repositories {
