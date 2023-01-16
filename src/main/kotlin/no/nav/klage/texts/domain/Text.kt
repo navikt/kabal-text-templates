@@ -1,8 +1,8 @@
 package no.nav.klage.texts.domain
 
+import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.util.*
-import javax.persistence.*
 
 @Entity
 @Table(name = "text", schema = "klage")
