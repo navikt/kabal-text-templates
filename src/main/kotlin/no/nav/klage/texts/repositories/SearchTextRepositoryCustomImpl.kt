@@ -1,9 +1,9 @@
 package no.nav.klage.texts.repositories
 
+import jakarta.persistence.EntityManager
+import jakarta.persistence.PersistenceContext
 import no.nav.klage.texts.domain.Text
 import org.springframework.stereotype.Repository
-import javax.persistence.EntityManager
-import javax.persistence.PersistenceContext
 
 @Repository
 class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
