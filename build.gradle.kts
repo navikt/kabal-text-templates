@@ -44,7 +44,7 @@ dependencies {
 
     implementation("ch.qos.logback:logback-classic")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
 
     testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testContainersVersion")
