@@ -51,7 +51,7 @@ dependencies {
     testImplementation("org.testcontainers:postgresql:$testContainersVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.mockito:mockito-inline:5.0.0")
+    testImplementation("org.mockito:mockito-inline:5.1.1")
 }
 
 tasks.withType<KotlinCompile> {
