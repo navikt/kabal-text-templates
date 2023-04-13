@@ -32,27 +32,57 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
             joins += "join t.sections s"
         }
         if (utfall.isNotEmpty()) {
-            conditions += "(u in :utfall or u is null)"
+            var c = "(u in :utfall"
+            if ("NONE" in utfall) {
+                c += " or u is null"
+            }
+            c += ")"
+            conditions += c
             joins += "left join t.utfall u"
         }
         if (ytelser.isNotEmpty()) {
-            conditions += "(y in :ytelser or y is null)"
+            var c = "(y in :ytelser"
+            if ("NONE" in ytelser) {
+                c += " or y is null"
+            }
+            c += ")"
+            conditions += c
             joins += "left join t.ytelser y"
         }
         if (hjemler.isNotEmpty()) {
-            conditions += "(h in :hjemler or h is null)"
+            var c = "(h in :hjemler"
+            if ("NONE" in hjemler) {
+                c += " or h is null"
+            }
+            c += ")"
+            conditions += c
             joins += "left join t.hjemler h"
         }
         if (enheter.isNotEmpty()) {
-            conditions += "(e in :enheter or e is null)"
+            var c = "(e in :enheter"
+            if ("NONE" in enheter) {
+                c += " or e is null"
+            }
+            c += ")"
+            conditions += c
             joins += "left join t.enheter e"
         }
         if (sections.isNotEmpty()) {
-            conditions += "(s in :sections or s is null)"
+            var c = "(s in :sections"
+            if ("NONE" in sections) {
+                c += " or s is null"
+            }
+            c += ")"
+            conditions += c
             joins += "left join t.sections s"
         }
         if (templates.isNotEmpty()) {
-            conditions += "(ts in :templates or ts is null)"
+            var c = "(ts in :templates"
+            if ("NONE" in templates) {
+                c += " or ts is null"
+            }
+            c += ")"
+            conditions += c
             joins += "left join t.templates ts"
         }
 
