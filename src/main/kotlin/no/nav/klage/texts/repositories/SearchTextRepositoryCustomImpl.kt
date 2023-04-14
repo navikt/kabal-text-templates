@@ -32,7 +32,7 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
             joins += "join t.sections s"
         }
 
-        val useNONEFilter = false
+        val useNONEFilter = true
 
         if (!useNONEFilter) {
             if (utfall.isNotEmpty()) {
