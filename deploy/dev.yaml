@@ -1,5 +1,6 @@
 ingresses:
   - https://kabal-text-templates.dev.intern.nav.no
+  - https://kabal-text-templates.intern.dev.nav.no
 externalHosts:
 springProfile: dev-gcp
 db_tier: db-custom-1-3840
