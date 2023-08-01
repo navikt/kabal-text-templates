@@ -54,6 +54,8 @@ dependencies {
     testImplementation("org.mockito:mockito-inline:5.2.0")
 }
 
+java.sourceCompatibility = JavaVersion.VERSION_17
+
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
