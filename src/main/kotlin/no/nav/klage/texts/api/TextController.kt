@@ -85,6 +85,8 @@ class TextController(
                 enheter = input.enheter,
                 sections = input.sections,
                 templates = input.templates,
+                templateSectionList = input.templateSectionList,
+                ytelseHjemmelList = input.ytelseHjemmelList,
             )
         )
     }
@@ -365,6 +367,56 @@ class TextController(
     }
 
     @Operation(
+        summary = "Update templateSectionList",
+        description = "Update templateSectionList"
+    )
+    @PutMapping("/{textId}/templatesectionlist")
+    fun updateTemplateSectionList(
+        @PathVariable("textId") textId: UUID,
+        @RequestBody input: TemplateSectionListInput
+    ): TextView {
+        logTextMethodDetails(
+            methodName = ::updateTemplateSectionList.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            textId = textId,
+            logger = logger,
+        )
+
+        return mapToTextView(
+            textService.updateTemplateSectionList(
+                input = input.templateSectionList,
+                textId = textId,
+                saksbehandlerIdent = tokenUtil.getIdent(),
+            )
+        )
+    }
+
+    @Operation(
+        summary = "Update ytelseHjemmelList",
+        description = "Update ytelseHjemmelList"
+    )
+    @PutMapping("/{textId}/ytelsehjemmellist")
+    fun updateYtelseHjemmelList(
+        @PathVariable("textId") textId: UUID,
+        @RequestBody input: YtelseHjemmelListInput
+    ): TextView {
+        logTextMethodDetails(
+            methodName = ::updateYtelseHjemmelList.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            textId = textId,
+            logger = logger,
+        )
+
+        return mapToTextView(
+            textService.updateYtelseHjemmelList(
+                input = input.ytelseHjemmelList,
+                textId = textId,
+                saksbehandlerIdent = tokenUtil.getIdent(),
+            )
+        )
+    }
+
+    @Operation(
         summary = "Delete text",
         description = "Delete text"
     )
@@ -413,6 +465,9 @@ class TextController(
             enheter = searchQueryParams.enheter ?: emptyList(),
             sections = searchQueryParams.sections ?: emptyList(),
             templates = searchQueryParams.templates ?: emptyList(),
+            templateSectionList = searchQueryParams.templateSectionList ?: emptyList(),
+            ytelseHjemmelList = searchQueryParams.ytelseHjemmelList ?: emptyList(),
+            
         )
         return texts.map {
             mapToTextView(it)
@@ -449,6 +504,8 @@ class TextController(
             utfall = utfall,
             enheter = enheter,
             sections = sections,
+            templateSectionList = templateSectionList,
+            ytelseHjemmelList = ytelseHjemmelList,
             created = now,
             modified = now,
         )
@@ -469,6 +526,8 @@ fun mapToTextView(text: Text): TextView =
         enheter = text.enheter,
         sections = text.sections,
         templates = text.templates,
+        templateSectionList = text.templateSectionList,
+        ytelseHjemmelList = text.ytelseHjemmelList,
         created = text.created,
         modified = text.modified,
     )

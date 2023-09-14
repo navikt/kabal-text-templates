@@ -17,6 +17,8 @@ data class TextInput(
     val enheter: Set<String> = emptySet(),
     val sections: Set<String> = emptySet(),
     val templates: Set<String> = emptySet(),
+    val templateSectionList: Set<String> = emptySet(),
+    val ytelseHjemmelList: Set<String> = emptySet(),
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -31,6 +33,8 @@ data class UpdateTextInput(
     val enheter: Set<String> = emptySet(),
     val sections: Set<String> = emptySet(),
     val templates: Set<String> = emptySet(),
+    val templateSectionList: Set<String> = emptySet(),
+    val ytelseHjemmelList: Set<String> = emptySet(),
 )
 
 data class TitleInput(
@@ -75,4 +79,12 @@ data class SectionsInput(
 
 data class TemplatesInput(
     val templates: Set<String>
+)
+
+data class TemplateSectionListInput(
+    val templateSectionList: Set<String>
+)
+
+data class YtelseHjemmelListInput(
+    val ytelseHjemmelList: Set<String>
 )

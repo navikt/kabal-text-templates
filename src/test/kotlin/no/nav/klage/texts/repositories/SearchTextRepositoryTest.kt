@@ -98,10 +98,28 @@ class SearchTextRepositoryTest {
             modified = now,
         )
 
+        val text5 = Text(
+            title = "title",
+            textType = "type",
+            smartEditorVersion = 1,
+            content = "{}",
+            plainText = null,
+            hjemler = setOf(),
+            ytelser = setOf(),
+            utfall = setOf(),
+            enheter = setOf(),
+            sections = setOf(),
+            templates = setOf(),
+            templateSectionList = setOf("ta;sa"),
+            created = now,
+            modified = now,
+        )
+
         textRepository.save(text1)
         textRepository.save(text2)
         textRepository.save(text3)
         textRepository.save(text4)
+        textRepository.save(text5)
 
         testEntityManager.flush()
         testEntityManager.clear()
@@ -114,7 +132,9 @@ class SearchTextRepositoryTest {
             hjemler = listOf("hb1"),
             enheter = listOf(),
             sections = listOf(),
-            templates = listOf(),
+            templates = listOf(), 
+            templateSectionList = listOf(), 
+            ytelseHjemmelList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1)
 
@@ -127,6 +147,8 @@ class SearchTextRepositoryTest {
             enheter = listOf(),
             sections = listOf(),
             templates = listOf(),
+            templateSectionList = listOf(),
+            ytelseHjemmelList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text4)
 
@@ -139,6 +161,8 @@ class SearchTextRepositoryTest {
             enheter = listOf(),
             sections = listOf(),
             templates = listOf(),
+            templateSectionList = listOf(),
+            ytelseHjemmelList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
 
@@ -151,6 +175,8 @@ class SearchTextRepositoryTest {
             enheter = listOf("eb1", "eb2"),
             sections = listOf("sb1", "sb2"),
             templates = listOf("tb1", "tb2"),
+            templateSectionList = listOf(),
+            ytelseHjemmelList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
 
@@ -163,6 +189,8 @@ class SearchTextRepositoryTest {
             enheter = listOf("ea"),
             sections = listOf("sa"),
             templates = listOf("ta"),
+            templateSectionList = listOf(),
+            ytelseHjemmelList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2, text3, text4)
 
@@ -175,8 +203,24 @@ class SearchTextRepositoryTest {
             enheter = listOf("ea"),
             sections = listOf("sa"),
             templates = listOf("ta"),
+            templateSectionList = listOf(),
+            ytelseHjemmelList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text2)
+
+        foundTexts = textRepository.searchTexts(
+            textType = "type",
+            requiredSection = null,
+            utfall = listOf(),
+            ytelser = listOf(),
+            hjemler = listOf(),
+            enheter = listOf(),
+            sections = listOf(),
+            templates = listOf(),
+            templateSectionList = listOf("ta;sa"),
+            ytelseHjemmelList = listOf(),
+        )
+        assertThat(foundTexts).containsExactlyInAnyOrder(text5)
     }
 
     @Test
@@ -264,6 +308,8 @@ class SearchTextRepositoryTest {
             enheter = listOf(),
             sections = listOf("sa"),
             templates = listOf(),
+            templateSectionList = listOf(),
+            ytelseHjemmelList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text3)
     }
@@ -353,6 +399,8 @@ class SearchTextRepositoryTest {
             enheter = listOf(),
             sections = listOf(),
             templates = listOf(),
+            templateSectionList = listOf(),
+            ytelseHjemmelList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text2, text3, text4)
     }
