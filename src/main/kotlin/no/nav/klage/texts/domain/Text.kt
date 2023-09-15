@@ -50,6 +50,16 @@ class Text(
     @Column(name = "template")
     var templates: Set<String> = emptySet(),
 
+    @ElementCollection
+    @CollectionTable(schema = "klage", name = "template_section", joinColumns = [JoinColumn(name = "text_id")])
+    @Column(name = "template_section")
+    var templateSectionList: Set<String> = emptySet(),
+
+    @ElementCollection
+    @CollectionTable(schema = "klage", name = "ytelse_hjemmel", joinColumns = [JoinColumn(name = "text_id")])
+    @Column(name = "ytelse_hjemmel")
+    var ytelseHjemmelList: Set<String> = emptySet(),
+
     @Column(name = "created")
     val created: LocalDateTime,
     @Column(name = "modified")

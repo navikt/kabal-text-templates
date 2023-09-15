@@ -310,6 +310,54 @@ object TextAggregateFunctions {
         )
     }
 
+    fun Text.updateTemplateSectionList(
+        newValueTemplateSectionList: Set<String>,
+        saksbehandlerident: String
+    ): TextChangedEvent {
+        val now = LocalDateTime.now()
+        val changelogEntries = mutableListOf<ChangelogEntry>()
+        val oldValueTemplateSectionList = templateSectionList
+        templateSectionList = newValueTemplateSectionList
+        modified = now
+
+        changelog(
+            saksbehandlerident = saksbehandlerident,
+            field = Field.TEMPLATE_SECTION_LIST,
+            fromValue = oldValueTemplateSectionList.joinToString(),
+            toValue = newValueTemplateSectionList.joinToString(),
+            created = now,
+        )?.let { changelogEntries.add(it) }
+
+        return TextChangedEvent(
+            text = this,
+            changelogEntries = changelogEntries,
+        )
+    }
+
+    fun Text.updateYtelseHjemmelList(
+        newValueYtelseHjemmelList: Set<String>,
+        saksbehandlerident: String
+    ): TextChangedEvent {
+        val now = LocalDateTime.now()
+        val changelogEntries = mutableListOf<ChangelogEntry>()
+        val oldValueYtelseHjemmelList = ytelseHjemmelList
+        ytelseHjemmelList = newValueYtelseHjemmelList
+        modified = now
+
+        changelog(
+            saksbehandlerident = saksbehandlerident,
+            field = Field.YTELSE_HJEMMEL_LIST,
+            fromValue = oldValueYtelseHjemmelList.joinToString(),
+            toValue = newValueYtelseHjemmelList.joinToString(),
+            created = now,
+        )?.let { changelogEntries.add(it) }
+
+        return TextChangedEvent(
+            text = this,
+            changelogEntries = changelogEntries,
+        )
+    }
+
     private fun Text.changelog(
         saksbehandlerident: String,
         field: Field,

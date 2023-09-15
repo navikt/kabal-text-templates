@@ -10,10 +10,12 @@ import no.nav.klage.texts.domain.TextAggregateFunctions.updateHjemler
 import no.nav.klage.texts.domain.TextAggregateFunctions.updatePlainText
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateSections
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateSmartEditorVersion
+import no.nav.klage.texts.domain.TextAggregateFunctions.updateTemplateSectionList
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateTemplates
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateTextType
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateTitle
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateUtfall
+import no.nav.klage.texts.domain.TextAggregateFunctions.updateYtelseHjemmelList
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateYtelser
 import no.nav.klage.texts.exceptions.TextNotFoundException
 import no.nav.klage.texts.repositories.TextRepository
@@ -80,6 +82,8 @@ class TextService(
         enheter: Set<String>,
         sections: Set<String>,
         templates: Set<String>,
+        templateSectionList: Set<String>,
+        ytelseHjemmelList: Set<String>,
     ): Text {
         if (content != null && plainText != null) {
             error("there can only be one of content or plainText")
@@ -157,6 +161,20 @@ class TextService(
         applicationEventPublisher.publishEvent(
             text.updateTemplates(
                 newValueTemplates = templates,
+                saksbehandlerident = saksbehandlerIdent
+            )
+        )
+
+        applicationEventPublisher.publishEvent(
+            text.updateTemplateSectionList(
+                newValueTemplateSectionList = templateSectionList,
+                saksbehandlerident = saksbehandlerIdent
+            )
+        )
+
+        applicationEventPublisher.publishEvent(
+            text.updateYtelseHjemmelList(
+                newValueYtelseHjemmelList = ytelseHjemmelList,
                 saksbehandlerident = saksbehandlerIdent
             )
         )
@@ -329,6 +347,36 @@ class TextService(
         return text
     }
 
+    fun updateTemplateSectionList(
+        input: Set<String>,
+        textId: UUID,
+        saksbehandlerIdent: String,
+    ): Text {
+        val text = getText(textId)
+        val event =
+            text.updateTemplateSectionList(
+                input,
+                saksbehandlerIdent,
+            )
+        applicationEventPublisher.publishEvent(event)
+        return text
+    }
+
+    fun updateYtelseHjemmelList(
+        input: Set<String>,
+        textId: UUID,
+        saksbehandlerIdent: String,
+    ): Text {
+        val text = getText(textId)
+        val event =
+            text.updateYtelseHjemmelList(
+                input,
+                saksbehandlerIdent,
+            )
+        applicationEventPublisher.publishEvent(event)
+        return text
+    }
+
     fun searchTexts(
         textType: String?,
         requiredSection: String?,
@@ -338,6 +386,8 @@ class TextService(
         enheter: List<String>,
         sections: List<String>,
         templates: List<String>,
+        templateSectionList: List<String>,
+        ytelseHjemmelList: List<String>,
     ): List<Text> {
         return textRepository.searchTexts(
             textType = textType,
@@ -348,6 +398,8 @@ class TextService(
             enheter = enheter,
             sections = sections,
             templates = templates,
+            templateSectionList = templateSectionList,
+            ytelseHjemmelList = ytelseHjemmelList,
         )
     }
 

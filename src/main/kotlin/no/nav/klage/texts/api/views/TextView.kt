@@ -17,6 +17,8 @@ data class TextView(
     val enheter: Set<String> = emptySet(),
     val sections: Set<String> = emptySet(),
     val templates: Set<String> = emptySet(),
+    val templateSectionList: Set<String> = emptySet(),
+    val ytelseHjemmelList: Set<String> = emptySet(),
     val created: LocalDateTime,
     var modified: LocalDateTime,
 )

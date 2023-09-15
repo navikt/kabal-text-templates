@@ -20,6 +20,8 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
         enheter: List<String>,
         sections: List<String>,
         templates: List<String>,
+        templateSectionList: List<String>,
+        ytelseHjemmelList: List<String>,
     ): List<Text> {
         val conditions = mutableListOf<String>()
         val joins = mutableListOf<String>()
@@ -86,6 +88,16 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
             conditions += c
             joins += "left join t.templates ts"
         }
+        if (templateSectionList.isNotEmpty()) {
+            val c = "(tsl in :templateSectionList)"
+            conditions += c
+            joins += "left join t.templateSectionList tsl"
+        }
+        if (ytelseHjemmelList.isNotEmpty()) {
+            val c = "(yhl in :ytelseHjemmelList)"
+            conditions += c
+            joins += "left join t.ytelseHjemmelList yhl"
+        }
 
         val innerJoins = joins.joinToString(separator = " ")
 
@@ -126,6 +138,12 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
         }
         if (templates.isNotEmpty()) {
             query = query.setParameter("templates", templates)
+        }
+        if (templateSectionList.isNotEmpty()) {
+            query = query.setParameter("templateSectionList", templateSectionList)
+        }
+        if (ytelseHjemmelList.isNotEmpty()) {
+            query = query.setParameter("ytelseHjemmelList", ytelseHjemmelList)
         }
 
         return query.resultList

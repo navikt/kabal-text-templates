@@ -13,5 +13,7 @@ interface SearchTextRepositoryCustom {
         enheter: List<String>,
         sections: List<String>,
         templates: List<String>,
+        templateSectionList: List<String>,
+        ytelseHjemmelList: List<String>,
     ): List<Text>
 }

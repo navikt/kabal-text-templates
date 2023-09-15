@@ -9,4 +9,6 @@ data class SearchQueryParams(
     val enheter: List<String>?,
     val sections: List<String>?,
     val templates: List<String>?,
+    val templateSectionList: List<String>?,
+    val ytelseHjemmelList: List<String>?,
 )
