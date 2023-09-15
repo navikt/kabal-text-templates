@@ -89,12 +89,20 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
             joins += "left join t.templates ts"
         }
         if (templateSectionList.isNotEmpty()) {
-            val c = "(tsl in :templateSectionList)"
+            var c = "(tsl in :templateSectionList"
+            if ("NONE" in templateSectionList) {
+                c += " or tsl is null"
+            }
+            c += ")"
             conditions += c
             joins += "left join t.templateSectionList tsl"
         }
         if (ytelseHjemmelList.isNotEmpty()) {
-            val c = "(yhl in :ytelseHjemmelList)"
+            var c = "(yhl in :ytelseHjemmelList"
+            if ("NONE" in ytelseHjemmelList) {
+                c += " or yhl is null"
+            }
+            c += ")"
             conditions += c
             joins += "left join t.ytelseHjemmelList yhl"
         }
