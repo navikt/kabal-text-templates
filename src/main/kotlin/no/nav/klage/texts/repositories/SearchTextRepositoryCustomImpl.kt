@@ -3,10 +3,16 @@ package no.nav.klage.texts.repositories
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import no.nav.klage.texts.domain.Text
+import no.nav.klage.texts.util.getLogger
 import org.springframework.stereotype.Repository
 
 @Repository
 class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
+
+    companion object {
+        @Suppress("JAVA_CLASS_ON_COMPANION")
+        private val logger = getLogger(javaClass.enclosingClass)
+    }
 
     @PersistenceContext
     lateinit var entityManager: EntityManager
@@ -120,6 +126,8 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
                 $innerQuery 
                 ORDER BY t.created
         """
+
+        logger.debug("searchTexts query without params: {}", selectQuery)
 
         var query = entityManager.createQuery(selectQuery, Text::class.java)
 

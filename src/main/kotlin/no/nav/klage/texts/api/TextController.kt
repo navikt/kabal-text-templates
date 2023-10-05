@@ -452,6 +452,8 @@ class TextController(
             logger = logger,
         )
 
+        logger.debug("searchTexts called with params {}", searchQueryParams)
+
         if (searchQueryParams.requiredSection != null && !searchQueryParams.sections.isNullOrEmpty()) {
             throw ClientErrorException("Cannot use both 'requiredSection' and 'sections' when searching.")
         }
