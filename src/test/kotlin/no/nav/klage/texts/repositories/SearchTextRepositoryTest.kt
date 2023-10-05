@@ -387,7 +387,7 @@ class SearchTextRepositoryTest {
             plainText = null,
             hjemler = setOf("ha", "hb1"),
             ytelser = setOf("ya", "yb1"),
-            utfall = setOf("ua1:ua2:ua3", "ub1:ub2"),
+            utfall = setOf("ua1:ua2", "ub1:ub2"),
             enheter = setOf("ea", "eb1"),
             templates = setOf("ta", "tb1"),
             created = now,
@@ -402,7 +402,7 @@ class SearchTextRepositoryTest {
             plainText = null,
             hjemler = setOf("ha", "hb2"),
             ytelser = setOf("ya", "yb2"),
-            utfall = setOf("ua4:ua3:ua2:ua1", "ub2"),
+            utfall = setOf("ua1", "ub2"),
             enheter = setOf("ea", "eb2"),
             templates = setOf("ta", "tb2"),
             created = now,
@@ -418,7 +418,7 @@ class SearchTextRepositoryTest {
 
         var foundTexts = textRepository.searchTexts(
             textType = "type",
-            utfall = listOf("ua2:ua3"),
+            utfall = listOf("ua1:ua2"),
             ytelser = listOf(),
             hjemler = listOf(),
             enheter = listOf(),
@@ -430,7 +430,7 @@ class SearchTextRepositoryTest {
 
         foundTexts = textRepository.searchTexts(
             textType = "type",
-            utfall = listOf("ua3:ua2"),
+            utfall = listOf("ua2:ua1"),
             ytelser = listOf(),
             hjemler = listOf(),
             enheter = listOf(),

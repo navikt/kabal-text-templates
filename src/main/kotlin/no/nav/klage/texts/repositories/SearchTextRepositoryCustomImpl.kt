@@ -69,11 +69,7 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
 
         return dbValueSets.any { dbValueSet ->
             queryValueSets.any { queryValueSet ->
-                if (queryValueSet.first() == "NONE" && dbValueSet.isEmpty()) {
-                    true
-                } else {
-                    dbValueSet.containsAll(queryValueSet)
-                }
+                (queryValueSet.first() == "NONE" && dbValueSet.isEmpty()) || queryValueSet.containsAll(dbValueSet)
             }
         }
     }
