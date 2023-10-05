@@ -5,6 +5,7 @@ import jakarta.persistence.PersistenceContext
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.util.getLogger
 import org.springframework.stereotype.Repository
+import kotlin.system.measureTimeMillis
 
 @Repository
 class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
@@ -19,150 +20,61 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
 
     override fun searchTexts(
         textType: String?,
-        requiredSection: String?,
         utfall: List<String>,
         ytelser: List<String>,
         hjemler: List<String>,
         enheter: List<String>,
-        sections: List<String>,
         templates: List<String>,
         templateSectionList: List<String>,
         ytelseHjemmelList: List<String>,
     ): List<Text> {
-        val conditions = mutableListOf<String>()
-        val joins = mutableListOf<String>()
+        var texts: MutableList<Text>
 
-        if (textType != null) {
-            conditions += "t.textType = :textType"
-        }
-        if (requiredSection != null) {
-            conditions += "s in :sections"
-            joins += "join t.sections s"
+        val millis = measureTimeMillis {
+            texts = entityManager.createQuery("from Text", Text::class.java).resultList
         }
 
-        if (utfall.isNotEmpty()) {
-            var c = "(u in :utfall"
-            if ("NONE" in utfall) {
-                c += " or u is null"
-            }
-            c += ")"
-            conditions += c
-            joins += "left join t.utfall u"
-        }
-        if (ytelser.isNotEmpty()) {
-            var c = "(y in :ytelser"
-            if ("NONE" in ytelser) {
-                c += " or y is null"
-            }
-            c += ")"
-            conditions += c
-            joins += "left join t.ytelser y"
-        }
-        if (hjemler.isNotEmpty()) {
-            var c = "(h in :hjemler"
-            if ("NONE" in hjemler) {
-                c += " or h is null"
-            }
-            c += ")"
-            conditions += c
-            joins += "left join t.hjemler h"
-        }
-        if (enheter.isNotEmpty()) {
-            var c = "(e in :enheter"
-            if ("NONE" in enheter) {
-                c += " or e is null"
-            }
-            c += ")"
-            conditions += c
-            joins += "left join t.enheter e"
-        }
-        if (sections.isNotEmpty()) {
-            var c = "(s in :sections"
-            if ("NONE" in sections) {
-                c += " or s is null"
-            }
-            c += ")"
-            conditions += c
-            joins += "left join t.sections s"
-        }
-        if (templates.isNotEmpty()) {
-            var c = "(ts in :templates"
-            if ("NONE" in templates) {
-                c += " or ts is null"
-            }
-            c += ")"
-            conditions += c
-            joins += "left join t.templates ts"
-        }
-        if (templateSectionList.isNotEmpty()) {
-            var c = "(tsl in :templateSectionList"
-            if ("NONE" in templateSectionList) {
-                c += " or tsl is null"
-            }
-            c += ")"
-            conditions += c
-            joins += "left join t.templateSectionList tsl"
-        }
-        if (ytelseHjemmelList.isNotEmpty()) {
-            var c = "(yhl in :ytelseHjemmelList"
-            if ("NONE" in ytelseHjemmelList) {
-                c += " or yhl is null"
-            }
-            c += ")"
-            conditions += c
-            joins += "left join t.ytelseHjemmelList yhl"
-        }
+        logger.debug("searchTexts getting all texts took {} millis. Found {} texts", millis, texts.size)
 
-        val innerJoins = joins.joinToString(separator = " ")
+        return texts.filter { text ->
+            val textTypeCondition = if (textType != null) {
+                text.textType == textType
+            } else true
 
-        var innerQuery = conditions.joinToString(separator = " AND ")
-
-        if (innerQuery.isNotEmpty()) {
-            innerQuery = "WHERE $innerQuery"
+            textTypeCondition &&
+            condition(utfall, text.utfall) &&
+            condition(ytelser, text.ytelser) &&
+            condition(hjemler, text.hjemler) &&
+            condition(enheter, text.enheter) &&
+            condition(templates, text.templates) &&
+            condition(templateSectionList, text.templateSectionList) &&
+            condition(ytelseHjemmelList, text.ytelseHjemmelList)
         }
-
-        val selectQuery = """
-            SELECT DISTINCT t FROM Text t $innerJoins        
-                $innerQuery 
-                ORDER BY t.created
-        """
-
-        logger.debug("searchTexts query without params: {}", selectQuery)
-
-        var query = entityManager.createQuery(selectQuery, Text::class.java)
-
-        if (textType != null) {
-            query = query.setParameter("textType", textType)
-        }
-        if (requiredSection != null) {
-            query = query.setParameter("sections", listOf(requiredSection))
-        }
-        if (hjemler.isNotEmpty()) {
-            query = query.setParameter("hjemler", hjemler)
-        }
-        if (ytelser.isNotEmpty()) {
-            query = query.setParameter("ytelser", ytelser)
-        }
-        if (utfall.isNotEmpty()) {
-            query = query.setParameter("utfall", utfall)
-        }
-        if (enheter.isNotEmpty()) {
-            query = query.setParameter("enheter", enheter)
-        }
-        if (sections.isNotEmpty()) {
-            query = query.setParameter("sections", sections)
-        }
-        if (templates.isNotEmpty()) {
-            query = query.setParameter("templates", templates)
-        }
-        if (templateSectionList.isNotEmpty()) {
-            query = query.setParameter("templateSectionList", templateSectionList)
-        }
-        if (ytelseHjemmelList.isNotEmpty()) {
-            query = query.setParameter("ytelseHjemmelList", ytelseHjemmelList)
-        }
-
-        return query.resultList
     }
 
+    private fun condition(listOfValues: List<String>, dbValues: Set<String>): Boolean {
+        if (dbValues.isEmpty() && listOfValues.contains("NONE")) {
+            return true
+        }
+
+        val queryValueSets = if (listOfValues.isNotEmpty()) {
+            listOfValues.map { valueString ->
+                valueString.split(":").toSet()
+            }
+        } else return true
+
+        val dbValueSets = dbValues.map { utfallString ->
+            utfallString.split(":").toSet()
+        }
+
+        return dbValueSets.any { dbValueSet ->
+            queryValueSets.any { queryValueSet ->
+                if (queryValueSet.first() == "NONE" && dbValueSet.isEmpty()) {
+                    true
+                } else {
+                    dbValueSet.containsAll(queryValueSet)
+                }
+            }
+        }
+    }
 }

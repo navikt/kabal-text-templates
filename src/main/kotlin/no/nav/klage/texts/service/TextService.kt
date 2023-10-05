@@ -379,24 +379,20 @@ class TextService(
 
     fun searchTexts(
         textType: String?,
-        requiredSection: String?,
         utfall: List<String>,
         ytelser: List<String>,
         hjemler: List<String>,
         enheter: List<String>,
-        sections: List<String>,
         templates: List<String>,
         templateSectionList: List<String>,
         ytelseHjemmelList: List<String>,
     ): List<Text> {
         return textRepository.searchTexts(
             textType = textType,
-            requiredSection = requiredSection,
             utfall = utfall,
             ytelser = ytelser,
             hjemler = hjemler,
             enheter = enheter,
-            sections = sections,
             templates = templates,
             templateSectionList = templateSectionList,
             ytelseHjemmelList = ytelseHjemmelList,
