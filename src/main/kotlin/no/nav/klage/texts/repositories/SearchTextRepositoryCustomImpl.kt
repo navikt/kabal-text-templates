@@ -53,7 +53,7 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
     }
 
     private fun condition(listOfValues: List<String>, dbValues: Set<String>): Boolean {
-        if (dbValues.isEmpty() && listOfValues.contains("NONE")) {
+        if (dbValues.isEmpty() && (listOfValues.contains("NONE") || listOfValues.isNotEmpty())) {
             return true
         }
 
@@ -69,7 +69,7 @@ class SearchTextRepositoryCustomImpl : SearchTextRepositoryCustom {
 
         return dbValueSets.any { dbValueSet ->
             queryValueSets.any { queryValueSet ->
-                (queryValueSet.first() == "NONE" && dbValueSet.isEmpty()) || queryValueSet.containsAll(dbValueSet)
+                queryValueSet.containsAll(dbValueSet)
             }
         }
     }
