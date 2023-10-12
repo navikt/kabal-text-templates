@@ -18,6 +18,7 @@ import no.nav.klage.texts.domain.TextAggregateFunctions.updateUtfall
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateYtelseHjemmelList
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateYtelser
 import no.nav.klage.texts.exceptions.TextNotFoundException
+import no.nav.klage.texts.repositories.SearchTextRepository
 import no.nav.klage.texts.repositories.TextRepository
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
@@ -30,6 +31,7 @@ import java.util.*
 @Service
 class TextService(
     private val textRepository: TextRepository,
+    private val searchTextRepository: SearchTextRepository,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
 
@@ -387,7 +389,7 @@ class TextService(
         templateSectionList: List<String>,
         ytelseHjemmelList: List<String>,
     ): List<Text> {
-        return textRepository.searchTexts(
+        return searchTextRepository.searchTexts(
             textType = textType,
             utfall = utfall,
             ytelser = ytelser,

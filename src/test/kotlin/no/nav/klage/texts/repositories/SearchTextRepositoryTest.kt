@@ -2,6 +2,8 @@ package no.nav.klage.texts.repositories
 
 import no.nav.klage.texts.domain.Text
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Before
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -30,8 +32,16 @@ class SearchTextRepositoryTest {
     @Autowired
     lateinit var textRepository: TextRepository
 
+    lateinit var searchTextRepository: SearchTextRepository
+
+    @BeforeEach
+    fun before() {
+        searchTextRepository = SearchTextRepository(textRepository)
+    }
+
     @Test
     fun `search text works`() {
+
         val now = LocalDateTime.now()
 
         val text1 = Text(
@@ -45,7 +55,6 @@ class SearchTextRepositoryTest {
             utfall = setOf("ua", "ub1"),
             enheter = setOf("ea", "eb1"),
             templates = setOf("ta", "tb1"),
-            templateSectionList = setOf(),
             created = now,
             modified = now,
         )
@@ -61,7 +70,6 @@ class SearchTextRepositoryTest {
             utfall = setOf("ua", "ub2"),
             enheter = setOf("ea", "eb2"),
             templates = setOf("ta", "tb2"),
-            templateSectionList = setOf(),
             created = now,
             modified = now,
         )
@@ -77,7 +85,6 @@ class SearchTextRepositoryTest {
             utfall = setOf("ua", "ub3"),
             enheter = setOf("ea", "eb3"),
             templates = setOf("ta", "tb3"),
-            templateSectionList = setOf(),
             created = now,
             modified = now,
         )
@@ -109,7 +116,7 @@ class SearchTextRepositoryTest {
             utfall = setOf(),
             enheter = setOf(),
             templates = setOf(),
-            templateSectionList = setOf("ta;sa"),
+            templateSectionList = setOf("ta>sa"),
             created = now,
             modified = now,
         )
@@ -123,19 +130,19 @@ class SearchTextRepositoryTest {
         testEntityManager.flush()
         testEntityManager.clear()
 
-        var foundTexts = textRepository.searchTexts(
+        var foundTexts = searchTextRepository.searchTexts(
             textType = "type",
             utfall = listOf(),
             ytelser = listOf(),
             hjemler = listOf("hb1"),
             enheter = listOf(),
             templates = listOf(),
-            templateSectionList = listOf(), 
+            templateSectionList = listOf(),
             ytelseHjemmelList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text5)
 
-        foundTexts = textRepository.searchTexts(
+        foundTexts = searchTextRepository.searchTexts(
             textType = "type",
             utfall = listOf(),
             ytelser = listOf(),
@@ -147,7 +154,7 @@ class SearchTextRepositoryTest {
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2, text3, text4)
 
-        foundTexts = textRepository.searchTexts(
+        foundTexts = searchTextRepository.searchTexts(
             textType = "type",
             utfall = listOf(),
             ytelser = listOf(),
@@ -159,7 +166,7 @@ class SearchTextRepositoryTest {
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2, text5)
 
-        foundTexts = textRepository.searchTexts(
+        foundTexts = searchTextRepository.searchTexts(
             textType = null,
             utfall = listOf("ub1", "ub2"),
             ytelser = listOf("yb1", "yb2"),
@@ -171,7 +178,7 @@ class SearchTextRepositoryTest {
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2, text5)
 
-        foundTexts = textRepository.searchTexts(
+        foundTexts = searchTextRepository.searchTexts(
             textType = "type",
             utfall = listOf("ua"),
             ytelser = listOf("ya"),
@@ -183,7 +190,7 @@ class SearchTextRepositoryTest {
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2, text3, text4, text5)
 
-        foundTexts = textRepository.searchTexts(
+        foundTexts = searchTextRepository.searchTexts(
             textType = "type",
             utfall = listOf("ua"),
             ytelser = listOf("ya"),
@@ -195,14 +202,14 @@ class SearchTextRepositoryTest {
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text2, text5)
 
-        foundTexts = textRepository.searchTexts(
+        foundTexts = searchTextRepository.searchTexts(
             textType = "type",
             utfall = listOf(),
             ytelser = listOf(),
             hjemler = listOf(),
             enheter = listOf(),
             templates = listOf(),
-            templateSectionList = listOf("ta;sa"),
+            templateSectionList = listOf("ta>sa"),
             ytelseHjemmelList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2, text3, text5)
@@ -248,7 +255,7 @@ class SearchTextRepositoryTest {
         testEntityManager.flush()
         testEntityManager.clear()
 
-        val foundTexts = textRepository.searchTexts(
+        val foundTexts = searchTextRepository.searchTexts(
             textType = "type",
             utfall = listOf(),
             ytelser = listOf(),
@@ -333,7 +340,7 @@ class SearchTextRepositoryTest {
         testEntityManager.flush()
         testEntityManager.clear()
 
-        val foundTexts = textRepository.searchTexts(
+        val foundTexts = searchTextRepository.searchTexts(
             textType = "type",
             utfall = listOf(),
             ytelser = listOf(),
@@ -380,14 +387,13 @@ class SearchTextRepositoryTest {
             modified = now,
         )
 
-
         textRepository.save(text1)
         textRepository.save(text2)
 
         testEntityManager.flush()
         testEntityManager.clear()
 
-        var foundTexts = textRepository.searchTexts(
+        var foundTexts = searchTextRepository.searchTexts(
             textType = "type",
             utfall = listOf("ua1:ua2"),
             ytelser = listOf(),
@@ -399,7 +405,7 @@ class SearchTextRepositoryTest {
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
 
-        foundTexts = textRepository.searchTexts(
+        foundTexts = searchTextRepository.searchTexts(
             textType = "type",
             utfall = listOf("ua2:ua1"),
             ytelser = listOf(),
@@ -407,6 +413,86 @@ class SearchTextRepositoryTest {
             enheter = listOf(),
             templates = listOf(),
             templateSectionList = listOf(),
+            ytelseHjemmelList = listOf(),
+        )
+        assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
+    }
+
+    @Test
+    fun `search text with wildcard works`() {
+        val now = LocalDateTime.now()
+
+        val text1 = Text(
+            title = "title",
+            textType = "type",
+            smartEditorVersion = 1,
+            content = "{}",
+            plainText = null,
+            hjemler = setOf("ha", "hb1"),
+            ytelser = setOf("ya", "yb1"),
+            utfall = setOf("ua1:ua2", "ub1:ub2"),
+            enheter = setOf("ea", "eb1"),
+            templateSectionList = setOf("vedtak>tittel"),
+            created = now,
+            modified = now,
+        )
+
+        val text2 = Text(
+            title = "title",
+            textType = "type",
+            smartEditorVersion = 1,
+            content = "{}",
+            plainText = null,
+            hjemler = setOf("ha", "hb2"),
+            ytelser = setOf("ya", "yb2"),
+            utfall = setOf("ua1", "ub2"),
+            enheter = setOf("ea", "eb2"),
+            created = now,
+            modified = now,
+        )
+
+        val text3 = Text(
+            title = "title",
+            textType = "type",
+            smartEditorVersion = 1,
+            content = "{}",
+            plainText = null,
+            hjemler = setOf("ha", "hb2"),
+            ytelser = setOf("ya", "yb2"),
+            utfall = setOf("ua1", "ub2"),
+            enheter = setOf("ea", "eb2"),
+            templateSectionList = setOf("anke>head"),
+            created = now,
+            modified = now,
+        )
+
+        textRepository.save(text1)
+        textRepository.save(text2)
+        textRepository.save(text3)
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
+        var foundTexts = searchTextRepository.searchTexts(
+            textType = "type",
+            utfall = listOf(),
+            ytelser = listOf(),
+            hjemler = listOf(),
+            enheter = listOf(),
+            templates = listOf(),
+            templateSectionList = listOf("vedtak>*"),
+            ytelseHjemmelList = listOf(),
+        )
+        assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
+
+        foundTexts = searchTextRepository.searchTexts(
+            textType = "type",
+            utfall = listOf(),
+            ytelser = listOf(),
+            hjemler = listOf(),
+            enheter = listOf(),
+            templates = listOf(),
+            templateSectionList = listOf("*>tittel"),
             ytelseHjemmelList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
