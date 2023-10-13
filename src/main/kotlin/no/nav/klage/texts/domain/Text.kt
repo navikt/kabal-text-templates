@@ -20,42 +20,43 @@ class Text(
     @Column(name = "smarteditor_version")
     var smartEditorVersion: Int?,
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(schema = "klage", name = "hjemmel", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "hjemmel")
     var hjemler: Set<String> = emptySet(),
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(schema = "klage", name = "ytelse", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "ytelse")
     var ytelser: Set<String> = emptySet(),
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(schema = "klage", name = "utfall", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "utfall")
     var utfall: Set<String> = emptySet(),
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(schema = "klage", name = "enhet", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "enhet")
     var enheter: Set<String> = emptySet(),
 
-    @ElementCollection
+    @Deprecated("not in use anymore")
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(schema = "klage", name = "section", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "section")
     var sections: Set<String> = emptySet(),
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(schema = "klage", name = "template", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "template")
     var templates: Set<String> = emptySet(),
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(schema = "klage", name = "template_section", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "template_section")
     var templateSectionList: Set<String> = emptySet(),
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(schema = "klage", name = "ytelse_hjemmel", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "ytelse_hjemmel")
     var ytelseHjemmelList: Set<String> = emptySet(),
