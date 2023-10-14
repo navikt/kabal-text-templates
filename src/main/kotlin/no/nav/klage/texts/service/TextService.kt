@@ -6,17 +6,13 @@ import no.nav.klage.texts.domain.TextAggregateFunctions.logCreation
 import no.nav.klage.texts.domain.TextAggregateFunctions.logDeletion
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateContent
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateEnheter
-import no.nav.klage.texts.domain.TextAggregateFunctions.updateHjemler
 import no.nav.klage.texts.domain.TextAggregateFunctions.updatePlainText
-import no.nav.klage.texts.domain.TextAggregateFunctions.updateSections
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateSmartEditorVersion
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateTemplateSectionList
-import no.nav.klage.texts.domain.TextAggregateFunctions.updateTemplates
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateTextType
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateTitle
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateUtfall
 import no.nav.klage.texts.domain.TextAggregateFunctions.updateYtelseHjemmelList
-import no.nav.klage.texts.domain.TextAggregateFunctions.updateYtelser
 import no.nav.klage.texts.exceptions.TextNotFoundException
 import no.nav.klage.texts.repositories.SearchTextRepository
 import no.nav.klage.texts.repositories.TextRepository
@@ -78,12 +74,8 @@ class TextService(
         textType: String,
         content: JsonNode?,
         plainText: String?,
-        hjemler: Set<String>,
-        ytelser: Set<String>,
         utfall: Set<String>,
         enheter: Set<String>,
-        sections: Set<String>,
-        templates: Set<String>,
         templateSectionList: Set<String>,
         ytelseHjemmelList: Set<String>,
     ): Text {
@@ -126,20 +118,6 @@ class TextService(
         }
 
         applicationEventPublisher.publishEvent(
-            text.updateHjemler(
-                newValueHjemler = hjemler,
-                saksbehandlerident = saksbehandlerIdent
-            )
-        )
-
-        applicationEventPublisher.publishEvent(
-            text.updateYtelser(
-                newValueYtelser = ytelser,
-                saksbehandlerident = saksbehandlerIdent
-            )
-        )
-
-        applicationEventPublisher.publishEvent(
             text.updateUtfall(
                 newValueUtfall = utfall,
                 saksbehandlerident = saksbehandlerIdent
@@ -149,20 +127,6 @@ class TextService(
         applicationEventPublisher.publishEvent(
             text.updateEnheter(
                 newValueEnheter = enheter,
-                saksbehandlerident = saksbehandlerIdent
-            )
-        )
-
-        applicationEventPublisher.publishEvent(
-            text.updateSections(
-                newValueSections = sections,
-                saksbehandlerident = saksbehandlerIdent
-            )
-        )
-
-        applicationEventPublisher.publishEvent(
-            text.updateTemplates(
-                newValueTemplates = templates,
                 saksbehandlerident = saksbehandlerIdent
             )
         )
@@ -259,36 +223,6 @@ class TextService(
         return text
     }
 
-    fun updateHjemler(
-        input: Set<String>,
-        textId: UUID,
-        saksbehandlerIdent: String,
-    ): Text {
-        val text = getText(textId)
-        val event =
-            text.updateHjemler(
-                input,
-                saksbehandlerIdent,
-            )
-        applicationEventPublisher.publishEvent(event)
-        return text
-    }
-
-    fun updateYtelser(
-        input: Set<String>,
-        textId: UUID,
-        saksbehandlerIdent: String,
-    ): Text {
-        val text = getText(textId)
-        val event =
-            text.updateYtelser(
-                input,
-                saksbehandlerIdent,
-            )
-        applicationEventPublisher.publishEvent(event)
-        return text
-    }
-
     fun updateUtfall(
         input: Set<String>,
         textId: UUID,
@@ -312,36 +246,6 @@ class TextService(
         val text = getText(textId)
         val event =
             text.updateEnheter(
-                input,
-                saksbehandlerIdent,
-            )
-        applicationEventPublisher.publishEvent(event)
-        return text
-    }
-
-    fun updateSections(
-        input: Set<String>,
-        textId: UUID,
-        saksbehandlerIdent: String,
-    ): Text {
-        val text = getText(textId)
-        val event =
-            text.updateSections(
-                input,
-                saksbehandlerIdent,
-            )
-        applicationEventPublisher.publishEvent(event)
-        return text
-    }
-
-    fun updateTemplates(
-        input: Set<String>,
-        textId: UUID,
-        saksbehandlerIdent: String,
-    ): Text {
-        val text = getText(textId)
-        val event =
-            text.updateTemplates(
                 input,
                 saksbehandlerIdent,
             )
@@ -382,20 +286,14 @@ class TextService(
     fun searchTexts(
         textType: String?,
         utfall: List<String>,
-        ytelser: List<String>,
-        hjemler: List<String>,
         enheter: List<String>,
-        templates: List<String>,
         templateSectionList: List<String>,
         ytelseHjemmelList: List<String>,
     ): List<Text> {
         return searchTextRepository.searchTexts(
             textType = textType,
             utfall = utfall,
-            ytelser = ytelser,
-            hjemler = hjemler,
             enheter = enheter,
-            templates = templates,
             templateSectionList = templateSectionList,
             ytelseHjemmelList = ytelseHjemmelList,
         )

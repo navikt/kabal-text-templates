@@ -78,12 +78,8 @@ class TextController(
                 textType = input.textType,
                 content = if (input.content == null || input.content.isNull) null else input.content,
                 plainText = input.plainText,
-                hjemler = input.hjemler,
-                ytelser = input.ytelser,
                 utfall = input.utfall,
                 enheter = input.enheter,
-                sections = input.sections,
-                templates = input.templates,
                 templateSectionList = input.templateSectionList,
                 ytelseHjemmelList = input.ytelseHjemmelList,
             )
@@ -216,56 +212,6 @@ class TextController(
     }
 
     @Operation(
-        summary = "Update hjemler",
-        description = "Update hjemler"
-    )
-    @PutMapping("/{textId}/hjemler")
-    fun updateHjemler(
-        @PathVariable("textId") textId: UUID,
-        @RequestBody input: HjemlerInput
-    ): TextView {
-        logTextMethodDetails(
-            methodName = ::updateHjemler.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
-            logger = logger,
-        )
-
-        return mapToTextView(
-            textService.updateHjemler(
-                input = input.hjemler,
-                textId = textId,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            )
-        )
-    }
-
-    @Operation(
-        summary = "Update ytelser",
-        description = "Update ytelser"
-    )
-    @PutMapping("/{textId}/ytelser")
-    fun updateYtelser(
-        @PathVariable("textId") textId: UUID,
-        @RequestBody input: YtelserInput
-    ): TextView {
-        logTextMethodDetails(
-            methodName = ::updateYtelser.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
-            logger = logger,
-        )
-
-        return mapToTextView(
-            textService.updateYtelser(
-                input = input.ytelser,
-                textId = textId,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            )
-        )
-    }
-
-    @Operation(
         summary = "Update utfall",
         description = "Update utfall"
     )
@@ -309,56 +255,6 @@ class TextController(
         return mapToTextView(
             textService.updateEnheter(
                 input = input.enheter,
-                textId = textId,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            )
-        )
-    }
-
-    @Operation(
-        summary = "Update sections",
-        description = "Update sections"
-    )
-    @PutMapping("/{textId}/sections")
-    fun updateSections(
-        @PathVariable("textId") textId: UUID,
-        @RequestBody input: SectionsInput
-    ): TextView {
-        logTextMethodDetails(
-            methodName = ::updateSections.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
-            logger = logger,
-        )
-
-        return mapToTextView(
-            textService.updateSections(
-                input = input.sections,
-                textId = textId,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            )
-        )
-    }
-
-    @Operation(
-        summary = "Update templates",
-        description = "Update templates"
-    )
-    @PutMapping("/{textId}/templates")
-    fun updateTemplates(
-        @PathVariable("textId") textId: UUID,
-        @RequestBody input: TemplatesInput
-    ): TextView {
-        logTextMethodDetails(
-            methodName = ::updateTemplates.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
-            logger = logger,
-        )
-
-        return mapToTextView(
-            textService.updateTemplates(
-                input = input.templates,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
@@ -456,10 +352,7 @@ class TextController(
         val texts = textService.searchTexts(
             textType = searchQueryParams.textType,
             utfall = searchQueryParams.utfall ?: emptyList(),
-            ytelser = searchQueryParams.ytelser ?: emptyList(),
-            hjemler = searchQueryParams.hjemler ?: emptyList(),
             enheter = searchQueryParams.enheter ?: emptyList(),
-            templates = searchQueryParams.templates ?: emptyList(),
             templateSectionList = searchQueryParams.templateSectionList ?: emptyList(),
             ytelseHjemmelList = searchQueryParams.ytelseHjemmelList ?: emptyList(),
             
@@ -494,11 +387,8 @@ class TextController(
             content = content?.toString(),
             plainText = plainText,
             smartEditorVersion = version,
-            hjemler = hjemler,
-            ytelser = ytelser,
             utfall = utfall,
             enheter = enheter,
-            sections = sections,
             templateSectionList = templateSectionList,
             ytelseHjemmelList = ytelseHjemmelList,
             created = now,
@@ -515,12 +405,8 @@ fun mapToTextView(text: Text): TextView =
         content = if (text.content != null) jsonMapper().readTree(text.content) else null,
         plainText = text.plainText,
         version = text.smartEditorVersion,
-        hjemler = text.hjemler,
-        ytelser = text.ytelser,
         utfall = text.utfall,
         enheter = text.enheter,
-        sections = text.sections,
-        templates = text.templates,
         templateSectionList = text.templateSectionList,
         ytelseHjemmelList = text.ytelseHjemmelList,
         created = text.created,

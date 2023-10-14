@@ -18,10 +18,7 @@ class SearchTextRepository(
     fun searchTexts(
         textType: String?,
         utfall: List<String>,
-        ytelser: List<String>,
-        hjemler: List<String>,
         enheter: List<String>,
-        templates: List<String>,
         templateSectionList: List<String>,
         ytelseHjemmelList: List<String>,
     ): List<Text> {
@@ -39,13 +36,10 @@ class SearchTextRepository(
             } else true
 
             textTypeCondition &&
-                    testSets(utfall, text.utfall) &&
-                    testSets(ytelser, text.ytelser) &&
-                    testSets(hjemler, text.hjemler) &&
-                    testSets(enheter, text.enheter) &&
-                    testSets(templates, text.templates) &&
-                    testCompositeValues(templateSectionList, text.templateSectionList) &&
-                    testCompositeValues(ytelseHjemmelList, text.ytelseHjemmelList)
+            testSets(utfall, text.utfall) &&
+            testSets(enheter, text.enheter) &&
+            testCompositeValues(templateSectionList, text.templateSectionList) &&
+            testCompositeValues(ytelseHjemmelList, text.ytelseHjemmelList)
         }
     }
 
