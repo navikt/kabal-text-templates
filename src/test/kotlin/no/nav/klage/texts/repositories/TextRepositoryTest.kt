@@ -46,7 +46,6 @@ class TextRepositoryTest {
             smartEditorVersion = 1,
             content = "{}",
             plainText = null,
-            hjemler = setOf("a", "b"),
             created = now,
             modified = now,
         )
@@ -70,7 +69,6 @@ class TextRepositoryTest {
             smartEditorVersion = 1,
             content = "{}",
             plainText = null,
-            hjemler = setOf("a", "b"),
             created = now,
             modified = now,
         )

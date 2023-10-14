@@ -166,54 +166,6 @@ object TextAggregateFunctions {
         )
     }
 
-    fun Text.updateHjemler(
-        newValueHjemler: Set<String>,
-        saksbehandlerident: String
-    ): TextChangedEvent {
-        val now = LocalDateTime.now()
-        val changelogEntries = mutableListOf<ChangelogEntry>()
-        val oldValueHjemler = hjemler
-        hjemler = newValueHjemler
-        modified = now
-
-        changelog(
-            saksbehandlerident = saksbehandlerident,
-            field = Field.HJEMLER,
-            fromValue = oldValueHjemler.joinToString(),
-            toValue = newValueHjemler.joinToString(),
-            created = now,
-        )?.let { changelogEntries.add(it) }
-
-        return TextChangedEvent(
-            text = this,
-            changelogEntries = changelogEntries,
-        )
-    }
-
-    fun Text.updateYtelser(
-        newValueYtelser: Set<String>,
-        saksbehandlerident: String
-    ): TextChangedEvent {
-        val now = LocalDateTime.now()
-        val changelogEntries = mutableListOf<ChangelogEntry>()
-        val oldValueYtelser = ytelser
-        ytelser = newValueYtelser
-        modified = now
-
-        changelog(
-            saksbehandlerident = saksbehandlerident,
-            field = Field.YTELSER,
-            fromValue = oldValueYtelser.joinToString(),
-            toValue = newValueYtelser.joinToString(),
-            created = now,
-        )?.let { changelogEntries.add(it) }
-
-        return TextChangedEvent(
-            text = this,
-            changelogEntries = changelogEntries,
-        )
-    }
-
     fun Text.updateUtfall(
         newValueUtfall: Set<String>,
         saksbehandlerident: String
@@ -253,54 +205,6 @@ object TextAggregateFunctions {
             field = Field.ENHETER,
             fromValue = oldValueEnheter.joinToString(),
             toValue = newValueEnheter.joinToString(),
-            created = now,
-        )?.let { changelogEntries.add(it) }
-
-        return TextChangedEvent(
-            text = this,
-            changelogEntries = changelogEntries,
-        )
-    }
-
-    fun Text.updateSections(
-        newValueSections: Set<String>,
-        saksbehandlerident: String
-    ): TextChangedEvent {
-        val now = LocalDateTime.now()
-        val changelogEntries = mutableListOf<ChangelogEntry>()
-        val oldValueSections = sections
-        sections = newValueSections
-        modified = now
-
-        changelog(
-            saksbehandlerident = saksbehandlerident,
-            field = Field.SECTIONS,
-            fromValue = oldValueSections.joinToString(),
-            toValue = newValueSections.joinToString(),
-            created = now,
-        )?.let { changelogEntries.add(it) }
-
-        return TextChangedEvent(
-            text = this,
-            changelogEntries = changelogEntries,
-        )
-    }
-
-    fun Text.updateTemplates(
-        newValueTemplates: Set<String>,
-        saksbehandlerident: String
-    ): TextChangedEvent {
-        val now = LocalDateTime.now()
-        val changelogEntries = mutableListOf<ChangelogEntry>()
-        val oldValueSections = templates
-        templates = newValueTemplates
-        modified = now
-
-        changelog(
-            saksbehandlerident = saksbehandlerident,
-            field = Field.TEMPLATES,
-            fromValue = oldValueSections.joinToString(),
-            toValue = newValueTemplates.joinToString(),
             created = now,
         )?.let { changelogEntries.add(it) }
 
