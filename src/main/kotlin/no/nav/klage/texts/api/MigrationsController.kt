@@ -9,7 +9,7 @@ import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
-import no.nav.klage.texts.util.logTextMethodDetails
+import no.nav.klage.texts.util.logMethodDetails
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
@@ -36,10 +36,10 @@ class MigrationsController(
     @GetMapping
     fun getTexts(): List<TextView> {
         //TODO must be admin
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::getTexts.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = null,
+            id = null,
             logger = logger,
         )
 
@@ -57,10 +57,10 @@ class MigrationsController(
         @RequestBody input: List<TextInput>
     ): List<TextView> {
         //TODO must be admin
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateTexts.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = null,
+            id = null,
             logger = logger,
         )
 

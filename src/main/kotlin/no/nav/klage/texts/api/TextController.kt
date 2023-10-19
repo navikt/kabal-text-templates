@@ -10,7 +10,7 @@ import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
-import no.nav.klage.texts.util.logTextMethodDetails
+import no.nav.klage.texts.util.logMethodDetails
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
@@ -39,10 +39,10 @@ class TextController(
     fun createText(
         @RequestBody input: TextInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::createText.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = null,
+            id = null,
             logger = logger,
         )
 
@@ -63,10 +63,10 @@ class TextController(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: UpdateTextInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateText.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
@@ -95,10 +95,10 @@ class TextController(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: TitleInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateTitle.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
@@ -120,10 +120,10 @@ class TextController(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: TextTypeInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateTextType.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
@@ -145,10 +145,10 @@ class TextController(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: ContentInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateContent.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
@@ -170,10 +170,10 @@ class TextController(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: PlainTextInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updatePlainText.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
@@ -195,10 +195,10 @@ class TextController(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: SmartEditorVersionInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateSmartEditorVersion.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
@@ -218,18 +218,18 @@ class TextController(
     @PutMapping("/{textId}/utfall")
     fun updateUtfall(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: UtfallInput
+        @RequestBody input: UtfallIdListInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateUtfall.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
         return mapToTextView(
             textService.updateUtfall(
-                input = input.utfall,
+                input = input.utfallIdList,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
@@ -243,18 +243,18 @@ class TextController(
     @PutMapping("/{textId}/enheter")
     fun updateEnheter(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: EnheterInput
+        @RequestBody input: EnhetIdListInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateEnheter.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
         return mapToTextView(
             textService.updateEnheter(
-                input = input.enheter,
+                input = input.enhetIdList,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
@@ -268,18 +268,18 @@ class TextController(
     @PutMapping("/{textId}/templatesectionlist")
     fun updateTemplateSectionList(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: TemplateSectionListInput
+        @RequestBody input: TemplateSectionIdListInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateTemplateSectionList.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
         return mapToTextView(
             textService.updateTemplateSectionList(
-                input = input.templateSectionList,
+                input = input.templateSectionIdList,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
@@ -293,18 +293,18 @@ class TextController(
     @PutMapping("/{textId}/ytelsehjemmellist")
     fun updateYtelseHjemmelList(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: YtelseHjemmelListInput
+        @RequestBody input: YtelseHjemmelIdListInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateYtelseHjemmelList.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
         return mapToTextView(
             textService.updateYtelseHjemmelList(
-                input = input.ytelseHjemmelList,
+                input = input.ytelseHjemmelIdList,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
@@ -319,10 +319,10 @@ class TextController(
     fun deleteText(
         @PathVariable("textId") textId: UUID,
     ) {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::deleteText.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
@@ -340,10 +340,10 @@ class TextController(
     fun searchTexts(
         searchQueryParams: SearchQueryParams
     ): List<TextView> {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::searchTexts.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = null,
+            id = null,
             logger = logger,
         )
 
@@ -370,10 +370,10 @@ class TextController(
     fun getText(
         @PathVariable("textId") textId: UUID,
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::getText.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
         return mapToTextView(textService.getText(textId))
