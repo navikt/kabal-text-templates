@@ -12,7 +12,7 @@ spec:
   image: {{image}}
   gcp:
     sqlInstances:
-      - type: POSTGRES_12
+      - type: {{db_type}}
         maintenanceWindow:
           day: 1
           hour: 3
