@@ -6,7 +6,7 @@ import java.util.*
 data class MaltekstView(
     val id: UUID,
     val title: String,
-    val textIdList: Set<String> = emptySet(),
+    val textIdList: List<String> = emptyList(),
     val utfallIdList: Set<String> = emptySet(),
     val enhetIdList: Set<String> = emptySet(),
     val templateSectionIdList: Set<String> = emptySet(),

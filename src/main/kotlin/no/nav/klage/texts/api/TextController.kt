@@ -215,10 +215,10 @@ class TextController(
         summary = "Update utfall",
         description = "Update utfall"
     )
-    @PutMapping("/{textId}/utfall")
+    @PutMapping("/{textId}/utfall", "/{textId}/utfall-id-list")
     fun updateUtfall(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: UtfallIdListInput
+        @RequestBody input: UtfallIdListCompatibleInput
     ): TextView {
         logMethodDetails(
             methodName = ::updateUtfall.name,
@@ -229,7 +229,7 @@ class TextController(
 
         return mapToTextView(
             textService.updateUtfall(
-                input = input.utfallIdList,
+                input = input.utfallIdList ?: input.utfall ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
@@ -240,10 +240,10 @@ class TextController(
         summary = "Update enheter",
         description = "Update enheter"
     )
-    @PutMapping("/{textId}/enheter")
+    @PutMapping("/{textId}/enheter", "/{textId}/enhet-id-list")
     fun updateEnheter(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: EnhetIdListInput
+        @RequestBody input: EnhetIdListCompatibleInput
     ): TextView {
         logMethodDetails(
             methodName = ::updateEnheter.name,
@@ -254,7 +254,7 @@ class TextController(
 
         return mapToTextView(
             textService.updateEnheter(
-                input = input.enhetIdList,
+                input = input.enheter ?: input.enhetIdList ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
@@ -265,10 +265,10 @@ class TextController(
         summary = "Update templateSectionList",
         description = "Update templateSectionList"
     )
-    @PutMapping("/{textId}/templatesectionlist")
+    @PutMapping("/{textId}/templatesectionlist", "/{textId}/template-section-id-list")
     fun updateTemplateSectionList(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: TemplateSectionIdListInput
+        @RequestBody input: TemplateSectionIdListCompatibleInput
     ): TextView {
         logMethodDetails(
             methodName = ::updateTemplateSectionList.name,
@@ -279,7 +279,7 @@ class TextController(
 
         return mapToTextView(
             textService.updateTemplateSectionList(
-                input = input.templateSectionIdList,
+                input = input.templateSectionIdList ?: input.templateSectionList ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
@@ -290,10 +290,10 @@ class TextController(
         summary = "Update ytelseHjemmelList",
         description = "Update ytelseHjemmelList"
     )
-    @PutMapping("/{textId}/ytelsehjemmellist")
+    @PutMapping("/{textId}/ytelsehjemmellist", "/{textId}/ytelse-hjemmel-id-list")
     fun updateYtelseHjemmelList(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: YtelseHjemmelIdListInput
+        @RequestBody input: YtelseHjemmelIdListCompatibleInput
     ): TextView {
         logMethodDetails(
             methodName = ::updateYtelseHjemmelList.name,
@@ -304,7 +304,7 @@ class TextController(
 
         return mapToTextView(
             textService.updateYtelseHjemmelList(
-                input = input.ytelseHjemmelIdList,
+                input = input.ytelseHjemmelIdList ?: input.ytelseHjemmelList ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
@@ -351,10 +351,10 @@ class TextController(
 
         val texts = textService.searchTexts(
             textType = searchQueryParams.textType,
-            utfall = searchQueryParams.utfall ?: emptyList(),
-            enheter = searchQueryParams.enheter ?: emptyList(),
-            templateSectionList = searchQueryParams.templateSectionList ?: emptyList(),
-            ytelseHjemmelList = searchQueryParams.ytelseHjemmelList ?: emptyList(),
+            utfallIdList = searchQueryParams.utfallIdList ?: searchQueryParams.utfall ?: emptyList(),
+            enhetIdList = searchQueryParams.enhetIdList ?: searchQueryParams.enheter ?: emptyList(),
+            templateSectionIdList = searchQueryParams.templateSectionIdList ?: searchQueryParams.templateSectionList ?: emptyList(),
+            ytelseHjemmelIdList = searchQueryParams.ytelseHjemmelIdList ?: searchQueryParams.ytelseHjemmelList ?: emptyList(),
             
         )
         return texts.map {
@@ -417,4 +417,3 @@ fun mapToTextView(text: Text): TextView =
         ytelseHjemmelIdList = text.ytelseHjemmelIdList,
 
     )
-

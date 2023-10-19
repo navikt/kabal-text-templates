@@ -285,17 +285,17 @@ class TextService(
 
     fun searchTexts(
         textType: String?,
-        utfall: List<String>,
-        enheter: List<String>,
-        templateSectionList: List<String>,
-        ytelseHjemmelList: List<String>,
+        utfallIdList: List<String>,
+        enhetIdList: List<String>,
+        templateSectionIdList: List<String>,
+        ytelseHjemmelIdList: List<String>,
     ): List<Text> {
         return searchTextRepository.searchTexts(
             textType = textType,
-            utfall = utfall,
-            enheter = enheter,
-            templateSectionList = templateSectionList,
-            ytelseHjemmelList = ytelseHjemmelList,
+            utfallIdList = utfallIdList,
+            enhetIdList = enhetIdList,
+            templateSectionIdList = templateSectionIdList,
+            ytelseHjemmelIdList = ytelseHjemmelIdList,
         )
     }
 

@@ -154,7 +154,7 @@ class MaltekstController(
         summary = "Update templateSectionList",
         description = "Update templateSectionList"
     )
-    @PutMapping("/{maltekstId}/templatesection-id-list")
+    @PutMapping("/{maltekstId}/template-section-id-list")
     fun updateTemplateSectionIdList(
         @PathVariable("maltekstId") maltekstId: UUID,
         @RequestBody input: TemplateSectionIdListInput
@@ -178,7 +178,7 @@ class MaltekstController(
         summary = "Update ytelseHjemmelList",
         description = "Update ytelseHjemmelList"
     )
-    @PutMapping("/{maltekstId}/ytelsehjemmel-id-list")
+    @PutMapping("/{maltekstId}/ytelse-hjemmel-id-list")
     fun updateYtelseHjemmelIdList(
         @PathVariable("maltekstId") maltekstId: UUID,
         @RequestBody input: YtelseHjemmelIdListInput
@@ -285,7 +285,7 @@ fun mapToMaltekstView(maltekst: Maltekst): MaltekstView =
     MaltekstView(
         id = maltekst.id,
         title = maltekst.title,
-        textIdList = maltekst.texts.map { it.id.toString() }.toSet(),
+        textIdList = maltekst.texts.map { it.id.toString() },
         utfallIdList = maltekst.utfallIdList,
         enhetIdList = maltekst.enhetIdList,
         templateSectionIdList = maltekst.templateSectionIdList,

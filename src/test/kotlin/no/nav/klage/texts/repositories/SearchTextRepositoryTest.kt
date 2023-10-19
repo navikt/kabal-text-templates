@@ -74,28 +74,28 @@ class SearchTextRepositoryTest {
 
         var foundTexts = searchTextRepository.searchTexts(
             textType = "type1",
-            utfall = listOf(),
-            enheter = listOf(),
-            templateSectionList = listOf(),
-            ytelseHjemmelList = listOf(),
+            utfallIdList = listOf(),
+            enhetIdList = listOf(),
+            templateSectionIdList = listOf(),
+            ytelseHjemmelIdList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1)
 
         foundTexts = searchTextRepository.searchTexts(
             textType = "type2",
-            utfall = listOf(),
-            enheter = listOf(),
-            templateSectionList = listOf(),
-            ytelseHjemmelList = listOf(),
+            utfallIdList = listOf(),
+            enhetIdList = listOf(),
+            templateSectionIdList = listOf(),
+            ytelseHjemmelIdList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text2)
 
         foundTexts = searchTextRepository.searchTexts(
             textType = null,
-            utfall = listOf(),
-            enheter = listOf(),
-            templateSectionList = listOf(),
-            ytelseHjemmelList = listOf(),
+            utfallIdList = listOf(),
+            enhetIdList = listOf(),
+            templateSectionIdList = listOf(),
+            ytelseHjemmelIdList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
     }
@@ -176,55 +176,55 @@ class SearchTextRepositoryTest {
 
         var foundTexts = searchTextRepository.searchTexts(
             textType = "type",
-            utfall = listOf("ua"),
-            enheter = listOf(),
-            templateSectionList = listOf(),
-            ytelseHjemmelList = listOf(),
+            utfallIdList = listOf("ua"),
+            enhetIdList = listOf(),
+            templateSectionIdList = listOf(),
+            ytelseHjemmelIdList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2, text3, text4)
 
         foundTexts = searchTextRepository.searchTexts(
             textType = "type",
-            utfall = listOf(),
-            enheter = listOf(),
-            templateSectionList = listOf("ts4"),
-            ytelseHjemmelList = listOf(),
+            utfallIdList = listOf(),
+            enhetIdList = listOf(),
+            templateSectionIdList = listOf("ts4"),
+            ytelseHjemmelIdList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2, text3, text4)
 
         foundTexts = searchTextRepository.searchTexts(
             textType = "type",
-            utfall = listOf(),
-            enheter = listOf(),
-            templateSectionList = listOf(),
-            ytelseHjemmelList = listOf(),
+            utfallIdList = listOf(),
+            enhetIdList = listOf(),
+            templateSectionIdList = listOf(),
+            ytelseHjemmelIdList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2, text3, text4, text5)
 
         foundTexts = searchTextRepository.searchTexts(
             textType = null,
-            utfall = listOf("ub1", "ub2"),
-            enheter = listOf("eb1", "eb2"),
-            templateSectionList = listOf(),
-            ytelseHjemmelList = listOf(),
+            utfallIdList = listOf("ub1", "ub2"),
+            enhetIdList = listOf("eb1", "eb2"),
+            templateSectionIdList = listOf(),
+            ytelseHjemmelIdList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
 
         foundTexts = searchTextRepository.searchTexts(
             textType = "type",
-            utfall = listOf("ua"),
-            enheter = listOf("ea"),
-            templateSectionList = listOf(),
-            ytelseHjemmelList = listOf(),
+            utfallIdList = listOf("ua"),
+            enhetIdList = listOf("ea"),
+            templateSectionIdList = listOf(),
+            ytelseHjemmelIdList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2, text3, text4)
 
         foundTexts = searchTextRepository.searchTexts(
             textType = "type",
-            utfall = listOf(),
-            enheter = listOf(),
-            templateSectionList = listOf("ta>sa"),
-            ytelseHjemmelList = listOf(),
+            utfallIdList = listOf(),
+            enhetIdList = listOf(),
+            templateSectionIdList = listOf("ta>sa"),
+            ytelseHjemmelIdList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2, text3, text5)
     }
@@ -261,10 +261,10 @@ class SearchTextRepositoryTest {
 
         val foundTexts = searchTextRepository.searchTexts(
             textType = "type",
-            utfall = listOf("1"),
-            enheter = listOf("4250"),
-            templateSectionList = listOf("noe"),
-            ytelseHjemmelList = listOf("annet"),
+            utfallIdList = listOf("1"),
+            enhetIdList = listOf("4250"),
+            templateSectionIdList = listOf("noe"),
+            ytelseHjemmelIdList = listOf("annet"),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
     }
@@ -332,10 +332,10 @@ class SearchTextRepositoryTest {
 
         val foundTexts = searchTextRepository.searchTexts(
             textType = "type",
-            utfall = listOf(),
-            enheter = listOf(),
-            templateSectionList = listOf("noe"),
-            ytelseHjemmelList = listOf(),
+            utfallIdList = listOf(),
+            enhetIdList = listOf(),
+            templateSectionIdList = listOf("noe"),
+            ytelseHjemmelIdList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text2, text3, text4)
     }
@@ -376,19 +376,19 @@ class SearchTextRepositoryTest {
 
         var foundTexts = searchTextRepository.searchTexts(
             textType = "type",
-            utfall = listOf("ua1:ua2"),
-            enheter = listOf(),
-            templateSectionList = listOf(),
-            ytelseHjemmelList = listOf(),
+            utfallIdList = listOf("ua1:ua2"),
+            enhetIdList = listOf(),
+            templateSectionIdList = listOf(),
+            ytelseHjemmelIdList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
 
         foundTexts = searchTextRepository.searchTexts(
             textType = "type",
-            utfall = listOf("ua2:ua1"),
-            enheter = listOf(),
-            templateSectionList = listOf(),
-            ytelseHjemmelList = listOf(),
+            utfallIdList = listOf("ua2:ua1"),
+            enhetIdList = listOf(),
+            templateSectionIdList = listOf(),
+            ytelseHjemmelIdList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
     }
@@ -444,19 +444,19 @@ class SearchTextRepositoryTest {
 
         var foundTexts = searchTextRepository.searchTexts(
             textType = "type",
-            utfall = listOf(),
-            enheter = listOf(),
-            templateSectionList = listOf("vedtak>*"),
-            ytelseHjemmelList = listOf(),
+            utfallIdList = listOf(),
+            enhetIdList = listOf(),
+            templateSectionIdList = listOf("vedtak>*"),
+            ytelseHjemmelIdList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
 
         foundTexts = searchTextRepository.searchTexts(
             textType = "type",
-            utfall = listOf(),
-            enheter = listOf(),
-            templateSectionList = listOf("*>tittel"),
-            ytelseHjemmelList = listOf(),
+            utfallIdList = listOf(),
+            enhetIdList = listOf(),
+            templateSectionIdList = listOf("*>tittel"),
+            ytelseHjemmelIdList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1, text2)
     }
@@ -495,19 +495,19 @@ class SearchTextRepositoryTest {
 
         var foundTexts = searchTextRepository.searchTexts(
             textType = null,
-            utfall = listOf(),
-            enheter = listOf(),
-            templateSectionList = listOf(),
-            ytelseHjemmelList = listOf("NONE"),
+            utfallIdList = listOf(),
+            enhetIdList = listOf(),
+            templateSectionIdList = listOf(),
+            ytelseHjemmelIdList = listOf("NONE"),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text1)
 
         foundTexts = searchTextRepository.searchTexts(
             textType = null,
-            utfall = listOf("NONE"),
-            enheter = listOf(),
-            templateSectionList = listOf(),
-            ytelseHjemmelList = listOf(),
+            utfallIdList = listOf("NONE"),
+            enhetIdList = listOf(),
+            templateSectionIdList = listOf(),
+            ytelseHjemmelIdList = listOf(),
         )
         assertThat(foundTexts).containsExactlyInAnyOrder(text2)
     }

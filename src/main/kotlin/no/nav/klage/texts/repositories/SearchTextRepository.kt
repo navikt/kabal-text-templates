@@ -17,10 +17,10 @@ class SearchTextRepository(
 
     fun searchTexts(
         textType: String?,
-        utfall: List<String>,
-        enheter: List<String>,
-        templateSectionList: List<String>,
-        ytelseHjemmelList: List<String>,
+        utfallIdList: List<String>,
+        enhetIdList: List<String>,
+        templateSectionIdList: List<String>,
+        ytelseHjemmelIdList: List<String>,
     ): List<Text> {
         var texts: MutableList<Text>
 
@@ -36,10 +36,10 @@ class SearchTextRepository(
             } else true
 
             textTypeCondition &&
-            testSets(utfall, text.utfallIdList) &&
-            testSets(enheter, text.enhetIdList) &&
-            testCompositeValues(templateSectionList, text.templateSectionIdList) &&
-            testCompositeValues(ytelseHjemmelList, text.ytelseHjemmelIdList)
+            testSets(utfallIdList, text.utfallIdList) &&
+            testSets(enhetIdList, text.enhetIdList) &&
+            testCompositeValues(templateSectionIdList, text.templateSectionIdList) &&
+            testCompositeValues(ytelseHjemmelIdList, text.ytelseHjemmelIdList)
         }
     }
 
