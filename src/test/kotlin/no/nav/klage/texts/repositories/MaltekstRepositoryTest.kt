@@ -1,6 +1,7 @@
 package no.nav.klage.texts.repositories
 
 import no.nav.klage.texts.domain.Maltekst
+import no.nav.klage.texts.domain.Text
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,13 +31,16 @@ class MaltekstRepositoryTest {
     @Autowired
     lateinit var maltekstRepository: MaltekstRepository
 
+    @Autowired
+    lateinit var textRepository: TextRepository
+
     @Test
     fun `add maltekst works`() {
         val now = LocalDateTime.now()
 
         val maltekst = Maltekst(
             title = "title",
-            texts = setOf(),
+            texts = listOf(),
             utfallIdList = setOf(),
             enhetIdList = setOf(),
             templateSectionIdList = setOf(),
@@ -58,9 +62,24 @@ class MaltekstRepositoryTest {
     fun `findAll works`() {
         val now = LocalDateTime.now()
 
+        val text = Text(
+            title = "title",
+            textType = "type",
+            smartEditorVersion = 1,
+            content = "{}",
+            plainText = null,
+            created = now,
+            modified = now,
+        )
+
+        textRepository.save(text)
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
         val maltekst = Maltekst(
             title = "title",
-            texts = setOf(),
+            texts = listOf(text),
             utfallIdList = setOf(),
             enhetIdList = setOf(),
             templateSectionIdList = setOf(),
@@ -71,7 +90,7 @@ class MaltekstRepositoryTest {
 
         val maltekst2 = Maltekst(
             title = "title",
-            texts = setOf(),
+            texts = listOf(),
             utfallIdList = setOf(),
             enhetIdList = setOf(),
             templateSectionIdList = setOf(),
@@ -90,6 +109,67 @@ class MaltekstRepositoryTest {
         assertThat(foundMaltekster).hasSize(2)
     }
 
+    @Test
+    fun `order of texts work`() {
+        val now = LocalDateTime.now()
+
+        val text = Text(
+            title = "title",
+            textType = "type",
+            smartEditorVersion = 1,
+            content = "{}",
+            plainText = null,
+            created = now,
+            modified = now,
+        )
+
+        val text2 = Text(
+            title = "title",
+            textType = "type",
+            smartEditorVersion = 1,
+            content = "{}",
+            plainText = null,
+            created = now,
+            modified = now,
+        )
+
+        val text3 = Text(
+            title = "title",
+            textType = "type",
+            smartEditorVersion = 1,
+            content = "{}",
+            plainText = null,
+            created = now,
+            modified = now,
+        )
+
+        textRepository.save(text)
+        textRepository.save(text2)
+        textRepository.save(text3)
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
+        val maltekst = Maltekst(
+            title = "title",
+            texts = listOf(text2, text, text3),
+            utfallIdList = setOf(),
+            enhetIdList = setOf(),
+            templateSectionIdList = setOf(),
+            ytelseHjemmelIdList = setOf(),
+            created = now,
+            modified = now,
+        )
+
+        maltekstRepository.save(maltekst)
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
+        val foundMaltekster = maltekstRepository.findAll()
+        assertThat(foundMaltekster).hasSize(1)
+
+        assertThat(foundMaltekster.first().texts).containsExactly(text2, text, text3)
+    }
+
 }
-
-

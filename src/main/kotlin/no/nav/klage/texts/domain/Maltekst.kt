@@ -15,7 +15,9 @@ class Maltekst(
 
     @OneToMany
     @JoinColumn(name="maltekst_id")
-    var texts: Set<Text> = emptySet(),
+    @JoinTable(schema = "klage", name = "maltekst_text", inverseJoinColumns = [JoinColumn(name = "text_id")])
+    @OrderColumn(name = "index", nullable = false)
+    var texts: List<Text> = emptyList(),
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(schema = "klage", name = "utfall", joinColumns = [JoinColumn(name = "maltekst_id")])

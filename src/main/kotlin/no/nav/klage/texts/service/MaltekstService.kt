@@ -72,7 +72,7 @@ class MaltekstService(
         maltekstId: UUID,
     ): Maltekst {
         val maltekst = getMaltekst(maltekstId)
-        maltekst.texts = textRepository.findAllById(input.map { UUID.fromString(it) }).toSet()
+        maltekst.texts = textRepository.findAllById(input.map { UUID.fromString(it) })
         maltekst.modified = LocalDateTime.now()
         return maltekst
     }
@@ -118,7 +118,6 @@ class MaltekstService(
     }
 
 //    fun searchMalteksts(
-//        maltekstType: String?,
 //        utfall: List<String>,
 //        enheter: List<String>,
 //        templateSectionList: List<String>,

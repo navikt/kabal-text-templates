@@ -270,7 +270,7 @@ class MaltekstController(
         val now = LocalDateTime.now()
         return Maltekst(
             title = title,
-            texts = textService.getTextsById(textIdList.map { UUID.fromString(it) }).toSet(),
+            texts = textService.getTextsById(textIdList.map { UUID.fromString(it) }),
             utfallIdList = utfallIdList,
             enhetIdList = enhetIdList,
             templateSectionIdList = templateSectionIdList,
