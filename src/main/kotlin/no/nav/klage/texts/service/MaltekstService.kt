@@ -1,13 +1,11 @@
-package no.nav.klage.malteksts.service
+package no.nav.klage.texts.service
 
 import no.nav.klage.texts.domain.Maltekst
 import no.nav.klage.texts.exceptions.MaltekstNotFoundException
 import no.nav.klage.texts.repositories.MaltekstRepository
-import no.nav.klage.texts.repositories.SearchTextRepository
 import no.nav.klage.texts.repositories.TextRepository
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -18,8 +16,6 @@ import java.util.*
 class MaltekstService(
     private val maltekstRepository: MaltekstRepository,
     private val textRepository: TextRepository,
-    private val searchTextRepository: SearchTextRepository,
-    private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
 
     companion object {
