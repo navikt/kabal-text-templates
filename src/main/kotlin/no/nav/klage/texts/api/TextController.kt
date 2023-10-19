@@ -18,7 +18,7 @@ import java.util.*
 
 @RestController
 @Tag(name = "kabal-text-templates", description = "API for template texts")
-@RequestMapping(value = ["/texts", "/texts/"])
+@RequestMapping(value = ["/texts"])
 @ProtectedWithClaims(issuer = ISSUER_AAD)
 class TextController(
     private val textService: TextService,
