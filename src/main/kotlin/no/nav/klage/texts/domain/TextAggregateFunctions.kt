@@ -172,8 +172,8 @@ object TextAggregateFunctions {
     ): TextChangedEvent {
         val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
-        val oldValueUtfall = utfall
-        utfall = newValueUtfall
+        val oldValueUtfall = utfallIdList
+        utfallIdList = newValueUtfall
         modified = now
 
         changelog(
@@ -196,8 +196,8 @@ object TextAggregateFunctions {
     ): TextChangedEvent {
         val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
-        val oldValueEnheter = enheter
-        enheter = newValueEnheter
+        val oldValueEnheter = enhetIdList
+        enhetIdList = newValueEnheter
         modified = now
 
         changelog(
@@ -220,8 +220,8 @@ object TextAggregateFunctions {
     ): TextChangedEvent {
         val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
-        val oldValueTemplateSectionList = templateSectionList
-        templateSectionList = newValueTemplateSectionList
+        val oldValueTemplateSectionList = templateSectionIdList
+        templateSectionIdList = newValueTemplateSectionList
         modified = now
 
         changelog(
@@ -244,8 +244,8 @@ object TextAggregateFunctions {
     ): TextChangedEvent {
         val now = LocalDateTime.now()
         val changelogEntries = mutableListOf<ChangelogEntry>()
-        val oldValueYtelseHjemmelList = ytelseHjemmelList
-        ytelseHjemmelList = newValueYtelseHjemmelList
+        val oldValueYtelseHjemmelList = ytelseHjemmelIdList
+        ytelseHjemmelIdList = newValueYtelseHjemmelList
         modified = now
 
         changelog(

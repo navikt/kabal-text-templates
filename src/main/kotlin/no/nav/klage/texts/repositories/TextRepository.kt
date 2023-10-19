@@ -8,10 +8,10 @@ import java.util.*
 interface TextRepository : JpaRepository<Text, UUID> {
 
     @EntityGraph(attributePaths = [
-        "utfall",
-        "enheter",
-        "templateSectionList",
-        "ytelseHjemmelList",
+        "utfallIdList",
+        "enhetIdList",
+        "templateSectionIdList",
+        "ytelseHjemmelIdList",
     ])
     override fun findAll(): MutableList<Text>
 

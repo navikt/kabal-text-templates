@@ -71,8 +71,8 @@ class MigrationsController(
                 textType = currentTextInput.textType
                 content = currentTextInput.content.toString()
                 plainText = currentTextInput.plainText
-                utfall = currentTextInput.utfall
-                enheter = currentTextInput.enheter
+                utfallIdList = currentTextInput.utfall
+                enhetIdList = currentTextInput.enheter
                 modified = LocalDateTime.now()
                 smartEditorVersion = currentTextInput.version
             }

@@ -11,14 +11,15 @@ data class TextInput(
     val content: JsonNode?,
     val plainText: String?,
     val version: Int?,
-    val hjemler: Set<String> = emptySet(),
-    val ytelser: Set<String> = emptySet(),
     val utfall: Set<String> = emptySet(),
     val enheter: Set<String> = emptySet(),
-    val sections: Set<String> = emptySet(),
-    val templates: Set<String> = emptySet(),
     val templateSectionList: Set<String> = emptySet(),
     val ytelseHjemmelList: Set<String> = emptySet(),
+
+    val utfallIdList: Set<String>?,
+    val enhetIdList: Set<String>?,
+    val templateSectionIdList: Set<String>?,
+    val ytelseHjemmelIdList: Set<String>?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -27,14 +28,15 @@ data class UpdateTextInput(
     val textType: String,
     val content: JsonNode?,
     val plainText: String?,
-    val hjemler: Set<String> = emptySet(),
-    val ytelser: Set<String> = emptySet(),
     val utfall: Set<String> = emptySet(),
     val enheter: Set<String> = emptySet(),
-    val sections: Set<String> = emptySet(),
-    val templates: Set<String> = emptySet(),
     val templateSectionList: Set<String> = emptySet(),
     val ytelseHjemmelList: Set<String> = emptySet(),
+
+    val utfallIdList: Set<String> = emptySet(),
+    val enhetIdList: Set<String> = emptySet(),
+    val templateSectionIdList: Set<String> = emptySet(),
+    val ytelseHjemmelIdList: Set<String> = emptySet(),
 )
 
 data class TitleInput(
@@ -57,34 +59,22 @@ data class SmartEditorVersionInput(
     val version: Int
 )
 
-data class HjemlerInput(
-    val hjemler: Set<String>
+data class UtfallIdListCompatibleInput(
+    val utfall: Set<String> = emptySet(),
+    val utfallIdList: Set<String> = emptySet(),
 )
 
-data class YtelserInput(
-    val ytelser: Set<String>
+data class EnhetIdListCompatibleInput(
+    val enheter: Set<String> = emptySet(),
+    val enhetIdList: Set<String> = emptySet(),
 )
 
-data class UtfallInput(
-    val utfall: Set<String>
+data class TemplateSectionIdListCompatibleInput(
+    val templateSectionList: Set<String> = emptySet(),
+    val templateSectionIdList: Set<String> = emptySet(),
 )
 
-data class EnheterInput(
-    val enheter: Set<String>
-)
-
-data class SectionsInput(
-    val sections: Set<String>
-)
-
-data class TemplatesInput(
-    val templates: Set<String>
-)
-
-data class TemplateSectionListInput(
-    val templateSectionList: Set<String>
-)
-
-data class YtelseHjemmelListInput(
-    val ytelseHjemmelList: Set<String>
+data class YtelseHjemmelIdListCompatibleInput(
+    val ytelseHjemmelList: Set<String> = emptySet(),
+    val ytelseHjemmelIdList: Set<String> = emptySet(),
 )

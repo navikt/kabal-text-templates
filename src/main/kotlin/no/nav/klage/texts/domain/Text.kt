@@ -23,22 +23,22 @@ class Text(
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(schema = "klage", name = "utfall", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "utfall")
-    var utfall: Set<String> = emptySet(),
+    var utfallIdList: Set<String> = emptySet(),
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(schema = "klage", name = "enhet", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "enhet")
-    var enheter: Set<String> = emptySet(),
+    var enhetIdList: Set<String> = emptySet(),
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(schema = "klage", name = "template_section", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "template_section")
-    var templateSectionList: Set<String> = emptySet(),
+    var templateSectionIdList: Set<String> = emptySet(),
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(schema = "klage", name = "ytelse_hjemmel", joinColumns = [JoinColumn(name = "text_id")])
     @Column(name = "ytelse_hjemmel")
-    var ytelseHjemmelList: Set<String> = emptySet(),
+    var ytelseHjemmelIdList: Set<String> = emptySet(),
 
     @Column(name = "created")
     val created: LocalDateTime,
@@ -56,8 +56,8 @@ class Text(
         if (textType != other.textType) return false
         if (content != other.content) return false
         if (plainText != other.plainText) return false
-        if (utfall != other.utfall) return false
-        if (enheter != other.enheter) return false
+        if (utfallIdList != other.utfallIdList) return false
+        if (enhetIdList != other.enhetIdList) return false
 
         return true
     }
@@ -68,13 +68,13 @@ class Text(
         result = 31 * result + textType.hashCode()
         result = 31 * result + content.hashCode()
         result = 31 * result + plainText.hashCode()
-        result = 31 * result + utfall.hashCode()
-        result = 31 * result + enheter.hashCode()
+        result = 31 * result + utfallIdList.hashCode()
+        result = 31 * result + enhetIdList.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "Text(id=$id, title='$title', textType='$textType', content=$content, plainText=$plainText, smartEditorVersion=$smartEditorVersion, utfall=$utfall, enheter=$enheter, created=$created, modified=$modified)"
+        return "Text(id=$id, title='$title', textType='$textType', content=$content, plainText=$plainText, smartEditorVersion=$smartEditorVersion, utfall=$utfallIdList, enheter=$enhetIdList, created=$created, modified=$modified)"
     }
 
 }

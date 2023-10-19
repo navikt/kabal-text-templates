@@ -36,10 +36,10 @@ class SearchTextRepository(
             } else true
 
             textTypeCondition &&
-            testSets(utfall, text.utfall) &&
-            testSets(enheter, text.enheter) &&
-            testCompositeValues(templateSectionList, text.templateSectionList) &&
-            testCompositeValues(ytelseHjemmelList, text.ytelseHjemmelList)
+            testSets(utfall, text.utfallIdList) &&
+            testSets(enheter, text.enhetIdList) &&
+            testCompositeValues(templateSectionList, text.templateSectionIdList) &&
+            testCompositeValues(ytelseHjemmelList, text.ytelseHjemmelIdList)
         }
     }
 
