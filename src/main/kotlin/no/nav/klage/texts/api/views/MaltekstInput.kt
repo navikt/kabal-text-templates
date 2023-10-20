@@ -6,7 +6,7 @@ import java.util.*
 data class MaltekstInput(
     val id: UUID? = null,
     val title: String,
-    val textIdList: Set<String> = emptySet(),
+    val textIdList: List<String> = emptyList(),
     val utfallIdList: Set<String> = emptySet(),
     val enhetIdList: Set<String> = emptySet(),
     val templateSectionIdList: Set<String> = emptySet(),
@@ -16,7 +16,7 @@ data class MaltekstInput(
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class UpdateMaltekstInput(
     val title: String,
-    val textIdList: Set<String> = emptySet(),
+    val textIdList: List<String> = emptyList(),
     val utfallIdList: Set<String> = emptySet(),
     val enhetIdList: Set<String> = emptySet(),
     val templateSectionIdList: Set<String> = emptySet(),
