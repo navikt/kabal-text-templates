@@ -72,7 +72,7 @@ class MaltekstService(
         maltekstId: UUID,
     ): Maltekst {
         val maltekst = getMaltekst(maltekstId)
-        maltekst.texts = textRepository.findAllById(input.map { UUID.fromString(it) })
+        maltekst.texts = input.map { textRepository.getReferenceById(UUID.fromString(it)) }
         maltekst.modified = LocalDateTime.now()
         return maltekst
     }
