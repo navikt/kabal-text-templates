@@ -68,7 +68,7 @@ class MaltekstService(
     }
 
     fun updateTextIdList(
-        input: Set<String>,
+        input: List<String>,
         maltekstId: UUID,
     ): Maltekst {
         val maltekst = getMaltekst(maltekstId)

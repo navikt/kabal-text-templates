@@ -24,7 +24,7 @@ data class UpdateMaltekstInput(
 )
 
 data class TextIdListInput(
-    val textIdList: Set<String>
+    val textIdList: List<String>
 )
 
 data class UtfallIdListInput(
