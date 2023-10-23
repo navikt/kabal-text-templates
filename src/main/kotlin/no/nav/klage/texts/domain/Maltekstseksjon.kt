@@ -8,8 +8,8 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Entity
-@Table(name = "text", schema = "klage")
-class Text(
+@Table(name = "maltekstseksjon", schema = "klage")
+class Maltekstseksjon(
     @Id
     val id: UUID = UUID.randomUUID(),
     @Column(name = "created")
@@ -23,7 +23,7 @@ class Text(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Text
+        other as Maltekstseksjon
 
         return id == other.id
     }
@@ -31,7 +31,7 @@ class Text(
     override fun hashCode() = id.hashCode()
 
     override fun toString(): String {
-        return "TextVersion(id=$id, created=$created, modified=$modified, deleted=$deleted)"
+        return "Maltekstseksjon(id=$id, created=$created, modified=$modified, deleted=$deleted)"
     }
 
 }

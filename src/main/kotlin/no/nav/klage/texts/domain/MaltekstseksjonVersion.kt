@@ -5,8 +5,8 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Entity
-@Table(name = "maltekst", schema = "klage")
-class Maltekst(
+@Table(name = "maltekstseksjon_version", schema = "klage")
+class MaltekstseksjonVersion(
     @Id
     val id: UUID = UUID.randomUUID(),
 
@@ -17,25 +17,25 @@ class Maltekst(
     @JoinColumn(name="maltekst_id")
     @JoinTable(schema = "klage", name = "maltekst_text", inverseJoinColumns = [JoinColumn(name = "text_id")])
     @OrderColumn(name = "index", nullable = false)
-    var texts: List<Text> = emptyList(),
+    var texts: List<TextVersion> = emptyList(),
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(schema = "klage", name = "utfall", joinColumns = [JoinColumn(name = "maltekst_id")])
+    @CollectionTable(schema = "klage", name = "utfall", joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")])
     @Column(name = "utfall")
     var utfallIdList: Set<String> = emptySet(),
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(schema = "klage", name = "enhet", joinColumns = [JoinColumn(name = "maltekst_id")])
+    @CollectionTable(schema = "klage", name = "enhet", joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")])
     @Column(name = "enhet")
     var enhetIdList: Set<String> = emptySet(),
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(schema = "klage", name = "template_section", joinColumns = [JoinColumn(name = "maltekst_id")])
+    @CollectionTable(schema = "klage", name = "template_section", joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")])
     @Column(name = "template_section")
     var templateSectionIdList: Set<String> = emptySet(),
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(schema = "klage", name = "ytelse_hjemmel", joinColumns = [JoinColumn(name = "maltekst_id")])
+    @CollectionTable(schema = "klage", name = "ytelse_hjemmel", joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")])
     @Column(name = "ytelse_hjemmel")
     var ytelseHjemmelIdList: Set<String> = emptySet(),
 
@@ -48,7 +48,7 @@ class Maltekst(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Maltekst
+        other as MaltekstseksjonVersion
 
         if (id != other.id) return false
         if (title != other.title) return false
@@ -74,7 +74,7 @@ class Maltekst(
     }
 
     override fun toString(): String {
-        return "Maltekst(id=$id, title='$title', textIdList=$texts, utfallIdList=$utfallIdList, enheterIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, created=$created, modified=$modified)"
+        return "Maltekstseksjon(id=$id, title='$title', textIdList=$texts, utfallIdList=$utfallIdList, enheterIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, created=$created, modified=$modified)"
     }
 
 }

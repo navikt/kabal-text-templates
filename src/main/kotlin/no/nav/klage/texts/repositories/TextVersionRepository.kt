@@ -1,19 +1,26 @@
 package no.nav.klage.texts.repositories
 
-import no.nav.klage.texts.domain.MaltekstseksjonVersion
+import no.nav.klage.texts.domain.TextVersion
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
-interface MaltekstRepository : JpaRepository<MaltekstseksjonVersion, UUID> {
+interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
 
     @EntityGraph(attributePaths = [
-        "texts",
         "utfallIdList",
         "enhetIdList",
         "templateSectionIdList",
         "ytelseHjemmelIdList",
     ])
-    override fun findAll(): MutableList<MaltekstseksjonVersion>
+    fun findByPublishedIsTrue(): List<TextVersion>
+
+    fun findByPublishedIsTrueAndTextId(
+        textId: UUID
+    ): TextVersion
+
+    fun findByPublishedDateTimeIsNullAndTextId(
+        textId: UUID
+    ): TextVersion?
 
 }

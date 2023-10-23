@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
-import no.nav.klage.texts.domain.Maltekst
+import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.service.MaltekstService
-import no.nav.klage.texts.service.TextService
+import no.nav.klage.texts.service.OldTextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
@@ -21,7 +21,7 @@ import java.util.*
 @RequestMapping(value = ["/maltekster"])
 @ProtectedWithClaims(issuer = ISSUER_AAD)
 class MaltekstController(
-    private val textService: TextService,
+    private val textService: OldTextService,
     private val maltekstService: MaltekstService,
     private val tokenUtil: TokenUtil,
 ) {
@@ -33,8 +33,8 @@ class MaltekstController(
     }
 
     @Operation(
-        summary = "Create maltekst",
-        description = "Create maltekst"
+        summary = "Create maltekstseksjon",
+        description = "Create maltekstseksjon"
     )
     @PostMapping
     fun createMaltekst(
@@ -49,7 +49,7 @@ class MaltekstController(
 
         return mapToMaltekstView(
             maltekstService.createMaltekst(
-                maltekst = input.toDomainModel(),
+                maltekstseksjonVersion = input.toDomainModel(),
             )
         )
     }
@@ -82,7 +82,7 @@ class MaltekstController(
         summary = "Update textIdList",
         description = "Update textIdList"
     )
-    @PutMapping("/{maltekstId}/text-id-list")
+    @PutMapping("/{maltekstId}/textVersion-id-list")
     fun updateTextIdList(
         @PathVariable("maltekstId") maltekstId: UUID,
         @RequestBody input: TextIdListInput
@@ -199,8 +199,8 @@ class MaltekstController(
     }
 
     @Operation(
-        summary = "Delete maltekst",
-        description = "Delete maltekst"
+        summary = "Delete maltekstseksjon",
+        description = "Delete maltekstseksjon"
     )
     @DeleteMapping("/{maltekstId}")
     fun deleteMaltekst(
@@ -250,8 +250,8 @@ class MaltekstController(
     }
 
     @Operation(
-        summary = "Get maltekst",
-        description = "Get maltekst"
+        summary = "Get maltekstseksjon",
+        description = "Get maltekstseksjon"
     )
     @GetMapping("/{maltekstId}")
     fun getMaltekst(
@@ -266,9 +266,9 @@ class MaltekstController(
         return mapToMaltekstView(maltekstService.getMaltekst(maltekstId))
     }
 
-    private fun MaltekstInput.toDomainModel(): Maltekst {
+    private fun MaltekstInput.toDomainModel(): MaltekstseksjonVersion {
         val now = LocalDateTime.now()
-        return Maltekst(
+        return MaltekstseksjonVersion(
             title = title,
             texts = textService.getTextsById(textIdList.map { UUID.fromString(it) }),
             utfallIdList = utfallIdList,
@@ -281,16 +281,16 @@ class MaltekstController(
     }
 }
 
-fun mapToMaltekstView(maltekst: Maltekst): MaltekstView =
+fun mapToMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): MaltekstView =
     MaltekstView(
-        id = maltekst.id,
-        title = maltekst.title,
-        textIdList = maltekst.texts.map { it.id.toString() },
-        utfallIdList = maltekst.utfallIdList,
-        enhetIdList = maltekst.enhetIdList,
-        templateSectionIdList = maltekst.templateSectionIdList,
-        ytelseHjemmelIdList = maltekst.ytelseHjemmelIdList,
-        created = maltekst.created,
-        modified = maltekst.modified,
+        id = maltekstseksjonVersion.id,
+        title = maltekstseksjonVersion.title,
+        textIdList = maltekstseksjonVersion.texts.map { it.id.toString() },
+        utfallIdList = maltekstseksjonVersion.utfallIdList,
+        enhetIdList = maltekstseksjonVersion.enhetIdList,
+        templateSectionIdList = maltekstseksjonVersion.templateSectionIdList,
+        ytelseHjemmelIdList = maltekstseksjonVersion.ytelseHjemmelIdList,
+        created = maltekstseksjonVersion.created,
+        modified = maltekstseksjonVersion.modified,
     )
 

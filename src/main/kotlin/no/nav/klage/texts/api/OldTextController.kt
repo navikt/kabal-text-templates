@@ -5,15 +5,14 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
-import no.nav.klage.texts.domain.Text
-import no.nav.klage.texts.service.TextService
+import no.nav.klage.texts.domain.TextVersion
+import no.nav.klage.texts.service.OldTextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
 import no.nav.klage.texts.util.logMethodDetails
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDateTime
 import java.util.*
 
 @RestController
@@ -21,7 +20,7 @@ import java.util.*
 @RequestMapping(value = ["/texts"])
 @ProtectedWithClaims(issuer = ISSUER_AAD)
 class TextController(
-    private val textService: TextService,
+    private val oldTextService: OldTextService,
     private val tokenUtil: TokenUtil,
 ) {
 
@@ -47,16 +46,16 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.createText(
-                text = input.toDomainModel(),
+            oldTextService.createNewText(
+                textInput = input,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
         )
     }
 
     @Operation(
-        summary = "Update text",
-        description = "Update text"
+        summary = "Update textVersion",
+        description = "Update textVersion"
     )
     @PutMapping("/{textId}")
     fun updateText(
@@ -71,17 +70,17 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateText(
+            oldTextService.updateText(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
                 title = input.title,
                 textType = input.textType,
                 content = if (input.content == null || input.content.isNull) null else input.content,
                 plainText = input.plainText,
-                utfall = input.utfall,
-                enheter = input.enheter,
-                templateSectionList = input.templateSectionList,
-                ytelseHjemmelList = input.ytelseHjemmelList,
+                utfallIdList = input.utfall,
+                enhetIdList = input.enheter,
+                templateSectionIdList = input.templateSectionList,
+                ytelseHjemmelIdList = input.ytelseHjemmelList,
             )
         )
     }
@@ -103,7 +102,7 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateTitle(
+            oldTextService.updateTitle(
                 input = input.title,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -112,8 +111,8 @@ class TextController(
     }
 
     @Operation(
-        summary = "Update text type",
-        description = "Update text type"
+        summary = "Update textVersion type",
+        description = "Update textVersion type"
     )
     @PutMapping("/{textId}/texttype")
     fun updateTextType(
@@ -128,7 +127,7 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateTextType(
+            oldTextService.updateTextType(
                 input = input.textType,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -153,7 +152,7 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateContent(
+            oldTextService.updateContent(
                 input = input.content.toString(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -178,7 +177,7 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updatePlainText(
+            oldTextService.updatePlainText(
                 input = input.plainText,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -203,7 +202,7 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateSmartEditorVersion(
+            oldTextService.updateSmartEditorVersion(
                 input = input.version,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -228,7 +227,7 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateUtfall(
+            oldTextService.updateUtfall(
                 input = input.utfallIdList ?: input.utfall ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -253,7 +252,7 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateEnheter(
+            oldTextService.updateEnheter(
                 input = input.enheter ?: input.enhetIdList ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -278,7 +277,7 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateTemplateSectionList(
+            oldTextService.updateTemplateSectionList(
                 input = input.templateSectionIdList ?: input.templateSectionList ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -303,7 +302,7 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateYtelseHjemmelList(
+            oldTextService.updateYtelseHjemmelList(
                 input = input.ytelseHjemmelIdList ?: input.ytelseHjemmelList ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -312,8 +311,8 @@ class TextController(
     }
 
     @Operation(
-        summary = "Delete text",
-        description = "Delete text"
+        summary = "Delete textVersion",
+        description = "Delete textVersion"
     )
     @DeleteMapping("/{textId}")
     fun deleteText(
@@ -326,7 +325,7 @@ class TextController(
             logger = logger,
         )
 
-        textService.deleteText(
+        oldTextService.deleteText(
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
         )
@@ -349,7 +348,7 @@ class TextController(
 
         logger.debug("searchTexts called with params {}", searchQueryParams)
 
-        val texts = textService.searchTexts(
+        val texts = oldTextService.searchTexts(
             textType = searchQueryParams.textType,
             utfallIdList = searchQueryParams.utfallIdList ?: searchQueryParams.utfall ?: emptyList(),
             enhetIdList = searchQueryParams.enhetIdList ?: searchQueryParams.enheter ?: emptyList(),
@@ -363,8 +362,8 @@ class TextController(
     }
 
     @Operation(
-        summary = "Get text",
-        description = "Get text"
+        summary = "Get textVersion",
+        description = "Get textVersion"
     )
     @GetMapping("/{textId}")
     fun getText(
@@ -376,44 +375,26 @@ class TextController(
             id = textId,
             logger = logger,
         )
-        return mapToTextView(textService.getText(textId))
-    }
-
-    private fun TextInput.toDomainModel(): Text {
-        val now = LocalDateTime.now()
-        return Text(
-            title = title,
-            textType = textType,
-            content = content?.toString(),
-            plainText = plainText,
-            smartEditorVersion = version,
-            utfallIdList = utfallIdList ?: utfall,
-            enhetIdList = enhetIdList ?: enheter,
-            templateSectionIdList = templateSectionIdList ?: templateSectionList,
-            ytelseHjemmelIdList = ytelseHjemmelIdList ?: ytelseHjemmelList,
-            created = now,
-            modified = now,
-        )
+        return mapToTextView(oldTextService.getCurrentTextVersion(textId))
     }
 }
 
-fun mapToTextView(text: Text): TextView =
+fun mapToTextView(textVersion: TextVersion): TextView =
     TextView(
-        id = text.id,
-        title = text.title,
-        textType = text.textType,
-        content = if (text.content != null) jsonMapper().readTree(text.content) else null,
-        plainText = text.plainText,
-        version = text.smartEditorVersion,
-        utfall = text.utfallIdList,
-        enheter = text.enhetIdList,
-        templateSectionList = text.templateSectionIdList,
-        ytelseHjemmelList = text.ytelseHjemmelIdList,
-        created = text.created,
-        modified = text.modified,
-        utfallIdList = text.utfallIdList,
-        enhetIdList = text.enhetIdList,
-        templateSectionIdList = text.templateSectionIdList,
-        ytelseHjemmelIdList = text.ytelseHjemmelIdList,
-
+        id = textVersion.id,
+        title = textVersion.title,
+        textType = textVersion.textType,
+        content = if (textVersion.content != null) jsonMapper().readTree(textVersion.content) else null,
+        plainText = textVersion.plainText,
+        version = textVersion.smartEditorVersion,
+        utfall = textVersion.utfallIdList,
+        enheter = textVersion.enhetIdList,
+        templateSectionList = textVersion.templateSectionIdList,
+        ytelseHjemmelList = textVersion.ytelseHjemmelIdList,
+        created = textVersion.created,
+        modified = textVersion.modified,
+        utfallIdList = textVersion.utfallIdList,
+        enhetIdList = textVersion.enhetIdList,
+        templateSectionIdList = textVersion.templateSectionIdList,
+        ytelseHjemmelIdList = textVersion.ytelseHjemmelIdList,
     )

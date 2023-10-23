@@ -1,13 +1,12 @@
 package no.nav.klage.texts.repositories
 
-import no.nav.klage.texts.domain.Text
+import no.nav.klage.texts.domain.TextVersion
 import no.nav.klage.texts.util.getLogger
-import org.springframework.stereotype.Repository
-import kotlin.system.measureTimeMillis
+import org.springframework.stereotype.Service
 
-@Repository
-class SearchTextRepository(
-    private val textRepository: TextRepository,
+@Service
+class SearchTextService(
+    private val textVersionRepository: TextVersionRepository,
 ) {
 
     companion object {
@@ -16,30 +15,24 @@ class SearchTextRepository(
     }
 
     fun searchTexts(
+        texts: List<TextVersion>,
         textType: String?,
         utfallIdList: List<String>,
         enhetIdList: List<String>,
         templateSectionIdList: List<String>,
         ytelseHjemmelIdList: List<String>,
-    ): List<Text> {
-        var texts: MutableList<Text>
+    ): List<TextVersion> {
 
-        val millis = measureTimeMillis {
-            texts = textRepository.findAll()
-        }
-
-        logger.debug("searchTexts getting all texts took {} millis. Found {} texts", millis, texts.size)
-
-        return texts.filter { text ->
+        return texts.filter { textVersion ->
             val textTypeCondition = if (textType != null) {
-                text.textType == textType
+                textVersion.textType == textType
             } else true
 
             textTypeCondition &&
-            testSets(utfallIdList, text.utfallIdList) &&
-            testSets(enhetIdList, text.enhetIdList) &&
-            testCompositeValues(templateSectionIdList, text.templateSectionIdList) &&
-            testCompositeValues(ytelseHjemmelIdList, text.ytelseHjemmelIdList)
+            testSets(utfallIdList, textVersion.utfallIdList) &&
+            testSets(enhetIdList, textVersion.enhetIdList) &&
+            testCompositeValues(templateSectionIdList, textVersion.templateSectionIdList) &&
+            testCompositeValues(ytelseHjemmelIdList, textVersion.ytelseHjemmelIdList)
         }
     }
 

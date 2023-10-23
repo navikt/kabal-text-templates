@@ -1,9 +1,9 @@
 package no.nav.klage.texts.service
 
-import no.nav.klage.texts.domain.Maltekst
+import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.exceptions.MaltekstNotFoundException
 import no.nav.klage.texts.repositories.MaltekstRepository
-import no.nav.klage.texts.repositories.TextRepository
+import no.nav.klage.texts.repositories.TextVersionRepository
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
 import org.springframework.stereotype.Service
@@ -15,7 +15,7 @@ import java.util.*
 @Service
 class MaltekstService(
     private val maltekstRepository: MaltekstRepository,
-    private val textRepository: TextRepository,
+    private val textVersionRepository: TextVersionRepository,
 ) {
 
     companion object {
@@ -25,15 +25,15 @@ class MaltekstService(
     }
 
     fun createMaltekst(
-        maltekst: Maltekst,
-    ): Maltekst = maltekstRepository.save(maltekst)
+        maltekstseksjonVersion: MaltekstseksjonVersion,
+    ): MaltekstseksjonVersion = maltekstRepository.save(maltekstseksjonVersion)
 
     fun deleteMaltekst(
         maltekstId: UUID,
     ) = maltekstRepository.deleteById(maltekstId)
 
-    fun getMaltekst(maltekstId: UUID): Maltekst = maltekstRepository.findById(maltekstId)
-        .orElseThrow { MaltekstNotFoundException("Maltekst with id $maltekstId not found") }
+    fun getMaltekst(maltekstId: UUID): MaltekstseksjonVersion = maltekstRepository.findById(maltekstId)
+        .orElseThrow { MaltekstNotFoundException("Maltekstseksjon with id $maltekstId not found") }
 
 //    fun updateMaltekst(
 //        maltekstId: UUID,
@@ -43,78 +43,78 @@ class MaltekstService(
 //        enhetIdList: Set<String>,
 //        templateSectionIdList: Set<String>,
 //        ytelseHjemmelIdList: Set<String>,
-//    ): Maltekst {
-//        val maltekst = getMaltekst(maltekstId)
+//    ): Maltekstseksjon {
+//        val maltekstseksjon = getMaltekst(maltekstId)
 //
-//        maltekst.title = title
-//        maltekst.texts = textIdList
-//        maltekst.utfallIdList = utfallIdList
-//        maltekst.enhetIdList = enhetIdList
-//        maltekst.templateSectionIdList = templateSectionIdList
-//        maltekst.ytelseHjemmelIdList = ytelseHjemmelIdList
+//        maltekstseksjon.title = title
+//        maltekstseksjon.texts = textIdList
+//        maltekstseksjon.utfallIdList = utfallIdList
+//        maltekstseksjon.enhetIdList = enhetIdList
+//        maltekstseksjon.templateSectionIdList = templateSectionIdList
+//        maltekstseksjon.ytelseHjemmelIdList = ytelseHjemmelIdList
 //
-//        maltekst.modified = LocalDateTime.now()
-//        return maltekst
+//        maltekstseksjon.modified = LocalDateTime.now()
+//        return maltekstseksjon
 //    }
 
     fun updateTitle(
         input: String,
         maltekstId: UUID,
-    ): Maltekst {
-        val maltekst = getMaltekst(maltekstId)
-        maltekst.title = input
-        maltekst.modified = LocalDateTime.now()
-        return maltekst
+    ): MaltekstseksjonVersion {
+        val maltekstseksjon = getMaltekst(maltekstId)
+        maltekstseksjon.title = input
+        maltekstseksjon.modified = LocalDateTime.now()
+        return maltekstseksjon
     }
 
     fun updateTextIdList(
         input: List<String>,
         maltekstId: UUID,
-    ): Maltekst {
-        val maltekst = getMaltekst(maltekstId)
-        maltekst.texts = input.map { textRepository.getReferenceById(UUID.fromString(it)) }
-        maltekst.modified = LocalDateTime.now()
-        return maltekst
+    ): MaltekstseksjonVersion {
+        val maltekstseksjon = getMaltekst(maltekstId)
+        maltekstseksjon.texts = input.map { textVersionRepository.getReferenceById(UUID.fromString(it)) }
+        maltekstseksjon.modified = LocalDateTime.now()
+        return maltekstseksjon
     }
 
     fun updateUtfallIdList(
         input: Set<String>,
         maltekstId: UUID,
-    ): Maltekst {
-        val maltekst = getMaltekst(maltekstId)
-        maltekst.utfallIdList = input
-        maltekst.modified = LocalDateTime.now()
-        return maltekst
+    ): MaltekstseksjonVersion {
+        val maltekstseksjon = getMaltekst(maltekstId)
+        maltekstseksjon.utfallIdList = input
+        maltekstseksjon.modified = LocalDateTime.now()
+        return maltekstseksjon
     }
 
     fun updateTemplateSectionIdList(
         input: Set<String>,
         maltekstId: UUID,
-    ): Maltekst {
-        val maltekst = getMaltekst(maltekstId)
-        maltekst.templateSectionIdList = input
-        maltekst.modified = LocalDateTime.now()
-        return maltekst
+    ): MaltekstseksjonVersion {
+        val maltekstseksjon = getMaltekst(maltekstId)
+        maltekstseksjon.templateSectionIdList = input
+        maltekstseksjon.modified = LocalDateTime.now()
+        return maltekstseksjon
     }
 
     fun updateYtelseHjemmelIdList(
         input: Set<String>,
         maltekstId: UUID,
-    ): Maltekst {
-        val maltekst = getMaltekst(maltekstId)
-        maltekst.ytelseHjemmelIdList = input
-        maltekst.modified = LocalDateTime.now()
-        return maltekst
+    ): MaltekstseksjonVersion {
+        val maltekstseksjon = getMaltekst(maltekstId)
+        maltekstseksjon.ytelseHjemmelIdList = input
+        maltekstseksjon.modified = LocalDateTime.now()
+        return maltekstseksjon
     }
 
     fun updateEnhetIdList(
         input: Set<String>,
         maltekstId: UUID,
-    ): Maltekst {
-        val maltekst = getMaltekst(maltekstId)
-        maltekst.enhetIdList = input
-        maltekst.modified = LocalDateTime.now()
-        return maltekst
+    ): MaltekstseksjonVersion {
+        val maltekstseksjon = getMaltekst(maltekstId)
+        maltekstseksjon.enhetIdList = input
+        maltekstseksjon.modified = LocalDateTime.now()
+        return maltekstseksjon
     }
 
 //    fun searchMalteksts(
@@ -122,7 +122,7 @@ class MaltekstService(
 //        enheter: List<String>,
 //        templateSectionList: List<String>,
 //        ytelseHjemmelList: List<String>,
-//    ): List<Maltekst> {
+//    ): List<Maltekstseksjon> {
 //        return searchMaltekstRepository.searchMalteksts(
 //            maltekstType = maltekstType,
 //            utfall = utfall,
@@ -132,5 +132,5 @@ class MaltekstService(
 //        )
 //    }
 
-    fun getAllMalteksts(): List<Maltekst> = maltekstRepository.findAll()
+    fun getAllMalteksts(): List<MaltekstseksjonVersion> = maltekstRepository.findAll()
 }

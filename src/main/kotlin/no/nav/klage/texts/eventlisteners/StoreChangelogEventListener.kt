@@ -16,7 +16,7 @@ class StoreChangelogEventListener(private val changelogRepository: ChangelogRepo
 
     @EventListener
     fun storeChangelog(textChangedEvent: TextChangedEvent) {
-        logger.debug("Received TextChangedEvent for textId ${textChangedEvent.text.id} in StoreChangelogEventListener")
+        logger.debug("Received TextChangedEvent for textId ${textChangedEvent.textVersion.id} in StoreChangelogEventListener")
         if (textChangedEvent.changelogEntries.isNotEmpty()) {
             changelogRepository.saveAll(textChangedEvent.changelogEntries)
         }
