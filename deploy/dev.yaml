@@ -8,6 +8,11 @@ db_ha: false
 db_type: POSTGRES_15
 tenant: trygdeetaten.no
 
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 5
+
 envs:
   - name: JAVA_TOOL_OPTIONS
     value: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
