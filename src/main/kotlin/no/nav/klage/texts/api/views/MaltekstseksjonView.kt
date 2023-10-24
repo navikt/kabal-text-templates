@@ -3,9 +3,10 @@ package no.nav.klage.texts.api.views
 import java.time.LocalDateTime
 import java.util.*
 
-data class MaltekstView(
+data class MaltekstseksjonView(
     val id: UUID,
     val title: String,
+    val maltekstseksjonId: UUID,
     val textIdList: List<String> = emptyList(),
     val utfallIdList: Set<String> = emptySet(),
     val enhetIdList: Set<String> = emptySet(),
@@ -13,4 +14,9 @@ data class MaltekstView(
     val ytelseHjemmelIdList: Set<String> = emptySet(),
     val created: LocalDateTime,
     var modified: LocalDateTime,
+
+    val editors: Set<String>,
+    val publishedDateTime: LocalDateTime?,
+    val publishedBy: String?,
+    val published: Boolean,
 )

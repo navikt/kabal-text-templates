@@ -434,7 +434,8 @@ class TextController(
 
 fun mapToTextView(textVersion: TextVersion): TextView =
     TextView(
-        id = textVersion.id,
+        id = textVersion.textId,
+        textVersionId = textVersion.id,
         title = textVersion.title,
         textType = textVersion.textType,
         content = if (textVersion.content != null) jsonMapper().readTree(textVersion.content) else null,
@@ -450,4 +451,8 @@ fun mapToTextView(textVersion: TextVersion): TextView =
         enhetIdList = textVersion.enhetIdList,
         templateSectionIdList = textVersion.templateSectionIdList,
         ytelseHjemmelIdList = textVersion.ytelseHjemmelIdList,
+        editors = textVersion.editors,
+        publishedDateTime = textVersion.publishedDateTime,
+        publishedBy = textVersion.publishedBy,
+        published = textVersion.published,
     )

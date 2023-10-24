@@ -38,7 +38,7 @@ class MaltekstController(
     @PostMapping
     fun createMaltekst(
         @RequestBody input: MaltekstInput
-    ): MaltekstView {
+    ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::createMaltekst.name,
             innloggetIdent = tokenUtil.getIdent(),
@@ -62,7 +62,7 @@ class MaltekstController(
     fun updateTitle(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
         @RequestBody input: TitleInput
-    ): MaltekstView {
+    ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::updateTitle.name,
             innloggetIdent = tokenUtil.getIdent(),
@@ -87,7 +87,7 @@ class MaltekstController(
     fun updateTextIdList(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
         @RequestBody input: TextIdListInput
-    ): MaltekstView {
+    ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::updateTextIdList.name,
             innloggetIdent = tokenUtil.getIdent(),
@@ -112,7 +112,7 @@ class MaltekstController(
     fun updateUtfallIdList(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
         @RequestBody input: UtfallIdListInput
-    ): MaltekstView {
+    ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::updateUtfallIdList.name,
             innloggetIdent = tokenUtil.getIdent(),
@@ -137,7 +137,7 @@ class MaltekstController(
     fun updateEnhetIdList(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
         @RequestBody input: EnhetIdListInput
-    ): MaltekstView {
+    ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::updateEnhetIdList.name,
             innloggetIdent = tokenUtil.getIdent(),
@@ -162,7 +162,7 @@ class MaltekstController(
     fun updateTemplateSectionIdList(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
         @RequestBody input: TemplateSectionIdListInput
-    ): MaltekstView {
+    ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::updateTemplateSectionIdList.name,
             innloggetIdent = tokenUtil.getIdent(),
@@ -187,7 +187,7 @@ class MaltekstController(
     fun updateYtelseHjemmelIdList(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
         @RequestBody input: YtelseHjemmelIdListInput
-    ): MaltekstView {
+    ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::updateYtelseHjemmelIdList.name,
             innloggetIdent = tokenUtil.getIdent(),
@@ -233,7 +233,7 @@ class MaltekstController(
     fun searchMalteksts(
         @RequestParam(required = false, defaultValue = "true") published: Boolean = true,
         searchMaltekstseksjonQueryParams: SearchMaltekstseksjonQueryParams
-    ): List<MaltekstView> {
+    ): List<MaltekstseksjonView> {
         logMethodDetails(
             methodName = ::searchMalteksts.name,
             innloggetIdent = tokenUtil.getIdent(),
@@ -272,7 +272,7 @@ class MaltekstController(
     @GetMapping("/{maltekstseksjonId}")
     fun getMaltekst(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
-    ): MaltekstView {
+    ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::getMaltekst.name,
             innloggetIdent = tokenUtil.getIdent(),
@@ -283,10 +283,11 @@ class MaltekstController(
     }
 }
 
-fun mapToMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): MaltekstView =
-    MaltekstView(
-        id = maltekstseksjonVersion.id,
+fun mapToMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): MaltekstseksjonView =
+    MaltekstseksjonView(
+        id = maltekstseksjonVersion.maltekstseksjonId,
         title = maltekstseksjonVersion.title,
+        maltekstseksjonId = maltekstseksjonVersion.id,
         textIdList = maltekstseksjonVersion.texts.map { it.id.toString() },
         utfallIdList = maltekstseksjonVersion.utfallIdList,
         enhetIdList = maltekstseksjonVersion.enhetIdList,
@@ -294,4 +295,8 @@ fun mapToMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): MaltekstV
         ytelseHjemmelIdList = maltekstseksjonVersion.ytelseHjemmelIdList,
         created = maltekstseksjonVersion.created,
         modified = maltekstseksjonVersion.modified,
+        editors = maltekstseksjonVersion.editors,
+        publishedDateTime = maltekstseksjonVersion.publishedDateTime,
+        publishedBy = maltekstseksjonVersion.publishedBy,
+        published = maltekstseksjonVersion.published,
     )

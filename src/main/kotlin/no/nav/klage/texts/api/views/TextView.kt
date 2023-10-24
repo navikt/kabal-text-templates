@@ -6,6 +6,8 @@ import java.util.*
 
 data class TextView(
     val id: UUID,
+
+    val textVersionId: UUID,
     val title: String,
     val textType: String,
     val content: JsonNode?,
@@ -22,4 +24,9 @@ data class TextView(
     val enhetIdList: Set<String>,
     val templateSectionIdList: Set<String>,
     val ytelseHjemmelIdList: Set<String>,
+
+    val editors: Set<String>,
+    val publishedDateTime: LocalDateTime?,
+    val publishedBy: String?,
+    val published: Boolean,
 )

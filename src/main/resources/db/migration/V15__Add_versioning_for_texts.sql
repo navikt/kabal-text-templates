@@ -27,9 +27,11 @@ SELECT id, created, modified
 FROM klage.text_version;
 
 --use same id initially
-UPDATE klage.text_version
-SET text_id             = (SELECT id FROM klage.text_version),
-    published_date_time = (SELECT created FROM klage.text_version);
+UPDATE klage.text_version tv1
+SET text_id = (SELECT tv2.id FROM klage.text_version tv2 WHERE tv1.id = tv2.id);
+
+UPDATE klage.text_version tv1
+SET published_date_time = (SELECT tv2.created FROM klage.text_version tv2 WHERE tv1.id = tv2.id);
 
 CREATE INDEX text_published_ix ON klage.text_version (published);
 
