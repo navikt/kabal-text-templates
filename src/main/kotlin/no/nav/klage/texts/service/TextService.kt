@@ -153,7 +153,7 @@ class TextService(
             error("there can only be one of content or plainText")
         }
 
-        val textVersion = getOrCreateCurrentDraft(textId)
+        val textVersion = getCurrentDraft(textId)
 
         textVersion.apply {
             this.title = title
@@ -176,7 +176,7 @@ class TextService(
         saksbehandlerIdent: String,
     ): TextVersion {
         validateIfTextIsDeleted(textId)
-        val textVersion = getOrCreateCurrentDraft(textId)
+        val textVersion = getCurrentDraft(textId)
         textVersion.title = input
         textVersion.editors += saksbehandlerIdent
         return textVersion
@@ -188,7 +188,7 @@ class TextService(
         saksbehandlerIdent: String,
     ): TextVersion {
         validateIfTextIsDeleted(textId)
-        val textVersion = getOrCreateCurrentDraft(textId)
+        val textVersion = getCurrentDraft(textId)
         textVersion.textType = input
         textVersion.editors += saksbehandlerIdent
         return textVersion
@@ -200,7 +200,7 @@ class TextService(
         saksbehandlerIdent: String,
     ): TextVersion {
         validateIfTextIsDeleted(textId)
-        val textVersion = getOrCreateCurrentDraft(textId)
+        val textVersion = getCurrentDraft(textId)
         textVersion.smartEditorVersion = input
         textVersion.editors += saksbehandlerIdent
         return textVersion
@@ -212,7 +212,7 @@ class TextService(
         saksbehandlerIdent: String,
     ): TextVersion {
         validateIfTextIsDeleted(textId)
-        val textVersion = getOrCreateCurrentDraft(textId)
+        val textVersion = getCurrentDraft(textId)
         textVersion.content = input
         textVersion.editors += saksbehandlerIdent
         return textVersion
@@ -224,7 +224,7 @@ class TextService(
         saksbehandlerIdent: String,
     ): TextVersion {
         validateIfTextIsDeleted(textId)
-        val textVersion = getOrCreateCurrentDraft(textId)
+        val textVersion = getCurrentDraft(textId)
         textVersion.plainText = input
         textVersion.editors += saksbehandlerIdent
         return textVersion
@@ -236,7 +236,7 @@ class TextService(
         saksbehandlerIdent: String,
     ): TextVersion {
         validateIfTextIsDeleted(textId)
-        val textVersion = getOrCreateCurrentDraft(textId)
+        val textVersion = getCurrentDraft(textId)
         textVersion.utfallIdList = input
         textVersion.editors += saksbehandlerIdent
         return textVersion
@@ -248,7 +248,7 @@ class TextService(
         saksbehandlerIdent: String,
     ): TextVersion {
         validateIfTextIsDeleted(textId)
-        val textVersion = getOrCreateCurrentDraft(textId)
+        val textVersion = getCurrentDraft(textId)
         textVersion.enhetIdList = input
         textVersion.editors += saksbehandlerIdent
         return textVersion
@@ -260,7 +260,7 @@ class TextService(
         saksbehandlerIdent: String,
     ): TextVersion {
         validateIfTextIsDeleted(textId)
-        val textVersion = getOrCreateCurrentDraft(textId)
+        val textVersion = getCurrentDraft(textId)
         textVersion.templateSectionIdList = input
         textVersion.editors += saksbehandlerIdent
         return textVersion
@@ -272,7 +272,7 @@ class TextService(
         saksbehandlerIdent: String,
     ): TextVersion {
         validateIfTextIsDeleted(textId)
-        val textVersion = getOrCreateCurrentDraft(textId)
+        val textVersion = getCurrentDraft(textId)
         textVersion.ytelseHjemmelIdList = input
         textVersion.editors += saksbehandlerIdent
         return textVersion
@@ -343,24 +343,11 @@ class TextService(
     fun getTextVersionsById(ids: List<UUID>): MutableList<TextVersion> = textVersionRepository.findAllById(ids)
     fun updateAll(textVersions: List<TextVersion>): MutableList<TextVersion> = textVersionRepository.saveAll(textVersions)
 
-    private fun getOrCreateCurrentDraft(textId: UUID): TextVersion {
-        val textVersionDraft =
-            textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
-                textId = textId
-            )
-
-        return if (textVersionDraft != null) {
-            textVersionDraft
-        } else {
-            //Pick latest published version as template for the draft
-            val template = textVersionRepository.findByPublishedIsTrueAndTextId(textId = textId)
-
-            textVersionRepository.save(
-                template.createDraft()
-            )
-        }
+    private fun getCurrentDraft(textId: UUID): TextVersion {
+        return textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
+            textId = textId
+        ) ?: throw ClientErrorException("no draft was found")
     }
-
 
     private fun validateIfTextIsDeleted(textId: UUID) {
         if (textRepository.getReferenceById(textId).deleted) {

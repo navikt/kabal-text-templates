@@ -149,7 +149,7 @@ class MaltekstseksjonService(
     ): MaltekstseksjonVersion {
         validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
 
-        val maltekstseksjonVersion = getOrCreateCurrentDraft(maltekstseksjonId)
+        val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
 
         maltekstseksjonVersion.apply {
             this.title = title
@@ -171,7 +171,7 @@ class MaltekstseksjonService(
     ): MaltekstseksjonVersion {
         validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
 
-        val maltekstseksjonVersion = getOrCreateCurrentDraft(maltekstseksjonId)
+        val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.title = input
         maltekstseksjonVersion.editors += saksbehandlerIdent
         return maltekstseksjonVersion
@@ -184,7 +184,7 @@ class MaltekstseksjonService(
     ): MaltekstseksjonVersion {
         validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
 
-        val maltekstseksjonVersion = getOrCreateCurrentDraft(maltekstseksjonId)
+        val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.texts = input.map { textRepository.getReferenceById(UUID.fromString(it)) }
         maltekstseksjonVersion.editors += saksbehandlerIdent
         return maltekstseksjonVersion
@@ -197,7 +197,7 @@ class MaltekstseksjonService(
     ): MaltekstseksjonVersion {
         validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
 
-        val maltekstseksjonVersion = getOrCreateCurrentDraft(maltekstseksjonId)
+        val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.utfallIdList = input
         maltekstseksjonVersion.editors += saksbehandlerIdent
         return maltekstseksjonVersion
@@ -210,7 +210,7 @@ class MaltekstseksjonService(
     ): MaltekstseksjonVersion {
         validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
 
-        val maltekstseksjonVersion = getOrCreateCurrentDraft(maltekstseksjonId)
+        val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.enhetIdList = input
         maltekstseksjonVersion.editors += saksbehandlerIdent
         return maltekstseksjonVersion
@@ -223,7 +223,7 @@ class MaltekstseksjonService(
     ): MaltekstseksjonVersion {
         validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
 
-        val maltekstseksjonVersion = getOrCreateCurrentDraft(maltekstseksjonId)
+        val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.templateSectionIdList = input
         maltekstseksjonVersion.editors += saksbehandlerIdent
         return maltekstseksjonVersion
@@ -236,7 +236,7 @@ class MaltekstseksjonService(
     ): MaltekstseksjonVersion {
         validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
 
-        val maltekstseksjonVersion = getOrCreateCurrentDraft(maltekstseksjonId)
+        val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.ytelseHjemmelIdList = input
         maltekstseksjonVersion.editors += saksbehandlerIdent
         return maltekstseksjonVersion
@@ -317,23 +317,10 @@ class MaltekstseksjonService(
     fun getMaltekstseksjonVersionsById(ids: List<UUID>): MutableList<MaltekstseksjonVersion> = maltekstseksjonVersionRepository.findAllById(ids)
     fun updateAll(maltekstseksjonVersions: List<MaltekstseksjonVersion>): MutableList<MaltekstseksjonVersion> = maltekstseksjonVersionRepository.saveAll(maltekstseksjonVersions)
 
-    private fun getOrCreateCurrentDraft(maltekstseksjonId: UUID): MaltekstseksjonVersion {
-        val maltekstseksjonVersionDraft =
-            maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
-                maltekstseksjonId = maltekstseksjonId
-            )
-
-        return if (maltekstseksjonVersionDraft != null) {
-            maltekstseksjonVersionDraft
-        } else {
-            //Pick latest published version as template for the draft
-            val template =
-                maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(maltekstseksjonId = maltekstseksjonId)
-
-            maltekstseksjonVersionRepository.save(
-                template.createDraft()
-            )
-        }
+    private fun getCurrentDraft(maltekstseksjonId: UUID): MaltekstseksjonVersion {
+        return maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
+            maltekstseksjonId = maltekstseksjonId
+        ) ?: throw ClientErrorException("no draft was found")
     }
 
     private fun validateIfMaltekstseksjonIsDeleted(maltekstseksjonId: UUID) {
