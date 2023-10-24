@@ -50,14 +50,12 @@ ALTER TABLE klage.utfall
 ALTER TABLE klage.ytelse_hjemmel
     RENAME COLUMN text_id TO text_version_id;
 
-ALTER TABLE klage.enhet
-    RENAME COLUMN maltekst_id TO maltekstseksjon_version_id;
-ALTER TABLE klage.template_section
-    RENAME COLUMN maltekst_id TO maltekstseksjon_version_id;
-ALTER TABLE klage.utfall
-    RENAME COLUMN maltekst_id TO maltekstseksjon_version_id;
-ALTER TABLE klage.ytelse_hjemmel
-    RENAME COLUMN maltekst_id TO maltekstseksjon_version_id;
+ALTER TABLE klage.maltekst_text
+    DROP CONSTRAINT maltekst_text_text_id_fkey;
+
+ALTER TABLE klage.maltekst_text
+    ADD FOREIGN KEY (text_id)
+        REFERENCES klage.text (id);
 
 
 --TODO rename indicies

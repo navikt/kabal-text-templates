@@ -1,7 +1,8 @@
 package no.nav.klage.texts.repositories
 
+import no.nav.klage.texts.domain.Maltekstseksjon
+import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.Text
-import no.nav.klage.texts.domain.TextVersion
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,7 +18,7 @@ import java.time.LocalDateTime
 @DataJpaTest
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class TextVersionRepositoryTest {
+class MaltekstseksjonVersionRepositoryTest {
 
     companion object {
         @Container
@@ -29,30 +30,35 @@ class TextVersionRepositoryTest {
     lateinit var testEntityManager: TestEntityManager
 
     @Autowired
-    lateinit var textVersionRepository: TextVersionRepository
+    lateinit var maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository
 
     @Test
-    fun `add textVersion works`() {
+    fun `add maltekstseksjonVersion works`() {
         val now = LocalDateTime.now()
 
-        val text = testEntityManager.persist(
-            Text(
+        val maltekstseksjon = testEntityManager.persist(
+            Maltekstseksjon(
                 created = now,
                 modified = now,
                 deleted = false
             )
         )
 
-        val textVersion = TextVersion(
+        val text = testEntityManager.persist(
+            Text(
+                created = now,
+                modified = now,
+                deleted = false,
+            )
+        )
+
+        val maltekstseksjonVersion = MaltekstseksjonVersion(
             title = "title",
-            textType = "type",
-            smartEditorVersion = 1,
-            content = "{}",
-            plainText = null,
+            maltekstseksjonId = maltekstseksjon.id,
+            texts = listOf(text),
             publishedDateTime = null,
             publishedBy = null,
             published = false,
-            textId = text.id,
             utfallIdList = setOf("1"),
             enhetIdList = setOf("1"),
             templateSectionIdList = setOf("1"),
@@ -62,13 +68,13 @@ class TextVersionRepositoryTest {
             modified = now,
         )
 
-        textVersionRepository.save(textVersion)
+        maltekstseksjonVersionRepository.save(maltekstseksjonVersion)
 
         testEntityManager.flush()
         testEntityManager.clear()
 
-        val foundText = textVersionRepository.findById(textVersion.id).get()
-        assertThat(foundText).isEqualTo(textVersion)
+        val foundMaltekstseksjonVersion = maltekstseksjonVersionRepository.findById(maltekstseksjonVersion.id).get()
+        assertThat(foundMaltekstseksjonVersion).isEqualTo(maltekstseksjonVersion)
     }
     /*
     @Test

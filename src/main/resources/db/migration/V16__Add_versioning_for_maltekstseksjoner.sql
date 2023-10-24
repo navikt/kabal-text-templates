@@ -4,6 +4,7 @@ ALTER TABLE klage.maltekst
 ALTER TABLE klage.maltekstseksjon_version
     ADD COLUMN published_date_time TIMESTAMP,
     ADD COLUMN published           BOOLEAN DEFAULT true,
+    ADD COLUMN published_by        TEXT,
     ADD COLUMN maltekstseksjon_id  UUID;
 
 CREATE TABLE klage.maltekstseksjon
@@ -39,5 +40,20 @@ CREATE TABLE klage.maltekstseksjon_version_editor
 );
 
 CREATE INDEX maltekstseksjon_version_id_ix ON klage.maltekstseksjon_version_editor (maltekstseksjon_version_id);
+
+ALTER TABLE klage.enhet
+    RENAME COLUMN maltekst_id TO maltekstseksjon_version_id;
+ALTER TABLE klage.template_section
+    RENAME COLUMN maltekst_id TO maltekstseksjon_version_id;
+ALTER TABLE klage.utfall
+    RENAME COLUMN maltekst_id TO maltekstseksjon_version_id;
+ALTER TABLE klage.ytelse_hjemmel
+    RENAME COLUMN maltekst_id TO maltekstseksjon_version_id;
+
+ALTER TABLE klage.maltekst_text
+    RENAME TO maltekstseksjon_version_text;
+
+ALTER TABLE klage.maltekstseksjon_version_text
+    RENAME COLUMN maltekst_id TO maltekstseksjon_version_id;
 
 --TODO rename indicies

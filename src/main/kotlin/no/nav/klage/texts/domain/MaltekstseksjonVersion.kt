@@ -16,8 +16,8 @@ class MaltekstseksjonVersion(
     val maltekstseksjonId: UUID,
 
     @OneToMany
-    @JoinColumn(name = "maltekst_id")
-    @JoinTable(schema = "klage", name = "maltekst_text", inverseJoinColumns = [JoinColumn(name = "text_id")])
+    @JoinColumn(name = "maltekstseksjon_version_id")
+    @JoinTable(schema = "klage", name = "maltekstseksjon_version_text", inverseJoinColumns = [JoinColumn(name = "text_id")])
     @OrderColumn(name = "index", nullable = false)
     var texts: List<Text> = emptyList(),
 
@@ -52,8 +52,8 @@ class MaltekstseksjonVersion(
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
         schema = "klage",
-        name = "text_version_editor",
-        joinColumns = [JoinColumn(name = "text_version_id")]
+        name = "maltekstseksjon_version_editor",
+        joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")]
     )
     @Column(name = "nav_ident")
     var editors: Set<String> = emptySet(),
