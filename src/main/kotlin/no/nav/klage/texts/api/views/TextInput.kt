@@ -4,6 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.JsonNode
 import java.util.*
 
+data class VersionInput(
+    val versionId: UUID
+)
+
+
 data class TextInput(
     val id: UUID? = null,
     val title: String,

@@ -1,6 +1,7 @@
 package no.nav.klage.texts.service
 
 import no.nav.klage.texts.api.views.MaltekstInput
+import no.nav.klage.texts.api.views.VersionInput
 import no.nav.klage.texts.domain.Maltekstseksjon
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.exceptions.ClientErrorException
@@ -17,7 +18,7 @@ import kotlin.system.measureTimeMillis
 
 @Transactional
 @Service
-class MaltekstService(
+class MaltekstseksjonService(
     private val maltekstseksjonRepository: MaltekstseksjonRepository,
     private val maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository,
     private val textRepository: TextRepository,
@@ -46,7 +47,7 @@ class MaltekstService(
     }
 
     fun getMaltekstseksjonVersions(maltekstseksjonId: UUID): List<MaltekstseksjonVersion> =
-         maltekstseksjonVersionRepository.findByPublishedIsFalseAndPublishedDateTimeIsNotNullAndMaltekstseksjonId(maltekstseksjonId)
+         maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId)
 
     fun createNewMaltekstseksjon(
         maltekstseksjonInput: MaltekstInput,
@@ -76,6 +77,28 @@ class MaltekstService(
                 published = false,
                 publishedBy = null,
             )
+        )
+    }
+
+    fun createNewDraft(
+        maltekstseksjonId: UUID,
+        versionInput: VersionInput?,
+        saksbehandlerIdent: String,
+    ): MaltekstseksjonVersion {
+        val existingVersion = if (versionInput != null) {
+            maltekstseksjonVersionRepository.getReferenceById(versionInput.versionId)
+        } else {
+            maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
+                maltekstseksjonId = maltekstseksjonId
+            )
+        }
+
+        val existingDraft = maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
+            maltekstseksjonId = maltekstseksjonId
+        )
+
+        return maltekstseksjonVersionRepository.save(
+            existingVersion.createDraft(existingDraft?.id)
         )
     }
 

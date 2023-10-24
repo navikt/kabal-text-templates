@@ -72,9 +72,10 @@ class MaltekstseksjonVersion(
     var modified: LocalDateTime,
 ) {
 
-    fun createDraft(): MaltekstseksjonVersion {
+    fun createDraft(id: UUID? = null): MaltekstseksjonVersion {
         val now = LocalDateTime.now()
         return MaltekstseksjonVersion(
+            id = id ?: UUID.randomUUID(),
             title = title,
             texts = texts,
             utfallIdList = utfallIdList,

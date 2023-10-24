@@ -2,6 +2,7 @@ package no.nav.klage.texts.service
 
 import com.fasterxml.jackson.databind.JsonNode
 import no.nav.klage.texts.api.views.TextInput
+import no.nav.klage.texts.api.views.VersionInput
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.domain.TextVersion
 import no.nav.klage.texts.exceptions.ClientErrorException
@@ -45,7 +46,7 @@ class TextService(
     }
 
     fun getTextVersions(textId: UUID): List<TextVersion> =
-        textVersionRepository.findByPublishedIsFalseAndPublishedDateTimeIsNotNullAndTextId(textId)
+        textVersionRepository.findByTextId(textId)
 
     fun createNewText(
         textInput: TextInput,
@@ -79,6 +80,28 @@ class TextService(
                 published = false,
                 publishedBy = null,
             )
+        )
+    }
+
+    fun createNewDraft(
+        textId: UUID,
+        versionInput: VersionInput?,
+        saksbehandlerIdent: String,
+    ): TextVersion {
+        val existingVersion = if (versionInput != null) {
+            textVersionRepository.getReferenceById(versionInput.versionId)
+        } else {
+            textVersionRepository.findByPublishedIsTrueAndTextId(
+                textId = textId
+            )
+        }
+
+        val existingDraft = textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
+            textId = textId
+        )
+
+        return textVersionRepository.save(
+            existingVersion.createDraft(existingDraft?.id)
         )
     }
 

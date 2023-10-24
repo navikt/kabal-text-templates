@@ -41,7 +41,7 @@ class TextController(
         logMethodDetails(
             methodName = ::getTextVersions.name,
             innloggetIdent = tokenUtil.getIdent(),
-            id = null,
+            id = textId,
             logger = logger,
         )
 
@@ -61,7 +61,7 @@ class TextController(
         logMethodDetails(
             methodName = ::publishText.name,
             innloggetIdent = tokenUtil.getIdent(),
-            id = null,
+            id = textId,
             logger = logger,
         )
 
@@ -91,6 +91,31 @@ class TextController(
         return mapToTextView(
             textService.createNewText(
                 textInput = input,
+                saksbehandlerIdent = tokenUtil.getIdent(),
+            )
+        )
+    }
+
+    @Operation(
+        summary = "Create text draft",
+        description = "Create text draft, possibly based on existing version"
+    )
+    @PostMapping("/{textId}/draft")
+    fun createDraft(
+        @PathVariable("textId") textId: UUID,
+        @RequestBody input: VersionInput?
+    ): TextView {
+        logMethodDetails(
+            methodName = ::createDraft.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = textId,
+            logger = logger,
+        )
+
+        return mapToTextView(
+            textService.createNewDraft(
+                textId = textId,
+                versionInput = input,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
         )

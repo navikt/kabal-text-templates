@@ -5,8 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
-import no.nav.klage.texts.service.MaltekstService
-import no.nav.klage.texts.service.TextService
+import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
@@ -17,11 +16,10 @@ import java.util.*
 
 @RestController
 @Tag(name = "kabal-text-templates", description = "API for template texts")
-@RequestMapping(value = ["/maltekster"])
+@RequestMapping(value = ["/maltekstseksjoner"])
 @ProtectedWithClaims(issuer = ISSUER_AAD)
-class MaltekstController(
-    private val textService: TextService,
-    private val maltekstService: MaltekstService,
+class MaltekstseksjonController(
+    private val maltekstseksjonService: MaltekstseksjonService,
     private val tokenUtil: TokenUtil,
 ) {
 
@@ -29,6 +27,49 @@ class MaltekstController(
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val logger = getLogger(javaClass.enclosingClass)
         private val secureLogger = getSecureLogger()
+    }
+
+    @Operation(
+        summary = "Get versions for maltekstseksjon",
+        description = "Get versions for maltekstseksjon"
+    )
+    @GetMapping("/{maltekstseksjonId}/versions")
+    fun getMaltekstseksjonVersions(
+        @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
+    ): List<MaltekstseksjonView> {
+        logMethodDetails(
+            methodName = ::getMaltekstseksjonVersions.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = maltekstseksjonId,
+            logger = logger,
+        )
+
+        return maltekstseksjonService.getMaltekstseksjonVersions(maltekstseksjonId).map {
+            mapToMaltekstView(it)
+        }
+    }
+
+    @Operation(
+        summary = "Publish maltekstseksjon",
+        description = "Publish maltekstseksjon using current draft"
+    )
+    @PostMapping("/{maltekstseksjonId}/publish")
+    fun publishMaltekstseksjon(
+        @PathVariable("textId") maltekstseksjonId: UUID,
+    ): MaltekstseksjonView {
+        logMethodDetails(
+            methodName = ::publishMaltekstseksjon.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = maltekstseksjonId,
+            logger = logger,
+        )
+
+        return mapToMaltekstView(
+            maltekstseksjonService.publishMaltekstseksjonVersion(
+                maltekstseksjonId = maltekstseksjonId,
+                saksbehandlerIdent = tokenUtil.getIdent(),
+            )
+        )
     }
 
     @Operation(
@@ -47,8 +88,35 @@ class MaltekstController(
         )
 
         return mapToMaltekstView(
-            maltekstService.createNewMaltekstseksjon(
+            maltekstseksjonService.createNewMaltekstseksjon(
                 maltekstseksjonInput = input,
+                saksbehandlerIdent = tokenUtil.getIdent(),
+            )
+        )
+    }
+
+
+
+    @Operation(
+        summary = "Create maltekstseksjon draft",
+        description = "Create maltekstseksjon draft, possibly based on existing version"
+    )
+    @PostMapping("/{maltekstseksjonId}/draft")
+    fun createDraft(
+        @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
+        @RequestBody input: VersionInput?
+    ): MaltekstseksjonView {
+        logMethodDetails(
+            methodName = ::createDraft.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = maltekstseksjonId,
+            logger = logger,
+        )
+
+        return mapToMaltekstView(
+            maltekstseksjonService.createNewDraft(
+                maltekstseksjonId = maltekstseksjonId,
+                versionInput = input,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
         )
@@ -71,7 +139,7 @@ class MaltekstController(
         )
 
         return mapToMaltekstView(
-            maltekstService.updateTitle(
+            maltekstseksjonService.updateTitle(
                 input = input.title,
                 maltekstseksjonId = maltekstseksjonId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -96,7 +164,7 @@ class MaltekstController(
         )
 
         return mapToMaltekstView(
-            maltekstService.updateTexts(
+            maltekstseksjonService.updateTexts(
                 input = input.textIdList,
                 maltekstseksjonId = maltekstseksjonId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -121,7 +189,7 @@ class MaltekstController(
         )
 
         return mapToMaltekstView(
-            maltekstService.updateUtfall(
+            maltekstseksjonService.updateUtfall(
                 input = input.utfallIdList,
                 maltekstseksjonId = maltekstseksjonId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -146,7 +214,7 @@ class MaltekstController(
         )
 
         return mapToMaltekstView(
-            maltekstService.updateEnheter(
+            maltekstseksjonService.updateEnheter(
                 input = input.enhetIdList,
                 maltekstseksjonId = maltekstseksjonId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -171,7 +239,7 @@ class MaltekstController(
         )
 
         return mapToMaltekstView(
-            maltekstService.updateTemplateSectionList(
+            maltekstseksjonService.updateTemplateSectionList(
                 input = input.templateSectionIdList,
                 maltekstseksjonId = maltekstseksjonId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -196,7 +264,7 @@ class MaltekstController(
         )
 
         return mapToMaltekstView(
-            maltekstService.updateYtelseHjemmelList(
+            maltekstseksjonService.updateYtelseHjemmelList(
                 input = input.ytelseHjemmelIdList,
                 maltekstseksjonId = maltekstseksjonId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -219,7 +287,7 @@ class MaltekstController(
             logger = logger,
         )
 
-        maltekstService.deleteMaltekstseksjon(
+        maltekstseksjonService.deleteMaltekstseksjon(
             maltekstseksjonId = maltekstseksjonId,
             saksbehandlerIdent = tokenUtil.getIdent(),
         )
@@ -244,7 +312,7 @@ class MaltekstController(
         logger.debug("searchMalteksts called with published = {} params {}", published, searchMaltekstseksjonQueryParams)
 
         val maltekstseksjonsVersions = if (published) {
-            maltekstService.searchPublishedMaltekstseksjoner(
+            maltekstseksjonService.searchPublishedMaltekstseksjoner(
                 textIdList = searchMaltekstseksjonQueryParams.textIdList ?: emptyList(),
                 utfallIdList = searchMaltekstseksjonQueryParams.utfallIdList ?: emptyList(),
                 enhetIdList = searchMaltekstseksjonQueryParams.enhetIdList ?: emptyList(),
@@ -252,7 +320,7 @@ class MaltekstController(
                 ytelseHjemmelIdList = searchMaltekstseksjonQueryParams.ytelseHjemmelIdList ?: emptyList(),
             )
         } else {
-            maltekstService.searchMaltekstseksjoner(
+            maltekstseksjonService.searchMaltekstseksjoner(
                 textIdList = searchMaltekstseksjonQueryParams.textIdList ?: emptyList(),
                 utfallIdList = searchMaltekstseksjonQueryParams.utfallIdList ?: emptyList(),
                 enhetIdList = searchMaltekstseksjonQueryParams.enhetIdList ?: emptyList(),
@@ -279,7 +347,7 @@ class MaltekstController(
             id = maltekstseksjonId,
             logger = logger,
         )
-        return mapToMaltekstView(maltekstService.getCurrentMaltekstseksjonVersion(maltekstseksjonId))
+        return mapToMaltekstView(maltekstseksjonService.getCurrentMaltekstseksjonVersion(maltekstseksjonId))
     }
 }
 
