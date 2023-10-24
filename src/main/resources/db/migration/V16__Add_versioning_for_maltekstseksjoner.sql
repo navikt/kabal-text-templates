@@ -27,9 +27,11 @@ SELECT id, created, modified
 FROM klage.maltekstseksjon_version;
 
 --use same id initially
-UPDATE klage.maltekstseksjon_version
-SET maltekstseksjon_id  = (SELECT id FROM klage.maltekstseksjon_version),
-    published_date_time = (SELECT created FROM klage.maltekstseksjon_version);
+UPDATE klage.maltekstseksjon_version mv1
+SET maltekstseksjon_id = (SELECT mv2.id FROM klage.maltekstseksjon_version mv2 WHERE mv1.id = mv2.id);
+
+UPDATE klage.maltekstseksjon_version mv1
+SET published_date_time = (SELECT mv2.created FROM klage.maltekstseksjon_version mv2 WHERE mv1.id = mv2.id);
 
 CREATE INDEX maltekstseksjon_published_ix ON klage.maltekstseksjon_version (published);
 
