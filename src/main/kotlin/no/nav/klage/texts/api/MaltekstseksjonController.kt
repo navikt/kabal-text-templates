@@ -294,6 +294,27 @@ class MaltekstseksjonController(
     }
 
     @Operation(
+        summary = "Delete maltekstseksjon draft version",
+        description = "Delete maltekstseksjon draft version"
+    )
+    @DeleteMapping("/{maltekstseksjonId}/draft")
+    fun deleteMaltekstDraftVersion(
+        @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
+    ) {
+        logMethodDetails(
+            methodName = ::deleteMaltekstDraftVersion.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = maltekstseksjonId,
+            logger = logger,
+        )
+
+        maltekstseksjonService.deleteMaltekstseksjonDraftVersion(
+            maltekstseksjonId = maltekstseksjonId,
+            saksbehandlerIdent = tokenUtil.getIdent(),
+        )
+    }
+
+    @Operation(
         summary = "Search malteksts",
         description = "Search malteksts"
     )
@@ -353,7 +374,7 @@ class MaltekstseksjonController(
 
 fun mapToMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): MaltekstseksjonView =
     MaltekstseksjonView(
-        id = maltekstseksjonVersion.maltekstseksjonId,
+        id = maltekstseksjonVersion.maltekstseksjon.id,
         title = maltekstseksjonVersion.title,
         maltekstseksjonId = maltekstseksjonVersion.id,
         textIdList = maltekstseksjonVersion.texts.map { it.id.toString() },

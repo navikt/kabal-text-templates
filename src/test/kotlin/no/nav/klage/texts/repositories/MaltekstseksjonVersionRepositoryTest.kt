@@ -54,7 +54,7 @@ class MaltekstseksjonVersionRepositoryTest {
 
         val maltekstseksjonVersion = MaltekstseksjonVersion(
             title = "title",
-            maltekstseksjonId = maltekstseksjon.id,
+            maltekstseksjon = maltekstseksjon,
             texts = listOf(text),
             publishedDateTime = null,
             publishedBy = null,

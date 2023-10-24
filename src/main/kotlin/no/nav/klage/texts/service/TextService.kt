@@ -6,6 +6,7 @@ import no.nav.klage.texts.api.views.VersionInput
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.domain.TextVersion
 import no.nav.klage.texts.exceptions.ClientErrorException
+import no.nav.klage.texts.exceptions.TextNotFoundException
 import no.nav.klage.texts.repositories.TextRepository
 import no.nav.klage.texts.repositories.TextVersionRepository
 import no.nav.klage.texts.util.getLogger
@@ -31,6 +32,8 @@ class TextService(
     }
 
     fun publishTextVersion(textId: UUID, saksbehandlerIdent: String): TextVersion {
+        validateIfTextIsDeleted(textId)
+
         textVersionRepository.findByPublishedIsTrueAndTextId(textId).published = false
 
         val textVersionDraft =
@@ -45,8 +48,10 @@ class TextService(
         return textVersionDraft
     }
 
-    fun getTextVersions(textId: UUID): List<TextVersion> =
-        textVersionRepository.findByTextId(textId)
+    fun getTextVersions(textId: UUID): List<TextVersion> {
+        validateIfTextIsDeleted(textId)
+        return textVersionRepository.findByTextId(textId)
+    }
 
     fun createNewText(
         textInput: TextInput,
@@ -73,7 +78,7 @@ class TextService(
                 templateSectionIdList = textInput.templateSectionIdList ?: textInput.templateSectionList,
                 ytelseHjemmelIdList = textInput.ytelseHjemmelIdList ?: textInput.ytelseHjemmelList,
                 editors = setOf(saksbehandlerIdent),
-                textId = text.id,
+                text = text,
                 created = now,
                 modified = now,
                 publishedDateTime = null,
@@ -88,6 +93,7 @@ class TextService(
         versionInput: VersionInput?,
         saksbehandlerIdent: String,
     ): TextVersion {
+        validateIfTextIsDeleted(textId)
         val existingVersion = if (versionInput != null) {
             textVersionRepository.getReferenceById(versionInput.versionId)
         } else {
@@ -109,10 +115,22 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ) {
+        validateIfTextIsDeleted(textId)
         textRepository.getReferenceById(textId).deleted = true
     }
 
+    fun deleteTextDraftVersion(textId: UUID, saksbehandlerIdent: String) {
+        validateIfTextIsDeleted(textId = textId)
+        val existingDraft = textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
+            textId = textId
+        )
+        if (existingDraft != null) {
+            textVersionRepository.delete(existingDraft)
+        }
+    }
+
     fun getCurrentTextVersion(textId: UUID): TextVersion {
+        validateIfTextIsDeleted(textId)
         return textVersionRepository.findByPublishedIsTrueAndTextId(
             textId = textId
         )
@@ -130,6 +148,7 @@ class TextService(
         templateSectionIdList: Set<String>,
         ytelseHjemmelIdList: Set<String>,
     ): TextVersion {
+        validateIfTextIsDeleted(textId)
         if (content != null && plainText != null) {
             error("there can only be one of content or plainText")
         }
@@ -156,6 +175,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
+        validateIfTextIsDeleted(textId)
         val textVersion = getOrCreateCurrentDraft(textId)
         textVersion.title = input
         textVersion.editors += saksbehandlerIdent
@@ -167,6 +187,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
+        validateIfTextIsDeleted(textId)
         val textVersion = getOrCreateCurrentDraft(textId)
         textVersion.textType = input
         textVersion.editors += saksbehandlerIdent
@@ -178,6 +199,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
+        validateIfTextIsDeleted(textId)
         val textVersion = getOrCreateCurrentDraft(textId)
         textVersion.smartEditorVersion = input
         textVersion.editors += saksbehandlerIdent
@@ -189,6 +211,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
+        validateIfTextIsDeleted(textId)
         val textVersion = getOrCreateCurrentDraft(textId)
         textVersion.content = input
         textVersion.editors += saksbehandlerIdent
@@ -200,6 +223,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
+        validateIfTextIsDeleted(textId)
         val textVersion = getOrCreateCurrentDraft(textId)
         textVersion.plainText = input
         textVersion.editors += saksbehandlerIdent
@@ -211,6 +235,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
+        validateIfTextIsDeleted(textId)
         val textVersion = getOrCreateCurrentDraft(textId)
         textVersion.utfallIdList = input
         textVersion.editors += saksbehandlerIdent
@@ -222,6 +247,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
+        validateIfTextIsDeleted(textId)
         val textVersion = getOrCreateCurrentDraft(textId)
         textVersion.enhetIdList = input
         textVersion.editors += saksbehandlerIdent
@@ -233,6 +259,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
+        validateIfTextIsDeleted(textId)
         val textVersion = getOrCreateCurrentDraft(textId)
         textVersion.templateSectionIdList = input
         textVersion.editors += saksbehandlerIdent
@@ -244,6 +271,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
+        validateIfTextIsDeleted(textId)
         val textVersion = getOrCreateCurrentDraft(textId)
         textVersion.ytelseHjemmelIdList = input
         textVersion.editors += saksbehandlerIdent
@@ -257,16 +285,16 @@ class TextService(
         templateSectionIdList: List<String>,
         ytelseHjemmelIdList: List<String>,
     ): List<TextVersion> {
-        var texts: List<TextVersion>
+        var textVersions: List<TextVersion>
 
         val millis = measureTimeMillis {
-            texts = textVersionRepository.findByPublishedIsTrue()
+            textVersions = textVersionRepository.findByPublishedIsTrueAndTextDeletedIsFalse()
         }
 
-        logger.debug("searchTexts getting all texts took {} millis. Found {} texts", millis, texts.size)
+        logger.debug("searchTexts getting all texts took {} millis. Found {} texts", millis, textVersions.size)
 
         return searchTextService.searchTexts(
-            texts = texts,
+            texts = textVersions,
             textType = textType,
             utfallIdList = utfallIdList,
             enhetIdList = enhetIdList,
@@ -286,14 +314,14 @@ class TextService(
 
         val millis = measureTimeMillis {
             //get all drafts
-            val drafts = textVersionRepository.findByPublishedDateTimeIsNull()
+            val drafts = textVersionRepository.findByPublishedDateTimeIsNullAndTextDeletedIsFalse()
             //get published
-            val published = textVersionRepository.findByPublishedIsTrue()
+            val published = textVersionRepository.findByPublishedIsTrueAndTextDeletedIsFalse()
 
-            val draftsTextIdList = drafts.map { it.textId }
+            val draftsTextList = drafts.map { it.text }
 
             val publishedWithNoDrafts = published.filter { textVersion ->
-                textVersion.textId !in draftsTextIdList
+                textVersion.text !in draftsTextList
             }
 
             texts = drafts + publishedWithNoDrafts
@@ -313,8 +341,6 @@ class TextService(
 
     fun getAllTexts(): List<TextVersion> = textVersionRepository.findAll()
 
-    fun getTextsById(ids: List<UUID>): List<TextVersion> = textVersionRepository.findAllById(ids)
-
     private fun getOrCreateCurrentDraft(textId: UUID): TextVersion {
         val textVersionDraft =
             textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
@@ -330,6 +356,12 @@ class TextService(
             textVersionRepository.save(
                 template.createDraft()
             )
+        }
+    }
+
+    private fun validateIfTextIsDeleted(textId: UUID) {
+        if (textRepository.getReferenceById(textId).deleted) {
+            throw TextNotFoundException("Text $textId is deleted.")
         }
     }
 }

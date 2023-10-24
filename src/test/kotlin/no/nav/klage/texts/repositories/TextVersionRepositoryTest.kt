@@ -52,7 +52,7 @@ class TextVersionRepositoryTest {
             publishedDateTime = null,
             publishedBy = null,
             published = false,
-            textId = text.id,
+            text = text,
             utfallIdList = setOf("1"),
             enhetIdList = setOf("1"),
             templateSectionIdList = setOf("1"),

@@ -19,8 +19,6 @@ class TextVersion(
     var plainText: String?,
     @Column(name = "smarteditor_version")
     var smartEditorVersion: Int?,
-    @Column(name = "text_id")
-    val textId: UUID,
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(schema = "klage", name = "utfall", joinColumns = [JoinColumn(name = "text_version_id")])
@@ -51,6 +49,10 @@ class TextVersion(
     @Column(name = "nav_ident")
     var editors: Set<String> = emptySet(),
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "text_id", nullable = false, updatable = false)
+    val text: Text,
+
     @Column(name = "published_date_time")
     var publishedDateTime: LocalDateTime?,
     @Column(name = "published_by")
@@ -74,7 +76,7 @@ class TextVersion(
             content = content,
             plainText = plainText,
             smartEditorVersion = smartEditorVersion,
-            textId = textId,
+            text = text,
             utfallIdList = utfallIdList,
             enhetIdList = enhetIdList,
             templateSectionIdList = templateSectionIdList,
@@ -99,7 +101,7 @@ class TextVersion(
         if (content != other.content) return false
         if (plainText != other.plainText) return false
         if (smartEditorVersion != other.smartEditorVersion) return false
-        if (textId != other.textId) return false
+        if (text != other.text) return false
         if (utfallIdList != other.utfallIdList) return false
         if (enhetIdList != other.enhetIdList) return false
         if (templateSectionIdList != other.templateSectionIdList) return false
@@ -118,7 +120,7 @@ class TextVersion(
         result = 31 * result + (content?.hashCode() ?: 0)
         result = 31 * result + (plainText?.hashCode() ?: 0)
         result = 31 * result + (smartEditorVersion ?: 0)
-        result = 31 * result + textId.hashCode()
+        result = 31 * result + text.hashCode()
         result = 31 * result + utfallIdList.hashCode()
         result = 31 * result + enhetIdList.hashCode()
         result = 31 * result + templateSectionIdList.hashCode()
@@ -129,4 +131,7 @@ class TextVersion(
         return result
     }
 
+    override fun toString(): String {
+        return "TextVersion(id=$id, title='$title', textType='$textType', content=$content, plainText=$plainText, smartEditorVersion=$smartEditorVersion, utfallIdList=$utfallIdList, enhetIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, editors=$editors, text=$text, publishedDateTime=$publishedDateTime, publishedBy=$publishedBy, published=$published, created=$created, modified=$modified)"
+    }
 }

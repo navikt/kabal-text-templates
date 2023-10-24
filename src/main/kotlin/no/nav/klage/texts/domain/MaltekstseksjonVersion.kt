@@ -12,8 +12,10 @@ class MaltekstseksjonVersion(
 
     @Column(name = "title")
     var title: String,
-    @Column(name = "maltekstseksjon_id")
-    val maltekstseksjonId: UUID,
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "maltekstseksjon_id", nullable = false, updatable = false)
+    val maltekstseksjon: Maltekstseksjon,
 
     @OneToMany
     @JoinColumn(name = "maltekstseksjon_version_id")
@@ -82,7 +84,7 @@ class MaltekstseksjonVersion(
             enhetIdList = enhetIdList,
             templateSectionIdList = templateSectionIdList,
             ytelseHjemmelIdList = ytelseHjemmelIdList,
-            maltekstseksjonId = maltekstseksjonId,
+            maltekstseksjon = maltekstseksjon,
             publishedDateTime = null,
             published = false,
             publishedBy = null,
@@ -99,6 +101,7 @@ class MaltekstseksjonVersion(
 
         if (id != other.id) return false
         if (title != other.title) return false
+        if (maltekstseksjon != other.maltekstseksjon) return false
         if (texts != other.texts) return false
         if (utfallIdList != other.utfallIdList) return false
         if (enhetIdList != other.enhetIdList) return false
@@ -114,6 +117,7 @@ class MaltekstseksjonVersion(
     override fun hashCode(): Int {
         var result = id.hashCode()
         result = 31 * result + title.hashCode()
+        result = 31 * result + maltekstseksjon.hashCode()
         result = 31 * result + texts.hashCode()
         result = 31 * result + utfallIdList.hashCode()
         result = 31 * result + enhetIdList.hashCode()
@@ -126,7 +130,6 @@ class MaltekstseksjonVersion(
     }
 
     override fun toString(): String {
-        return "MaltekstseksjonVersion(id=$id, title='$title', texts=$texts, utfallIdList=$utfallIdList, enhetIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, editors=$editors, publishedDateTime=$publishedDateTime, publishedBy=$publishedBy, published=$published, created=$created, modified=$modified)"
+        return "MaltekstseksjonVersion(id=$id, title='$title', maltekstseksjon=$maltekstseksjon, texts=$texts, utfallIdList=$utfallIdList, enhetIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, editors=$editors, publishedDateTime=$publishedDateTime, publishedBy=$publishedBy, published=$published, created=$created, modified=$modified)"
     }
-
 }

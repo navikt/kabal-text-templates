@@ -400,6 +400,27 @@ class TextController(
     }
 
     @Operation(
+        summary = "Delete text draft version",
+        description = "Delete text draft version"
+    )
+    @DeleteMapping("/{textId}/draft")
+    fun deleteTextDraftVersion(
+        @PathVariable("textId") textId: UUID,
+    ) {
+        logMethodDetails(
+            methodName = ::deleteTextDraftVersion.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = textId,
+            logger = logger,
+        )
+
+        textService.deleteTextDraftVersion(
+            textId = textId,
+            saksbehandlerIdent = tokenUtil.getIdent(),
+        )
+    }
+
+    @Operation(
         summary = "Search texts",
         description = "Search texts"
     )
@@ -459,7 +480,7 @@ class TextController(
 
 fun mapToTextView(textVersion: TextVersion): TextView =
     TextView(
-        id = textVersion.textId,
+        id = textVersion.text.id,
         textVersionId = textVersion.id,
         title = textVersion.title,
         textType = textVersion.textType,
