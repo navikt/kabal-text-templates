@@ -3,7 +3,7 @@ package no.nav.klage.texts.api.views
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import java.util.*
 
-data class MaltekstInput(
+data class MaltekstseksjonInput(
     val id: UUID? = null,
     val title: String,
     val textIdList: List<String> = emptyList(),
@@ -14,7 +14,7 @@ data class MaltekstInput(
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-data class UpdateMaltekstInput(
+data class UpdateMaltekstseksjonInput(
     val title: String,
     val textIdList: List<String> = emptyList(),
     val utfallIdList: Set<String> = emptySet(),

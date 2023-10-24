@@ -1,6 +1,6 @@
 package no.nav.klage.texts.service
 
-import no.nav.klage.texts.api.views.MaltekstInput
+import no.nav.klage.texts.api.views.MaltekstseksjonInput
 import no.nav.klage.texts.api.views.VersionInput
 import no.nav.klage.texts.domain.Maltekstseksjon
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
@@ -55,7 +55,7 @@ class MaltekstseksjonService(
     }
 
     fun createNewMaltekstseksjon(
-        maltekstseksjonInput: MaltekstInput,
+        maltekstseksjonInput: MaltekstseksjonInput,
         saksbehandlerIdent: String,
     ): MaltekstseksjonVersion {
         val now = LocalDateTime.now()
@@ -312,6 +312,10 @@ class MaltekstseksjonService(
             ytelseHjemmelIdList = ytelseHjemmelIdList,
         )
     }
+
+    fun getAllMaltekstseksjonVersions(): List<MaltekstseksjonVersion> = maltekstseksjonVersionRepository.findAll()
+    fun getMaltekstseksjonVersionsById(ids: List<UUID>): MutableList<MaltekstseksjonVersion> = maltekstseksjonVersionRepository.findAllById(ids)
+    fun updateAll(maltekstseksjonVersions: List<MaltekstseksjonVersion>): MutableList<MaltekstseksjonVersion> = maltekstseksjonVersionRepository.saveAll(maltekstseksjonVersions)
 
     private fun getOrCreateCurrentDraft(maltekstseksjonId: UUID): MaltekstseksjonVersion {
         val maltekstseksjonVersionDraft =

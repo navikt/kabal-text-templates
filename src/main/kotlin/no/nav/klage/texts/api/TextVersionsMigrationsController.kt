@@ -12,12 +12,13 @@ import no.nav.klage.texts.util.getSecureLogger
 import no.nav.klage.texts.util.logMethodDetails
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 
 @RestController
 @Tag(name = "kabal-text-templates")
-@RequestMapping("/migrations/texts")
+@RequestMapping("/migrations/text-versions")
 @ProtectedWithClaims(issuer = ISSUER_AAD)
-class MigrationsController(
+class TextVersionsMigrationsController(
     private val textService: TextService,
     private val tokenUtil: TokenUtil,
 ) {
@@ -33,16 +34,16 @@ class MigrationsController(
         description = "Get all texts"
     )
     @GetMapping
-    fun getTexts(): List<TextView> {
+    fun getTextVersions(): List<TextView> {
         //TODO must be admin
         logMethodDetails(
-            methodName = ::getTexts.name,
+            methodName = ::getTextVersions.name,
             innloggetIdent = tokenUtil.getIdent(),
             id = null,
             logger = logger,
         )
 
-        return textService.getAllTexts().map {
+        return textService.getAllTextVersions().map {
             mapToTextView(it)
         }
     }
@@ -52,37 +53,38 @@ class MigrationsController(
         description = "Update texts"
     )
     @PutMapping
-    fun updateTexts(
+    fun updateTextVersions(
         @RequestBody input: List<TextInput>
     ): List<TextView> {
+        logMethodDetails(
+            methodName = ::updateTextVersions.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = null,
+            logger = logger,
+        )
 
-        TODO()
+        val updatedTexts = textService.getTextVersionsById(input.map { requireNotNull(it.id) }).map { textVersion ->
 
-        //TODO must be admin
-//        logMethodDetails(
-//            methodName = ::updateTexts.name,
-//            innloggetIdent = tokenUtil.getIdent(),
-//            id = null,
-//            logger = logger,
-//        )
-//
-//        val updatedTexts = textService.getTextsById(input.map { requireNotNull(it.id) }).map { textVersion ->
-//            val currentTextInput = input.find { it.id == textVersion.id } ?: error("No matching input for id ${textVersion.id}")
-//            textVersion.apply {
-//                title = currentTextInput.title
-//                textType = currentTextInput.textType
-//                content = currentTextInput.content.toString()
-//                plainText = currentTextInput.plainText
-//                utfallIdList = currentTextInput.utfall
-//                enhetIdList = currentTextInput.enheter
-//                modified = LocalDateTime.now()
-//                smartEditorVersion = currentTextInput.version
-//            }
-//        }
-//
-//        return textService.updateAll(updatedTexts).map {
-//            mapToTextView(it)
-//        }
+            val currentTextInput = input.find { it.id == textVersion.id } ?: error("No matching input for id ${textVersion.id}")
+
+            textVersion.apply {
+                title = currentTextInput.title
+                textType = currentTextInput.textType
+                content = currentTextInput.content.toString()
+                plainText = currentTextInput.plainText
+                smartEditorVersion = currentTextInput.version
+                utfallIdList = currentTextInput.utfall
+                enhetIdList = currentTextInput.enheter
+                templateSectionIdList = currentTextInput.templateSectionList
+                ytelseHjemmelIdList = currentTextInput.ytelseHjemmelList
+
+                modified = LocalDateTime.now()
+            }
+        }
+
+        return textService.updateAll(updatedTexts).map {
+            mapToTextView(it)
+        }
     }
 }
 

@@ -339,7 +339,9 @@ class TextService(
         )
     }
 
-    fun getAllTexts(): List<TextVersion> = textVersionRepository.findAll()
+    fun getAllTextVersions(): List<TextVersion> = textVersionRepository.findAll()
+    fun getTextVersionsById(ids: List<UUID>): MutableList<TextVersion> = textVersionRepository.findAllById(ids)
+    fun updateAll(textVersions: List<TextVersion>): MutableList<TextVersion> = textVersionRepository.saveAll(textVersions)
 
     private fun getOrCreateCurrentDraft(textId: UUID): TextVersion {
         val textVersionDraft =
@@ -358,6 +360,7 @@ class TextService(
             )
         }
     }
+
 
     private fun validateIfTextIsDeleted(textId: UUID) {
         if (textRepository.getReferenceById(textId).deleted) {

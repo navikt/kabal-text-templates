@@ -78,7 +78,7 @@ class MaltekstseksjonController(
     )
     @PostMapping
     fun createMaltekst(
-        @RequestBody input: MaltekstInput
+        @RequestBody input: MaltekstseksjonInput
     ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::createMaltekst.name,
