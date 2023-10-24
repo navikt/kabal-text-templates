@@ -18,7 +18,7 @@ import kotlin.system.measureTimeMillis
 
 @Transactional
 @Service
-class OldTextService(
+class TextService(
     private val textRepository: TextRepository,
     private val textVersionRepository: TextVersionRepository,
     private val searchTextService: SearchTextService,
@@ -30,7 +30,7 @@ class OldTextService(
         private val secureLogger = getSecureLogger()
     }
 
-    fun publishTextVersion(textId: UUID) {
+    fun publishTextVersion(textId: UUID, saksbehandlerIdent: String): TextVersion {
         textVersionRepository.findByPublishedIsTrueAndTextId(textId).published = false
 
         val textVersionDraft =
@@ -40,7 +40,13 @@ class OldTextService(
 
         textVersionDraft.publishedDateTime = LocalDateTime.now()
         textVersionDraft.published = true
+        textVersionDraft.publishedBy = saksbehandlerIdent
+
+        return textVersionDraft
     }
+
+    fun getTextVersions(textId: UUID): List<TextVersion> =
+        textVersionRepository.findByPublishedIsFalseAndPublishedDateTimeIsNotNullAndTextId(textId)
 
     fun createNewText(
         textInput: TextInput,

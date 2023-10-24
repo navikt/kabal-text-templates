@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.TextInput
 import no.nav.klage.texts.api.views.TextView
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
-import no.nav.klage.texts.service.OldTextService
+import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/migrations/texts")
 @ProtectedWithClaims(issuer = ISSUER_AAD)
 class MigrationsController(
-    private val textService: OldTextService,
+    private val textService: TextService,
     private val tokenUtil: TokenUtil,
 ) {
 

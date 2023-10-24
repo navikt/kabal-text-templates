@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.domain.TextVersion
-import no.nav.klage.texts.service.OldTextService
+import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
-@Tag(name = "kabal-text-templates", description = "API for template texts")
+@Tag(name = "kabal-text-templates", description = "API for text templates")
 @RequestMapping(value = ["/texts"])
 @ProtectedWithClaims(issuer = ISSUER_AAD)
 class TextController(
-    private val oldTextService: OldTextService,
+    private val textService: TextService,
     private val tokenUtil: TokenUtil,
 ) {
 
@@ -28,6 +28,49 @@ class TextController(
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val logger = getLogger(javaClass.enclosingClass)
         private val secureLogger = getSecureLogger()
+    }
+
+    @Operation(
+        summary = "Get versions for text",
+        description = "Get versions for text"
+    )
+    @GetMapping("/{textId}/versions")
+    fun getTextVersions(
+        @PathVariable("textId") textId: UUID,
+    ): List<TextView> {
+        logMethodDetails(
+            methodName = ::getTextVersions.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = null,
+            logger = logger,
+        )
+
+        return textService.getTextVersions(textId).map {
+            mapToTextView(it)
+        }
+    }
+
+    @Operation(
+        summary = "Publish text",
+        description = "Publish text using current draft"
+    )
+    @PostMapping("/{textId}/publish")
+    fun publishText(
+        @PathVariable("textId") textId: UUID,
+    ): TextView {
+        logMethodDetails(
+            methodName = ::publishText.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = null,
+            logger = logger,
+        )
+
+        return mapToTextView(
+            textService.publishTextVersion(
+                textId = textId,
+                saksbehandlerIdent = tokenUtil.getIdent(),
+            )
+        )
     }
 
     @Operation(
@@ -46,7 +89,7 @@ class TextController(
         )
 
         return mapToTextView(
-            oldTextService.createNewText(
+            textService.createNewText(
                 textInput = input,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
@@ -70,7 +113,7 @@ class TextController(
         )
 
         return mapToTextView(
-            oldTextService.updateText(
+            textService.updateText(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
                 title = input.title,
@@ -102,7 +145,7 @@ class TextController(
         )
 
         return mapToTextView(
-            oldTextService.updateTitle(
+            textService.updateTitle(
                 input = input.title,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -127,7 +170,7 @@ class TextController(
         )
 
         return mapToTextView(
-            oldTextService.updateTextType(
+            textService.updateTextType(
                 input = input.textType,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -152,7 +195,7 @@ class TextController(
         )
 
         return mapToTextView(
-            oldTextService.updateContent(
+            textService.updateContent(
                 input = input.content.toString(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -177,7 +220,7 @@ class TextController(
         )
 
         return mapToTextView(
-            oldTextService.updatePlainText(
+            textService.updatePlainText(
                 input = input.plainText,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -202,7 +245,7 @@ class TextController(
         )
 
         return mapToTextView(
-            oldTextService.updateSmartEditorVersion(
+            textService.updateSmartEditorVersion(
                 input = input.version,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -227,7 +270,7 @@ class TextController(
         )
 
         return mapToTextView(
-            oldTextService.updateUtfall(
+            textService.updateUtfall(
                 input = input.utfallIdList ?: input.utfall ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -252,7 +295,7 @@ class TextController(
         )
 
         return mapToTextView(
-            oldTextService.updateEnheter(
+            textService.updateEnheter(
                 input = input.enheter ?: input.enhetIdList ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -277,7 +320,7 @@ class TextController(
         )
 
         return mapToTextView(
-            oldTextService.updateTemplateSectionList(
+            textService.updateTemplateSectionList(
                 input = input.templateSectionIdList ?: input.templateSectionList ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -302,7 +345,7 @@ class TextController(
         )
 
         return mapToTextView(
-            oldTextService.updateYtelseHjemmelList(
+            textService.updateYtelseHjemmelList(
                 input = input.ytelseHjemmelIdList ?: input.ytelseHjemmelList ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
@@ -325,7 +368,7 @@ class TextController(
             logger = logger,
         )
 
-        oldTextService.deleteText(
+        textService.deleteText(
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
         )
@@ -348,7 +391,7 @@ class TextController(
 
         logger.debug("searchTexts called with params {}", searchQueryParams)
 
-        val texts = oldTextService.searchTexts(
+        val texts = textService.searchTexts(
             textType = searchQueryParams.textType,
             utfallIdList = searchQueryParams.utfallIdList ?: searchQueryParams.utfall ?: emptyList(),
             enhetIdList = searchQueryParams.enhetIdList ?: searchQueryParams.enheter ?: emptyList(),
@@ -375,7 +418,7 @@ class TextController(
             id = textId,
             logger = logger,
         )
-        return mapToTextView(oldTextService.getCurrentTextVersion(textId))
+        return mapToTextView(textService.getCurrentTextVersion(textId))
     }
 }
 

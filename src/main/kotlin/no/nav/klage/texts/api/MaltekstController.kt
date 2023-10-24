@@ -6,7 +6,7 @@ import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.service.MaltekstService
-import no.nav.klage.texts.service.OldTextService
+import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
@@ -21,7 +21,7 @@ import java.util.*
 @RequestMapping(value = ["/maltekster"])
 @ProtectedWithClaims(issuer = ISSUER_AAD)
 class MaltekstController(
-    private val textService: OldTextService,
+    private val textService: TextService,
     private val maltekstService: MaltekstService,
     private val tokenUtil: TokenUtil,
 ) {
