@@ -21,6 +21,14 @@ interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
         "templateSectionIdList",
         "ytelseHjemmelIdList",
     ])
+    fun findByPublishedDateTimeIsNull(): List<TextVersion>
+
+    @EntityGraph(attributePaths = [
+        "utfallIdList",
+        "enhetIdList",
+        "templateSectionIdList",
+        "ytelseHjemmelIdList",
+    ])
     fun findByPublishedIsFalseAndPublishedDateTimeIsNotNullAndTextId(textId: UUID): List<TextVersion>
 
     fun findByPublishedIsTrueAndTextId(

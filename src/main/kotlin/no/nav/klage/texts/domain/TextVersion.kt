@@ -43,7 +43,11 @@ class TextVersion(
     var ytelseHjemmelIdList: Set<String> = emptySet(),
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(schema = "klage", name = "text_version_editor", joinColumns = [JoinColumn(name = "text_version_id")])
+    @CollectionTable(
+        schema = "klage",
+        name = "text_version_editor",
+        joinColumns = [JoinColumn(name = "text_version_id")]
+    )
     @Column(name = "nav_ident")
     var editors: Set<String> = emptySet(),
 

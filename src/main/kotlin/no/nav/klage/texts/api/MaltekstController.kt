@@ -13,7 +13,6 @@ import no.nav.klage.texts.util.getSecureLogger
 import no.nav.klage.texts.util.logMethodDetails
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDateTime
 import java.util.*
 
 @RestController
@@ -48,8 +47,9 @@ class MaltekstController(
         )
 
         return mapToMaltekstView(
-            maltekstService.createMaltekst(
-                maltekstseksjonVersion = input.toDomainModel(),
+            maltekstService.createNewMaltekstseksjon(
+                maltekstseksjonInput = input,
+                saksbehandlerIdent = tokenUtil.getIdent(),
             )
         )
     }
@@ -58,22 +58,23 @@ class MaltekstController(
         summary = "Update title",
         description = "Update title"
     )
-    @PutMapping("/{maltekstId}/title")
+    @PutMapping("/{maltekstseksjonId}/title")
     fun updateTitle(
-        @PathVariable("maltekstId") maltekstId: UUID,
+        @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
         @RequestBody input: TitleInput
     ): MaltekstView {
         logMethodDetails(
             methodName = ::updateTitle.name,
             innloggetIdent = tokenUtil.getIdent(),
-            id = maltekstId,
+            id = maltekstseksjonId,
             logger = logger,
         )
 
         return mapToMaltekstView(
             maltekstService.updateTitle(
                 input = input.title,
-                maltekstId = maltekstId,
+                maltekstseksjonId = maltekstseksjonId,
+                saksbehandlerIdent = tokenUtil.getIdent(),
             )
         )
     }
@@ -82,22 +83,23 @@ class MaltekstController(
         summary = "Update textIdList",
         description = "Update textIdList"
     )
-    @PutMapping("/{maltekstId}/textVersion-id-list")
+    @PutMapping("/{maltekstseksjonId}/textVersion-id-list")
     fun updateTextIdList(
-        @PathVariable("maltekstId") maltekstId: UUID,
+        @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
         @RequestBody input: TextIdListInput
     ): MaltekstView {
         logMethodDetails(
             methodName = ::updateTextIdList.name,
             innloggetIdent = tokenUtil.getIdent(),
-            id = maltekstId,
+            id = maltekstseksjonId,
             logger = logger,
         )
 
         return mapToMaltekstView(
-            maltekstService.updateTextIdList(
+            maltekstService.updateTexts(
                 input = input.textIdList,
-                maltekstId = maltekstId,
+                maltekstseksjonId = maltekstseksjonId,
+                saksbehandlerIdent = tokenUtil.getIdent(),
             )
         )
     }
@@ -106,22 +108,23 @@ class MaltekstController(
         summary = "Update utfall",
         description = "Update utfall"
     )
-    @PutMapping("/{maltekstId}/utfall-id-list")
+    @PutMapping("/{maltekstseksjonId}/utfall-id-list")
     fun updateUtfallIdList(
-        @PathVariable("maltekstId") maltekstId: UUID,
+        @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
         @RequestBody input: UtfallIdListInput
     ): MaltekstView {
         logMethodDetails(
             methodName = ::updateUtfallIdList.name,
             innloggetIdent = tokenUtil.getIdent(),
-            id = maltekstId,
+            id = maltekstseksjonId,
             logger = logger,
         )
 
         return mapToMaltekstView(
-            maltekstService.updateUtfallIdList(
+            maltekstService.updateUtfall(
                 input = input.utfallIdList,
-                maltekstId = maltekstId,
+                maltekstseksjonId = maltekstseksjonId,
+                saksbehandlerIdent = tokenUtil.getIdent(),
             )
         )
     }
@@ -130,22 +133,23 @@ class MaltekstController(
         summary = "Update enheter",
         description = "Update enheter"
     )
-    @PutMapping("/{maltekstId}/enhet-id-list")
+    @PutMapping("/{maltekstseksjonId}/enhet-id-list")
     fun updateEnhetIdList(
-        @PathVariable("maltekstId") maltekstId: UUID,
+        @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
         @RequestBody input: EnhetIdListInput
     ): MaltekstView {
         logMethodDetails(
             methodName = ::updateEnhetIdList.name,
             innloggetIdent = tokenUtil.getIdent(),
-            id = maltekstId,
+            id = maltekstseksjonId,
             logger = logger,
         )
 
         return mapToMaltekstView(
-            maltekstService.updateEnhetIdList(
+            maltekstService.updateEnheter(
                 input = input.enhetIdList,
-                maltekstId = maltekstId,
+                maltekstseksjonId = maltekstseksjonId,
+                saksbehandlerIdent = tokenUtil.getIdent(),
             )
         )
     }
@@ -154,22 +158,23 @@ class MaltekstController(
         summary = "Update templateSectionList",
         description = "Update templateSectionList"
     )
-    @PutMapping("/{maltekstId}/template-section-id-list")
+    @PutMapping("/{maltekstseksjonId}/template-section-id-list")
     fun updateTemplateSectionIdList(
-        @PathVariable("maltekstId") maltekstId: UUID,
+        @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
         @RequestBody input: TemplateSectionIdListInput
     ): MaltekstView {
         logMethodDetails(
             methodName = ::updateTemplateSectionIdList.name,
             innloggetIdent = tokenUtil.getIdent(),
-            id = maltekstId,
+            id = maltekstseksjonId,
             logger = logger,
         )
 
         return mapToMaltekstView(
-            maltekstService.updateTemplateSectionIdList(
+            maltekstService.updateTemplateSectionList(
                 input = input.templateSectionIdList,
-                maltekstId = maltekstId,
+                maltekstseksjonId = maltekstseksjonId,
+                saksbehandlerIdent = tokenUtil.getIdent(),
             )
         )
     }
@@ -178,22 +183,23 @@ class MaltekstController(
         summary = "Update ytelseHjemmelList",
         description = "Update ytelseHjemmelList"
     )
-    @PutMapping("/{maltekstId}/ytelse-hjemmel-id-list")
+    @PutMapping("/{maltekstseksjonId}/ytelse-hjemmel-id-list")
     fun updateYtelseHjemmelIdList(
-        @PathVariable("maltekstId") maltekstId: UUID,
+        @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
         @RequestBody input: YtelseHjemmelIdListInput
     ): MaltekstView {
         logMethodDetails(
             methodName = ::updateYtelseHjemmelIdList.name,
             innloggetIdent = tokenUtil.getIdent(),
-            id = maltekstId,
+            id = maltekstseksjonId,
             logger = logger,
         )
 
         return mapToMaltekstView(
-            maltekstService.updateYtelseHjemmelIdList(
+            maltekstService.updateYtelseHjemmelList(
                 input = input.ytelseHjemmelIdList,
-                maltekstId = maltekstId,
+                maltekstseksjonId = maltekstseksjonId,
+                saksbehandlerIdent = tokenUtil.getIdent(),
             )
         )
     }
@@ -202,19 +208,20 @@ class MaltekstController(
         summary = "Delete maltekstseksjon",
         description = "Delete maltekstseksjon"
     )
-    @DeleteMapping("/{maltekstId}")
+    @DeleteMapping("/{maltekstseksjonId}")
     fun deleteMaltekst(
-        @PathVariable("maltekstId") maltekstId: UUID,
+        @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
     ) {
         logMethodDetails(
             methodName = ::deleteMaltekst.name,
             innloggetIdent = tokenUtil.getIdent(),
-            id = maltekstId,
+            id = maltekstseksjonId,
             logger = logger,
         )
 
-        maltekstService.deleteMaltekst(
-            maltekstId = maltekstId,
+        maltekstService.deleteMaltekstseksjon(
+            maltekstseksjonId = maltekstseksjonId,
+            saksbehandlerIdent = tokenUtil.getIdent(),
         )
     }
 
@@ -224,7 +231,8 @@ class MaltekstController(
     )
     @GetMapping
     fun searchMalteksts(
-        searchQueryParams: SearchQueryParams
+        @RequestParam(required = false, defaultValue = "true") published: Boolean = true,
+        searchMaltekstseksjonQueryParams: SearchMaltekstseksjonQueryParams
     ): List<MaltekstView> {
         logMethodDetails(
             methodName = ::searchMalteksts.name,
@@ -233,18 +241,26 @@ class MaltekstController(
             logger = logger,
         )
 
-        logger.debug("searchMalteksts called with params {}", searchQueryParams)
+        logger.debug("searchMalteksts called with published = {} params {}", published, searchMaltekstseksjonQueryParams)
 
-        //TODO
-//        val malteksts = maltekstService.searchMalteksts(
-//            maltekstType = searchQueryParams.maltekstType,
-//            utfall = searchQueryParams.utfall ?: emptyList(),
-//            enheter = searchQueryParams.enheter ?: emptyList(),
-//            templateSectionList = searchQueryParams.templateSectionList ?: emptyList(),
-//            ytelseHjemmelList = searchQueryParams.ytelseHjemmelList ?: emptyList(),
-//
-//        )
-        return maltekstService.getAllMalteksts().map {
+        val maltekstseksjonsVersions = if (published) {
+            maltekstService.searchPublishedMaltekstseksjoner(
+                textIdList = searchMaltekstseksjonQueryParams.textIdList ?: emptyList(),
+                utfallIdList = searchMaltekstseksjonQueryParams.utfallIdList ?: emptyList(),
+                enhetIdList = searchMaltekstseksjonQueryParams.enhetIdList ?: emptyList(),
+                templateSectionIdList = searchMaltekstseksjonQueryParams.templateSectionIdList ?: emptyList(),
+                ytelseHjemmelIdList = searchMaltekstseksjonQueryParams.ytelseHjemmelIdList ?: emptyList(),
+            )
+        } else {
+            maltekstService.searchMaltekstseksjoner(
+                textIdList = searchMaltekstseksjonQueryParams.textIdList ?: emptyList(),
+                utfallIdList = searchMaltekstseksjonQueryParams.utfallIdList ?: emptyList(),
+                enhetIdList = searchMaltekstseksjonQueryParams.enhetIdList ?: emptyList(),
+                templateSectionIdList = searchMaltekstseksjonQueryParams.templateSectionIdList ?: emptyList(),
+                ytelseHjemmelIdList = searchMaltekstseksjonQueryParams.ytelseHjemmelIdList ?: emptyList(),
+            )
+        }
+        return maltekstseksjonsVersions.map {
             mapToMaltekstView(it)
         }
     }
@@ -253,31 +269,17 @@ class MaltekstController(
         summary = "Get maltekstseksjon",
         description = "Get maltekstseksjon"
     )
-    @GetMapping("/{maltekstId}")
+    @GetMapping("/{maltekstseksjonId}")
     fun getMaltekst(
-        @PathVariable("maltekstId") maltekstId: UUID,
+        @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
     ): MaltekstView {
         logMethodDetails(
             methodName = ::getMaltekst.name,
             innloggetIdent = tokenUtil.getIdent(),
-            id = maltekstId,
+            id = maltekstseksjonId,
             logger = logger,
         )
-        return mapToMaltekstView(maltekstService.getMaltekst(maltekstId))
-    }
-
-    private fun MaltekstInput.toDomainModel(): MaltekstseksjonVersion {
-        val now = LocalDateTime.now()
-        return MaltekstseksjonVersion(
-            title = title,
-            texts = textService.getTextsById(textIdList.map { UUID.fromString(it) }),
-            utfallIdList = utfallIdList,
-            enhetIdList = enhetIdList,
-            templateSectionIdList = templateSectionIdList,
-            ytelseHjemmelIdList = ytelseHjemmelIdList,
-            created = now,
-            modified = now,
-        )
+        return mapToMaltekstView(maltekstService.getCurrentMaltekstseksjonVersion(maltekstseksjonId))
     }
 }
 
@@ -293,4 +295,3 @@ fun mapToMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): MaltekstV
         created = maltekstseksjonVersion.created,
         modified = maltekstseksjonVersion.modified,
     )
-

@@ -5,7 +5,6 @@ import no.nav.klage.texts.api.views.TextInput
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.domain.TextVersion
 import no.nav.klage.texts.exceptions.ClientErrorException
-import no.nav.klage.texts.repositories.SearchTextService
 import no.nav.klage.texts.repositories.TextRepository
 import no.nav.klage.texts.repositories.TextVersionRepository
 import no.nav.klage.texts.util.getLogger
@@ -228,7 +227,7 @@ class TextService(
         return textVersion
     }
 
-    fun searchTexts(
+    fun searchPublishedTextVersions(
         textType: String?,
         utfallIdList: List<String>,
         enhetIdList: List<String>,
@@ -239,6 +238,42 @@ class TextService(
 
         val millis = measureTimeMillis {
             texts = textVersionRepository.findByPublishedIsTrue()
+        }
+
+        logger.debug("searchTexts getting all texts took {} millis. Found {} texts", millis, texts.size)
+
+        return searchTextService.searchTexts(
+            texts = texts,
+            textType = textType,
+            utfallIdList = utfallIdList,
+            enhetIdList = enhetIdList,
+            templateSectionIdList = templateSectionIdList,
+            ytelseHjemmelIdList = ytelseHjemmelIdList,
+        )
+    }
+
+    fun searchTextVersion(
+        textType: String?,
+        utfallIdList: List<String>,
+        enhetIdList: List<String>,
+        templateSectionIdList: List<String>,
+        ytelseHjemmelIdList: List<String>,
+    ): List<TextVersion> {
+        var texts: List<TextVersion>
+
+        val millis = measureTimeMillis {
+            //get all drafts
+            val drafts = textVersionRepository.findByPublishedDateTimeIsNull()
+            //get published
+            val published = textVersionRepository.findByPublishedIsTrue()
+
+            val draftsTextIdList = drafts.map { it.textId }
+
+            val publishedWithNoDrafts = published.filter { textVersion ->
+                textVersion.textId !in draftsTextIdList
+            }
+
+            texts = drafts + publishedWithNoDrafts
         }
 
         logger.debug("searchTexts getting all texts took {} millis. Found {} texts", millis, texts.size)

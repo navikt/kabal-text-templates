@@ -24,7 +24,7 @@ class MaltekstRepositoryTest {
     lateinit var testEntityManager: TestEntityManager
 
     @Autowired
-    lateinit var maltekstRepository: MaltekstRepository
+    lateinit var maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository
 
     @Autowired
     lateinit var textVersionRepository: TextVersionRepository

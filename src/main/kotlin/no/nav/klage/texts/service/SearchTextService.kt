@@ -1,6 +1,7 @@
-package no.nav.klage.texts.repositories
+package no.nav.klage.texts.service
 
 import no.nav.klage.texts.domain.TextVersion
+import no.nav.klage.texts.repositories.TextVersionRepository
 import no.nav.klage.texts.util.getLogger
 import org.springframework.stereotype.Service
 

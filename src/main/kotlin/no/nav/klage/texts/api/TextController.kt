@@ -380,7 +380,8 @@ class TextController(
     )
     @GetMapping
     fun searchTexts(
-        searchQueryParams: SearchQueryParams
+        @RequestParam(required = false, defaultValue = "true") published: Boolean = true,
+        searchTextQueryParams: SearchTextQueryParams
     ): List<TextView> {
         logMethodDetails(
             methodName = ::searchTexts.name,
@@ -389,17 +390,26 @@ class TextController(
             logger = logger,
         )
 
-        logger.debug("searchTexts called with params {}", searchQueryParams)
+        logger.debug("searchTexts called with published = {} params {}", published, searchTextQueryParams)
 
-        val texts = textService.searchTexts(
-            textType = searchQueryParams.textType,
-            utfallIdList = searchQueryParams.utfallIdList ?: searchQueryParams.utfall ?: emptyList(),
-            enhetIdList = searchQueryParams.enhetIdList ?: searchQueryParams.enheter ?: emptyList(),
-            templateSectionIdList = searchQueryParams.templateSectionIdList ?: searchQueryParams.templateSectionList ?: emptyList(),
-            ytelseHjemmelIdList = searchQueryParams.ytelseHjemmelIdList ?: searchQueryParams.ytelseHjemmelList ?: emptyList(),
-            
-        )
-        return texts.map {
+        val textVersions = if (published) {
+            textService.searchPublishedTextVersions(
+                textType = searchTextQueryParams.textType,
+                utfallIdList = searchTextQueryParams.utfallIdList ?: emptyList(),
+                enhetIdList = searchTextQueryParams.enhetIdList ?: emptyList(),
+                templateSectionIdList = searchTextQueryParams.templateSectionIdList ?: emptyList(),
+                ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
+            )
+        } else {
+            textService.searchTextVersion(
+                textType = searchTextQueryParams.textType,
+                utfallIdList = searchTextQueryParams.utfallIdList ?: emptyList(),
+                enhetIdList = searchTextQueryParams.enhetIdList ?: emptyList(),
+                templateSectionIdList = searchTextQueryParams.templateSectionIdList ?: emptyList(),
+                ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
+            )
+        }
+        return textVersions.map {
             mapToTextView(it)
         }
     }
