@@ -31,10 +31,6 @@ class TextVersionRepositoryTest {
     @Autowired
     lateinit var textVersionRepository: TextVersionRepository
 
-    @Autowired
-    lateinit var changelogRepository: ChangelogRepository
-
-
     @Test
     fun `add textVersion works`() {
         val now = LocalDateTime.now()
