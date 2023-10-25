@@ -481,7 +481,7 @@ class TextController(
 fun mapToTextView(textVersion: TextVersion): TextView =
     TextView(
         id = textVersion.text.id,
-        textVersionId = textVersion.id,
+        versionId = textVersion.id,
         title = textVersion.title,
         textType = textVersion.textType,
         content = if (textVersion.content != null) jsonMapper().readTree(textVersion.content) else null,

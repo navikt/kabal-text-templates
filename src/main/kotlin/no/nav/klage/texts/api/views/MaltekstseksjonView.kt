@@ -6,7 +6,7 @@ import java.util.*
 data class MaltekstseksjonView(
     val id: UUID,
     val title: String,
-    val maltekstseksjonId: UUID,
+    val versionId: UUID,
     val textIdList: List<String> = emptyList(),
     val utfallIdList: Set<String> = emptySet(),
     val enhetIdList: Set<String> = emptySet(),

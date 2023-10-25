@@ -376,7 +376,7 @@ fun mapToMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): Malteksts
     MaltekstseksjonView(
         id = maltekstseksjonVersion.maltekstseksjon.id,
         title = maltekstseksjonVersion.title,
-        maltekstseksjonId = maltekstseksjonVersion.id,
+        versionId = maltekstseksjonVersion.id,
         textIdList = maltekstseksjonVersion.texts.map { it.id.toString() },
         utfallIdList = maltekstseksjonVersion.utfallIdList,
         enhetIdList = maltekstseksjonVersion.enhetIdList,

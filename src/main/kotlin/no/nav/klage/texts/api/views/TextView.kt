@@ -7,7 +7,7 @@ import java.util.*
 data class TextView(
     val id: UUID,
 
-    val textVersionId: UUID,
+    val versionId: UUID,
     val title: String,
     val textType: String,
     val content: JsonNode?,
