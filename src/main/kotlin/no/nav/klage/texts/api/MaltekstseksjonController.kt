@@ -118,9 +118,11 @@ class MaltekstseksjonController(
             versionInput = input,
             saksbehandlerIdent = tokenUtil.getIdent(),
         )
-        return mapToMaltekstView(
+        val mapToMaltekstView = mapToMaltekstView(
             maltekstseksjonVersion
         )
+
+        return mapToMaltekstView
     }
 
     @Operation(
