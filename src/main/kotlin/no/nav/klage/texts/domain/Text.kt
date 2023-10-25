@@ -36,7 +36,7 @@ class Text(
     override fun hashCode() = id.hashCode()
 
     override fun toString(): String {
-        return "TextVersion(id=$id, created=$created, modified=$modified, deleted=$deleted)"
+        return "Text(id=$id, created=$created, modified=$modified, deleted=$deleted)"
     }
 
 }

@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Entity
-@Table(name = "textVersion", schema = "klage")
+@Table(name = "text_version", schema = "klage")
 class TextVersion(
     @Id
     val id: UUID = UUID.randomUUID(),
