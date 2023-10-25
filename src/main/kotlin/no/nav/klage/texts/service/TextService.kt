@@ -7,6 +7,7 @@ import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.domain.TextVersion
 import no.nav.klage.texts.exceptions.ClientErrorException
 import no.nav.klage.texts.exceptions.TextNotFoundException
+import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepository
 import no.nav.klage.texts.repositories.TextRepository
 import no.nav.klage.texts.repositories.TextVersionRepository
 import no.nav.klage.texts.util.getLogger
@@ -23,6 +24,7 @@ class TextService(
     private val textRepository: TextRepository,
     private val textVersionRepository: TextVersionRepository,
     private val searchTextService: SearchTextService,
+    private val maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository,
 ) {
 
     companion object {
@@ -64,6 +66,7 @@ class TextService(
             Text(
                 created = now,
                 modified = now,
+                maltekstseksjonVersionList = emptyList()
             )
         )
 
@@ -344,6 +347,8 @@ class TextService(
     fun getTextVersionsById(ids: List<UUID>): MutableList<TextVersion> = textVersionRepository.findAllById(ids)
     fun updateAll(textVersions: List<TextVersion>): MutableList<TextVersion> =
         textVersionRepository.saveAll(textVersions)
+
+    fun getNoe(textId: UUID): List<UUID> = maltekstseksjonVersionRepository.findConnectedMaltekstseksjonIdList(textId)
 
     private fun getCurrentDraft(textId: UUID): TextVersion {
         return textVersionRepository.findByPublishedDateTimeIsNullAndTextId(

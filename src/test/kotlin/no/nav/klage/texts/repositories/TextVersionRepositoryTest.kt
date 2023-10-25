@@ -39,7 +39,8 @@ class TextVersionRepositoryTest {
             Text(
                 created = now,
                 modified = now,
-                deleted = false
+                deleted = false,
+                maltekstseksjonVersionList = emptyList(),
             )
         )
 

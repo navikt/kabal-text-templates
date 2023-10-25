@@ -66,10 +66,11 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.publishTextVersion(
+            textVersion = textService.publishTextVersion(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getNoe(textId)
         )
     }
 
@@ -88,11 +89,13 @@ class TextController(
             logger = logger,
         )
 
+        val textVersion = textService.createNewText(
+            textInput = input,
+            saksbehandlerIdent = tokenUtil.getIdent(),
+        )
         return mapToTextView(
-            textService.createNewText(
-                textInput = input,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            textVersion = textVersion,
+            connectedMaltekstseksjonIdList = textService.getNoe(textId = textVersion.text.id)
         )
     }
 
@@ -113,11 +116,12 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.createNewDraft(
+            textVersion = textService.createNewDraft(
                 textId = textId,
                 versionInput = input,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getNoe(textId)
         )
     }
 
@@ -138,7 +142,7 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateText(
+            textVersion = textService.updateText(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
                 title = input.title,
@@ -149,7 +153,8 @@ class TextController(
                 enhetIdList = input.enheter,
                 templateSectionIdList = input.templateSectionList,
                 ytelseHjemmelIdList = input.ytelseHjemmelList,
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getNoe(textId)
         )
     }
 
@@ -170,11 +175,12 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateTitle(
+            textVersion = textService.updateTitle(
                 input = input.title,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getNoe(textId)
         )
     }
 
@@ -195,11 +201,12 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateTextType(
+            textVersion = textService.updateTextType(
                 input = input.textType,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getNoe(textId)
         )
     }
 
@@ -220,11 +227,12 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateContent(
+            textVersion = textService.updateContent(
                 input = input.content.toString(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getNoe(textId)
         )
     }
 
@@ -245,11 +253,12 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updatePlainText(
+            textVersion = textService.updatePlainText(
                 input = input.plainText,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getNoe(textId)
         )
     }
 
@@ -270,11 +279,12 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateSmartEditorVersion(
+            textVersion = textService.updateSmartEditorVersion(
                 input = input.version,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getNoe(textId)
         )
     }
 
@@ -295,11 +305,12 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateUtfall(
+            textVersion = textService.updateUtfall(
                 input = input.utfallIdList ?: input.utfall ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getNoe(textId)
         )
     }
 
@@ -320,11 +331,12 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateEnheter(
+            textVersion = textService.updateEnheter(
                 input = input.enheter ?: input.enhetIdList ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getNoe(textId)
         )
     }
 
@@ -345,11 +357,12 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateTemplateSectionList(
+            textVersion = textService.updateTemplateSectionList(
                 input = input.templateSectionIdList ?: input.templateSectionList ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getNoe(textId)
         )
     }
 
@@ -370,11 +383,12 @@ class TextController(
         )
 
         return mapToTextView(
-            textService.updateYtelseHjemmelList(
+            textVersion = textService.updateYtelseHjemmelList(
                 input = input.ytelseHjemmelIdList ?: input.ytelseHjemmelList ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getNoe(textId)
         )
     }
 
@@ -474,11 +488,14 @@ class TextController(
             id = textId,
             logger = logger,
         )
-        return mapToTextView(textService.getCurrentTextVersion(textId))
+        return mapToTextView(
+            textVersion = textService.getCurrentTextVersion(textId),
+            connectedMaltekstseksjonIdList = textService.getNoe(textId)
+        )
     }
 }
 
-fun mapToTextView(textVersion: TextVersion): TextView =
+fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: List<UUID> = emptyList()): TextView =
     TextView(
         id = textVersion.text.id,
         versionId = textVersion.id,
@@ -501,4 +518,5 @@ fun mapToTextView(textVersion: TextVersion): TextView =
         publishedDateTime = textVersion.publishedDateTime,
         publishedBy = textVersion.publishedBy,
         published = textVersion.published,
+        maltekstseksjonIdList = connectedMaltekstseksjonIdList,
     )

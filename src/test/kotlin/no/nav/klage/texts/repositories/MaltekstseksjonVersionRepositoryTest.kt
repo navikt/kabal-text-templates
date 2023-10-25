@@ -49,6 +49,7 @@ class MaltekstseksjonVersionRepositoryTest {
                 created = now,
                 modified = now,
                 deleted = false,
+                maltekstseksjonVersionList = emptyList(),
             )
         )
 

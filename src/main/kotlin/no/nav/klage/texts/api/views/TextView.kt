@@ -29,4 +29,6 @@ data class TextView(
     val publishedDateTime: LocalDateTime?,
     val publishedBy: String?,
     val published: Boolean,
+
+    val maltekstseksjonIdList: List<UUID>
 )
