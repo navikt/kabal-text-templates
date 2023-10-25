@@ -66,7 +66,7 @@ class TextService(
             Text(
                 created = now,
                 modified = now,
-                maltekstseksjonVersionList = emptyList()
+//                maltekstseksjonVersionList = emptyList()
             )
         )
 
@@ -353,9 +353,10 @@ class TextService(
         textVersionRepository.saveAll(textVersions)
 
     fun getConnectedMaltekstseksjoner(textId: UUID): Pair<List<UUID>, List<UUID>> {
-        return maltekstseksjonVersionRepository.findConnectedMaltekstseksjonPublishedIdList(textId) to maltekstseksjonVersionRepository.findConnectedMaltekstseksjonDraftsIdList(
-            textId
-        )
+//        return maltekstseksjonVersionRepository.findConnectedMaltekstseksjonPublishedIdList(textId) to maltekstseksjonVersionRepository.findConnectedMaltekstseksjonDraftsIdList(
+//            textId
+//        )
+        return (emptyList<UUID>() to emptyList())
     }
 
     private fun getCurrentDraft(textId: UUID): TextVersion {
