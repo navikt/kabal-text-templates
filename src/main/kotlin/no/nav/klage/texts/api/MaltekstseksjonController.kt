@@ -151,7 +151,7 @@ class MaltekstseksjonController(
         summary = "Update textIdList",
         description = "Update textIdList"
     )
-    @PutMapping("/{maltekstseksjonId}/textVersion-id-list")
+    @PutMapping("/{maltekstseksjonId}/text-id-list")
     fun updateTextIdList(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
         @RequestBody input: TextIdListInput
