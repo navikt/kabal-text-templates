@@ -52,6 +52,7 @@ class MaltekstseksjonService(
     fun getMaltekstseksjonVersions(maltekstseksjonId: UUID): List<MaltekstseksjonVersion> {
         validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
         return maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId)
+            .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }
     }
 
     fun createNewMaltekstseksjon(
@@ -314,8 +315,11 @@ class MaltekstseksjonService(
     }
 
     fun getAllMaltekstseksjonVersions(): List<MaltekstseksjonVersion> = maltekstseksjonVersionRepository.findAll()
-    fun getMaltekstseksjonVersionsById(ids: List<UUID>): MutableList<MaltekstseksjonVersion> = maltekstseksjonVersionRepository.findAllById(ids)
-    fun updateAll(maltekstseksjonVersions: List<MaltekstseksjonVersion>): MutableList<MaltekstseksjonVersion> = maltekstseksjonVersionRepository.saveAll(maltekstseksjonVersions)
+    fun getMaltekstseksjonVersionsById(ids: List<UUID>): MutableList<MaltekstseksjonVersion> =
+        maltekstseksjonVersionRepository.findAllById(ids)
+
+    fun updateAll(maltekstseksjonVersions: List<MaltekstseksjonVersion>): MutableList<MaltekstseksjonVersion> =
+        maltekstseksjonVersionRepository.saveAll(maltekstseksjonVersions)
 
     private fun getCurrentDraft(maltekstseksjonId: UUID): MaltekstseksjonVersion {
         return maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(

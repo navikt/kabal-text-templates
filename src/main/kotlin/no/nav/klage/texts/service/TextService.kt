@@ -51,6 +51,7 @@ class TextService(
     fun getTextVersions(textId: UUID): List<TextVersion> {
         validateIfTextIsDeleted(textId)
         return textVersionRepository.findByTextId(textId)
+            .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }
     }
 
     fun createNewText(
@@ -341,7 +342,8 @@ class TextService(
 
     fun getAllTextVersions(): List<TextVersion> = textVersionRepository.findAll()
     fun getTextVersionsById(ids: List<UUID>): MutableList<TextVersion> = textVersionRepository.findAllById(ids)
-    fun updateAll(textVersions: List<TextVersion>): MutableList<TextVersion> = textVersionRepository.saveAll(textVersions)
+    fun updateAll(textVersions: List<TextVersion>): MutableList<TextVersion> =
+        textVersionRepository.saveAll(textVersions)
 
     private fun getCurrentDraft(textId: UUID): TextVersion {
         return textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
