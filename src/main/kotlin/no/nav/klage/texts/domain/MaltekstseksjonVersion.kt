@@ -17,9 +17,13 @@ class MaltekstseksjonVersion(
     @JoinColumn(name = "maltekstseksjon_id", nullable = false, updatable = false)
     val maltekstseksjon: Maltekstseksjon,
 
-    @OneToMany
-    @JoinColumn(name = "maltekstseksjon_version_id")
-    @JoinTable(schema = "klage", name = "maltekstseksjon_version_text", inverseJoinColumns = [JoinColumn(name = "text_id")])
+    @ManyToMany
+    @JoinTable(
+        schema = "klage",
+        name = "maltekstseksjon_version_text",
+        joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")],
+        inverseJoinColumns = [JoinColumn(name = "text_id")]
+    )
     @OrderColumn(name = "index", nullable = false)
     var texts: List<Text> = emptyList(),
 

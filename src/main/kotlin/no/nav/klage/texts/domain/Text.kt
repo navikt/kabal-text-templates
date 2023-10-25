@@ -1,9 +1,6 @@
 package no.nav.klage.texts.domain
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.util.*
 
@@ -19,10 +16,8 @@ class Text(
     @Column(name = "deleted")
     var deleted: Boolean = false,
 
-//    @OneToMany
-//    @JoinColumn(name = "text_id")
-//    @JoinTable(schema = "klage", name = "maltekstseksjon_version_text", inverseJoinColumns = [JoinColumn(name = "maltekstseksjon_version_id")])
-//    val maltekstseksjonVersionList: List<MaltekstseksjonVersion>
+    @ManyToMany(mappedBy = "texts")
+    val maltekstseksjonVersionList: List<MaltekstseksjonVersion>
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
