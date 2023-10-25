@@ -17,7 +17,7 @@ class MaltekstseksjonVersion(
     @JoinColumn(name = "maltekstseksjon_id", nullable = false, updatable = false)
     val maltekstseksjon: Maltekstseksjon,
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         schema = "klage",
         name = "maltekstseksjon_version_text",

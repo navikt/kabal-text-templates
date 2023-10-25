@@ -113,16 +113,13 @@ class MaltekstseksjonController(
             logger = logger,
         )
 
-        val maltekstseksjonVersion = maltekstseksjonService.createNewDraft(
-            maltekstseksjonId = maltekstseksjonId,
-            versionInput = input,
-            saksbehandlerIdent = tokenUtil.getIdent(),
+        return mapToMaltekstView(
+            maltekstseksjonService.createNewDraft(
+                maltekstseksjonId = maltekstseksjonId,
+                versionInput = input,
+                saksbehandlerIdent = tokenUtil.getIdent(),
+            )
         )
-        val mapToMaltekstView = mapToMaltekstView(
-            maltekstseksjonVersion
-        )
-
-        return mapToMaltekstView
     }
 
     @Operation(
