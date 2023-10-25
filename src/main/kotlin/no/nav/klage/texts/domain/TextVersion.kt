@@ -67,10 +67,9 @@ class TextVersion(
     var modified: LocalDateTime,
 ) {
 
-    fun createDraft(id: UUID? = null): TextVersion {
+    fun createDraft(): TextVersion {
         val now = LocalDateTime.now()
         return TextVersion(
-            id = id ?: UUID.randomUUID(),
             title = title,
             textType = textType,
             content = content,

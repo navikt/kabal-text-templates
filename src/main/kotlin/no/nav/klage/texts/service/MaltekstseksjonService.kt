@@ -105,8 +105,12 @@ class MaltekstseksjonService(
             maltekstseksjonId = maltekstseksjonId
         )
 
+        if (existingDraft != null) {
+            maltekstseksjonVersionRepository.delete(existingDraft)
+        }
+
         return maltekstseksjonVersionRepository.save(
-            existingVersion.createDraft(existingDraft?.id)
+            existingVersion.createDraft()
         )
     }
 

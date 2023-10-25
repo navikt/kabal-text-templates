@@ -110,8 +110,12 @@ class TextService(
             textId = textId
         )
 
+        if (existingDraft != null) {
+            textVersionRepository.delete(existingDraft)
+        }
+
         return textVersionRepository.save(
-            existingVersion.createDraft(existingDraft?.id)
+            existingVersion.createDraft()
         )
     }
 
