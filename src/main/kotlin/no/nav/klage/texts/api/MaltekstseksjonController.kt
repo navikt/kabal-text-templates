@@ -315,8 +315,8 @@ class MaltekstseksjonController(
     }
 
     @Operation(
-        summary = "Search malteksts",
-        description = "Search malteksts"
+        summary = "Search maltekstseksjoner",
+        description = "Search maltekstseksjoner"
     )
     @GetMapping
     fun searchMalteksts(

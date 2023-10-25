@@ -13,6 +13,7 @@ import no.nav.klage.texts.util.logMethodDetails
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
+import java.util.*
 
 @RestController
 @Tag(name = "kabal-text-templates")
@@ -44,7 +45,10 @@ class TextVersionsMigrationsController(
         )
 
         return textService.getAllTextVersions().map {
-            mapToTextView(it)
+            mapToTextView(
+                textVersion = it,
+                connectedMaltekstseksjonIdList = emptyList<UUID>() to emptyList<UUID>()
+            )
         }
     }
 
@@ -83,7 +87,10 @@ class TextVersionsMigrationsController(
         }
 
         return textService.updateAll(updatedTexts).map {
-            mapToTextView(it)
+            mapToTextView(
+                textVersion = it,
+                connectedMaltekstseksjonIdList = emptyList<UUID>() to emptyList<UUID>()
+            )
         }
     }
 }

@@ -348,7 +348,11 @@ class TextService(
     fun updateAll(textVersions: List<TextVersion>): MutableList<TextVersion> =
         textVersionRepository.saveAll(textVersions)
 
-    fun getNoe(textId: UUID): List<UUID> = maltekstseksjonVersionRepository.findConnectedMaltekstseksjonIdList(textId)
+    fun getConnectedMaltekstseksjoner(textId: UUID): Pair<List<UUID>, List<UUID>> {
+        return maltekstseksjonVersionRepository.findConnectedMaltekstseksjonPublishedIdList(textId) to maltekstseksjonVersionRepository.findConnectedMaltekstseksjonDraftsIdList(
+            textId
+        )
+    }
 
     private fun getCurrentDraft(textId: UUID): TextVersion {
         return textVersionRepository.findByPublishedDateTimeIsNullAndTextId(

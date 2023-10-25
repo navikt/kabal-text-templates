@@ -20,3 +20,12 @@ data class MaltekstseksjonView(
     val publishedBy: String?,
     val published: Boolean,
 )
+
+data class ConsumerMaltekstseksjonView(
+    val id: UUID,
+    val textIdList: List<String> = emptyList(),
+    val utfallIdList: Set<String> = emptySet(),
+    val enhetIdList: Set<String> = emptySet(),
+    val templateSectionIdList: Set<String> = emptySet(),
+    val ytelseHjemmelIdList: Set<String> = emptySet(),
+)

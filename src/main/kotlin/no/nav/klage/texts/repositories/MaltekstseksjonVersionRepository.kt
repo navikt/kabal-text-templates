@@ -57,6 +57,22 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
                 and t.id = :textId
         """
     )
-    fun findConnectedMaltekstseksjonIdList(textId: UUID): List<UUID>
+    fun findConnectedMaltekstseksjonPublishedIdList(textId: UUID): List<UUID>
+
+    @EntityGraph(attributePaths = [
+        "texts",
+        "utfallIdList",
+        "enhetIdList",
+        "templateSectionIdList",
+        "ytelseHjemmelIdList",
+    ])
+    @Query(
+        """
+            select mvl.maltekstseksjon.id from Text t inner join t.maltekstseksjonVersionList mvl
+                where mvl.publishedDateTime = null
+                and t.id = :textId
+        """
+    )
+    fun findConnectedMaltekstseksjonDraftsIdList(textId: UUID): List<UUID>
 
 }

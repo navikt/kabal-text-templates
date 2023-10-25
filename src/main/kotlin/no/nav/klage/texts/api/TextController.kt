@@ -45,8 +45,13 @@ class TextController(
             logger = logger,
         )
 
+        val connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
+
         return textService.getTextVersions(textId).map {
-            mapToTextView(it)
+            mapToTextView(
+                textVersion = it,
+                connectedMaltekstseksjonIdList = connectedMaltekstseksjonIdList
+            )
         }
     }
 
@@ -70,7 +75,7 @@ class TextController(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             ),
-            connectedMaltekstseksjonIdList = textService.getNoe(textId)
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -95,7 +100,7 @@ class TextController(
         )
         return mapToTextView(
             textVersion = textVersion,
-            connectedMaltekstseksjonIdList = textService.getNoe(textId = textVersion.text.id)
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId = textVersion.text.id)
         )
     }
 
@@ -121,7 +126,7 @@ class TextController(
                 versionInput = input,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             ),
-            connectedMaltekstseksjonIdList = textService.getNoe(textId)
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -154,7 +159,7 @@ class TextController(
                 templateSectionIdList = input.templateSectionList,
                 ytelseHjemmelIdList = input.ytelseHjemmelList,
             ),
-            connectedMaltekstseksjonIdList = textService.getNoe(textId)
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -180,7 +185,7 @@ class TextController(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             ),
-            connectedMaltekstseksjonIdList = textService.getNoe(textId)
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -206,7 +211,7 @@ class TextController(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             ),
-            connectedMaltekstseksjonIdList = textService.getNoe(textId)
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -232,7 +237,7 @@ class TextController(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             ),
-            connectedMaltekstseksjonIdList = textService.getNoe(textId)
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -258,7 +263,7 @@ class TextController(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             ),
-            connectedMaltekstseksjonIdList = textService.getNoe(textId)
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -284,7 +289,7 @@ class TextController(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             ),
-            connectedMaltekstseksjonIdList = textService.getNoe(textId)
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -310,7 +315,7 @@ class TextController(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             ),
-            connectedMaltekstseksjonIdList = textService.getNoe(textId)
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -336,7 +341,7 @@ class TextController(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             ),
-            connectedMaltekstseksjonIdList = textService.getNoe(textId)
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -362,7 +367,7 @@ class TextController(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             ),
-            connectedMaltekstseksjonIdList = textService.getNoe(textId)
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -388,7 +393,7 @@ class TextController(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             ),
-            connectedMaltekstseksjonIdList = textService.getNoe(textId)
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -440,7 +445,6 @@ class TextController(
     )
     @GetMapping
     fun searchTexts(
-        @RequestParam(required = false, defaultValue = "true") published: Boolean = true,
         searchTextQueryParams: SearchTextQueryParams
     ): List<TextView> {
         logMethodDetails(
@@ -450,17 +454,9 @@ class TextController(
             logger = logger,
         )
 
-        logger.debug("searchTexts called with published = {} params {}", published, searchTextQueryParams)
+        logger.debug("searchTexts called with params {}", searchTextQueryParams)
 
-        val textVersions = if (published) {
-            textService.searchPublishedTextVersions(
-                textType = searchTextQueryParams.textType,
-                utfallIdList = searchTextQueryParams.utfallIdList ?: emptyList(),
-                enhetIdList = searchTextQueryParams.enhetIdList ?: emptyList(),
-                templateSectionIdList = searchTextQueryParams.templateSectionIdList ?: emptyList(),
-                ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
-            )
-        } else {
+        val textVersions =
             textService.searchTextVersion(
                 textType = searchTextQueryParams.textType,
                 utfallIdList = searchTextQueryParams.utfallIdList ?: emptyList(),
@@ -468,9 +464,12 @@ class TextController(
                 templateSectionIdList = searchTextQueryParams.templateSectionIdList ?: emptyList(),
                 ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
             )
-        }
+
         return textVersions.map {
-            mapToTextView(it)
+            mapToTextView(
+                textVersion = it,
+                connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(it.text.id)
+            )
         }
     }
 
@@ -490,12 +489,12 @@ class TextController(
         )
         return mapToTextView(
             textVersion = textService.getCurrentTextVersion(textId),
-            connectedMaltekstseksjonIdList = textService.getNoe(textId)
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 }
 
-fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: List<UUID> = emptyList()): TextView =
+fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair<List<UUID>, List<UUID>>): TextView =
     TextView(
         id = textVersion.text.id,
         versionId = textVersion.id,
@@ -504,10 +503,6 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: List
         content = if (textVersion.content != null) jsonMapper().readTree(textVersion.content) else null,
         plainText = textVersion.plainText,
         version = textVersion.smartEditorVersion,
-        utfall = textVersion.utfallIdList,
-        enheter = textVersion.enhetIdList,
-        templateSectionList = textVersion.templateSectionIdList,
-        ytelseHjemmelList = textVersion.ytelseHjemmelIdList,
         created = textVersion.created,
         modified = textVersion.modified,
         utfallIdList = textVersion.utfallIdList,
@@ -518,5 +513,6 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: List
         publishedDateTime = textVersion.publishedDateTime,
         publishedBy = textVersion.publishedBy,
         published = textVersion.published,
-        maltekstseksjonIdList = connectedMaltekstseksjonIdList,
+        publishedMaltekstseksjonIdList = connectedMaltekstseksjonIdList.first,
+        draftMaltekstseksjonIdList = connectedMaltekstseksjonIdList.second,
     )

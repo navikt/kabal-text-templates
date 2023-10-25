@@ -13,10 +13,6 @@ data class TextView(
     val content: JsonNode?,
     val plainText: String?,
     val version: Int?,
-    val utfall: Set<String> = emptySet(),
-    val enheter: Set<String> = emptySet(),
-    val templateSectionList: Set<String> = emptySet(),
-    val ytelseHjemmelList: Set<String> = emptySet(),
     val created: LocalDateTime,
     var modified: LocalDateTime,
 
@@ -30,5 +26,17 @@ data class TextView(
     val publishedBy: String?,
     val published: Boolean,
 
-    val maltekstseksjonIdList: List<UUID>
+    val draftMaltekstseksjonIdList: List<UUID>,
+    val publishedMaltekstseksjonIdList: List<UUID>
+)
+
+data class ConsumerTextView(
+    val id: UUID,
+    val textType: String,
+    val content: JsonNode?,
+    val plainText: String?,
+    val utfallIdList: Set<String>,
+    val enhetIdList: Set<String>,
+    val templateSectionIdList: Set<String>,
+    val ytelseHjemmelIdList: Set<String>,
 )
