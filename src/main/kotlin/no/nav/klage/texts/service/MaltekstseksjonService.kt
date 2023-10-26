@@ -303,7 +303,7 @@ class MaltekstseksjonService(
         }
 
         logger.debug(
-            "searchMaltekstseksjoner getting all texts took {} millis. Found {} texts",
+            "searchMaltekstseksjoner getting all maltekstseksjonVersions took {} millis. Found {} maltekstseksjonVersions",
             millis,
             maltekstseksjonVersions.size
         )

@@ -95,8 +95,6 @@ class MaltekstseksjonController(
         )
     }
 
-
-
     @Operation(
         summary = "Create maltekstseksjon draft",
         description = "Create maltekstseksjon draft, possibly based on existing version"
@@ -319,28 +317,19 @@ class MaltekstseksjonController(
         description = "Search maltekstseksjoner"
     )
     @GetMapping
-    fun searchMalteksts(
-        @RequestParam(required = false, defaultValue = "true") published: Boolean = true,
+    fun searchMaltekstseksjoner(
         searchMaltekstseksjonQueryParams: SearchMaltekstseksjonQueryParams
     ): List<MaltekstseksjonView> {
         logMethodDetails(
-            methodName = ::searchMalteksts.name,
+            methodName = ::searchMaltekstseksjoner.name,
             innloggetIdent = tokenUtil.getIdent(),
             id = null,
             logger = logger,
         )
 
-        logger.debug("searchMalteksts called with published = {} params {}", published, searchMaltekstseksjonQueryParams)
+        logger.debug("searchMaltekstseksjoner called with params {}", searchMaltekstseksjonQueryParams)
 
-        val maltekstseksjonsVersions = if (published) {
-            maltekstseksjonService.searchPublishedMaltekstseksjoner(
-                textIdList = searchMaltekstseksjonQueryParams.textIdList ?: emptyList(),
-                utfallIdList = searchMaltekstseksjonQueryParams.utfallIdList ?: emptyList(),
-                enhetIdList = searchMaltekstseksjonQueryParams.enhetIdList ?: emptyList(),
-                templateSectionIdList = searchMaltekstseksjonQueryParams.templateSectionIdList ?: emptyList(),
-                ytelseHjemmelIdList = searchMaltekstseksjonQueryParams.ytelseHjemmelIdList ?: emptyList(),
-            )
-        } else {
+        val maltekstseksjonsVersions =
             maltekstseksjonService.searchMaltekstseksjoner(
                 textIdList = searchMaltekstseksjonQueryParams.textIdList ?: emptyList(),
                 utfallIdList = searchMaltekstseksjonQueryParams.utfallIdList ?: emptyList(),
@@ -348,7 +337,7 @@ class MaltekstseksjonController(
                 templateSectionIdList = searchMaltekstseksjonQueryParams.templateSectionIdList ?: emptyList(),
                 ytelseHjemmelIdList = searchMaltekstseksjonQueryParams.ytelseHjemmelIdList ?: emptyList(),
             )
-        }
+
         return maltekstseksjonsVersions.map {
             mapToMaltekstView(it)
         }
