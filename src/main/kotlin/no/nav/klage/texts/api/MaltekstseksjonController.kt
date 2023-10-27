@@ -55,7 +55,7 @@ class MaltekstseksjonController(
     )
     @PostMapping("/{maltekstseksjonId}/publish")
     fun publishMaltekstseksjon(
-        @PathVariable("textId") maltekstseksjonId: UUID,
+        @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
     ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::publishMaltekstseksjon.name,
