@@ -35,7 +35,12 @@ class MaltekstseksjonService(
     fun publishMaltekstseksjonVersion(maltekstseksjonId: UUID, saksbehandlerIdent: String): MaltekstseksjonVersion {
         validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
 
-        maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(maltekstseksjonId).published = false
+        val possiblePublishedVersion =
+            maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(maltekstseksjonId)
+
+        if (possiblePublishedVersion != null) {
+            possiblePublishedVersion.published = false
+        }
 
         val maltekstseksjonVersionDraft =
             maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
@@ -98,7 +103,7 @@ class MaltekstseksjonService(
         } else {
             maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
                 maltekstseksjonId = maltekstseksjonId
-            )
+            ) ?: throw ClientErrorException("must exist a published version before a draft is created")
         }
 
         val existingDraft = maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
@@ -139,7 +144,7 @@ class MaltekstseksjonService(
 
         return maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
             maltekstseksjonId = maltekstseksjonId
-        )
+        ) ?: throw ClientErrorException("there is no published maltekstseksjon version")
     }
 
     fun updateMaltekstseksjon(

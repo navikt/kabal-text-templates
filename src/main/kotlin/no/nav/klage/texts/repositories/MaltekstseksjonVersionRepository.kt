@@ -28,7 +28,7 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
 
     fun findByPublishedIsTrueAndMaltekstseksjonId(
         maltekstseksjonId: UUID
-    ): MaltekstseksjonVersion
+    ): MaltekstseksjonVersion?
 
     fun findByPublishedDateTimeIsNullAndMaltekstseksjonId(
         maltekstseksjonId: UUID

@@ -474,8 +474,8 @@ class TextController(
     }
 
     @Operation(
-        summary = "Get textVersion",
-        description = "Get textVersion"
+        summary = "Get published text version",
+        description = "Get published text version"
     )
     @GetMapping("/{textId}")
     fun getText(

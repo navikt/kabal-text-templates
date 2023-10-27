@@ -25,7 +25,7 @@ interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
 
     fun findByPublishedIsTrueAndTextId(
         textId: UUID
-    ): TextVersion
+    ): TextVersion?
 
     fun findByPublishedDateTimeIsNullAndTextId(
         textId: UUID

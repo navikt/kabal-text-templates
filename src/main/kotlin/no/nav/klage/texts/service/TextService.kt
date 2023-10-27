@@ -36,7 +36,10 @@ class TextService(
     fun publishTextVersion(textId: UUID, saksbehandlerIdent: String): TextVersion {
         validateIfTextIsDeleted(textId)
 
-        textVersionRepository.findByPublishedIsTrueAndTextId(textId).published = false
+        val possiblePreviouslyPublishedVersion = textVersionRepository.findByPublishedIsTrueAndTextId(textId)
+        if (possiblePreviouslyPublishedVersion != null) {
+            possiblePreviouslyPublishedVersion.published = false
+        }
 
         val textVersionDraft =
             textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
@@ -103,7 +106,7 @@ class TextService(
         } else {
             textVersionRepository.findByPublishedIsTrueAndTextId(
                 textId = textId
-            )
+            ) ?: throw ClientErrorException("must exist a published version before a draft is created")
         }
 
         val existingDraft = textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
@@ -141,7 +144,7 @@ class TextService(
         validateIfTextIsDeleted(textId)
         return textVersionRepository.findByPublishedIsTrueAndTextId(
             textId = textId
-        )
+        ) ?: throw ClientErrorException("there is no published text version")
     }
 
     fun updateText(
