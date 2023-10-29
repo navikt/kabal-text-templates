@@ -1,9 +1,9 @@
 externalHosts:
 springProfile: prod-gcp
-db_tier: db-custom-4-15360
+db_tier: db-custom-1-3840
 db_size: 10
 db_ha: true
-db_type: POSTGRES_12
+db_type: POSTGRES_15
 tenant: nav.no
 
 envs:
