@@ -72,6 +72,7 @@ class MaltekstseksjonService(
             Maltekstseksjon(
                 created = now,
                 modified = now,
+                createdBy = saksbehandlerIdent,
             )
         )
 

@@ -18,6 +18,8 @@ class Maltekstseksjon(
     var modified: LocalDateTime,
     @Column(name = "deleted")
     var deleted: Boolean = false,
+    @Column(name = "created_by")
+    var createdBy: String?,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -31,7 +33,7 @@ class Maltekstseksjon(
     override fun hashCode() = id.hashCode()
 
     override fun toString(): String {
-        return "Maltekstseksjon(id=$id, created=$created, modified=$modified, deleted=$deleted)"
+        return "Maltekstseksjon(id=$id, created=$created, modified=$modified, deleted=$deleted, createdBy=$createdBy)"
     }
 
 }

@@ -15,6 +15,8 @@ class Text(
     var modified: LocalDateTime,
     @Column(name = "deleted")
     var deleted: Boolean = false,
+    @Column(name = "created_by")
+    var createdBy: String?,
 
     @ManyToMany(mappedBy = "texts")
     val maltekstseksjonVersionList: List<MaltekstseksjonVersion>
@@ -31,7 +33,7 @@ class Text(
     override fun hashCode() = id.hashCode()
 
     override fun toString(): String {
-        return "Text(id=$id, created=$created, modified=$modified, deleted=$deleted)"
+        return "Text(id=$id, created=$created, modified=$modified, deleted=$deleted, createdBy=$createdBy, maltekstseksjonVersionList=$maltekstseksjonVersionList)"
     }
 
 }

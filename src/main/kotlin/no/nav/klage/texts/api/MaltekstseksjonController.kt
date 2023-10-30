@@ -383,4 +383,5 @@ fun mapToMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): Malteksts
         publishedDateTime = maltekstseksjonVersion.publishedDateTime,
         publishedBy = maltekstseksjonVersion.publishedBy,
         published = maltekstseksjonVersion.published,
+        createdBy = maltekstseksjonVersion.maltekstseksjon.createdBy,
     )

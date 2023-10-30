@@ -42,6 +42,7 @@ class TextVersionRepositoryTest {
                 modified = now,
                 deleted = false,
                 maltekstseksjonVersionList = emptyList(),
+                createdBy = "abc",
             )
         )
 

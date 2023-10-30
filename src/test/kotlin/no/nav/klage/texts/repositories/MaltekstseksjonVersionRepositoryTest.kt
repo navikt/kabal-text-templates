@@ -41,7 +41,8 @@ class MaltekstseksjonVersionRepositoryTest {
             Maltekstseksjon(
                 created = now,
                 modified = now,
-                deleted = false
+                deleted = false,
+                createdBy = "abc",
             )
         )
 
@@ -51,6 +52,7 @@ class MaltekstseksjonVersionRepositoryTest {
                 modified = now,
                 deleted = false,
                 maltekstseksjonVersionList = emptyList(),
+                createdBy = "abc",
             )
         )
 

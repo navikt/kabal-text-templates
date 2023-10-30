@@ -58,7 +58,8 @@ class MaltekstseksjonServiceTest {
                 id = UUID.fromString("368f1610-7463-4688-b069-c07667a86b33"),
                 created = now,
                 modified = now,
-                deleted = false
+                deleted = false,
+                createdBy = "abc",
             )
         )
 
@@ -68,6 +69,7 @@ class MaltekstseksjonServiceTest {
                 modified = now,
                 deleted = false,
                 maltekstseksjonVersionList = emptyList(),
+                createdBy = "abc",
             )
         )
 

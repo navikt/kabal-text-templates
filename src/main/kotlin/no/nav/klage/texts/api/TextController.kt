@@ -521,4 +521,5 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         published = textVersion.published,
         publishedMaltekstseksjonIdList = connectedMaltekstseksjonIdList.first,
         draftMaltekstseksjonIdList = connectedMaltekstseksjonIdList.second,
+        createdBy = textVersion.text.createdBy,
     )

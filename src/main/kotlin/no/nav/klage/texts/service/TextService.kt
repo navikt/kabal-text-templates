@@ -71,7 +71,8 @@ class TextService(
             Text(
                 created = now,
                 modified = now,
-                maltekstseksjonVersionList = emptyList()
+                maltekstseksjonVersionList = emptyList(),
+                createdBy = saksbehandlerIdent,
             )
         )
 
