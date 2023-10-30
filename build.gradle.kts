@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val mockkVersion = "1.13.7"
+val mockkVersion = "1.13.8"
 val logstashVersion = "7.4"
-val testContainersVersion = "1.19.0"
+val testContainersVersion = "1.19.1"
 val springDocVersion = "2.2.0"
-val tokenValidationVersion = "3.1.5"
+val tokenValidationVersion = "3.1.7"
 
 repositories {
     mavenCentral()
@@ -12,7 +12,7 @@ repositories {
 
 plugins {
     val kotlinVersion = "1.9.10"
-    id("org.springframework.boot") version "3.1.3"
+    id("org.springframework.boot") version "3.1.5"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
@@ -44,7 +44,7 @@ dependencies {
 
     implementation("ch.qos.logback:logback-classic")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.2")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.15.3")
 
     testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
     testImplementation("org.testcontainers:junit-jupiter:$testContainersVersion")
