@@ -515,7 +515,7 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
                 created = it.created,
                 modified = it.modified,
             )
-        },
+        }.sortedByDescending { it.modified },
         publishedDateTime = textVersion.publishedDateTime,
         publishedBy = textVersion.publishedBy,
         published = textVersion.published,

@@ -379,7 +379,7 @@ fun mapToMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): Malteksts
                 created = it.created,
                 modified = it.modified,
             )
-        },
+        }.sortedByDescending { it.modified },
         publishedDateTime = maltekstseksjonVersion.publishedDateTime,
         publishedBy = maltekstseksjonVersion.publishedBy,
         published = maltekstseksjonVersion.published,
