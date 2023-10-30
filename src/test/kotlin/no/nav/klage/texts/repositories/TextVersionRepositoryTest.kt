@@ -1,5 +1,6 @@
 package no.nav.klage.texts.repositories
 
+import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.domain.TextVersion
 import org.assertj.core.api.Assertions.assertThat
@@ -58,7 +59,13 @@ class TextVersionRepositoryTest {
             enhetIdList = setOf("1"),
             templateSectionIdList = setOf("1"),
             ytelseHjemmelIdList = setOf("1"),
-            editors = setOf("Navident"),
+            editors = setOf(
+                Editor(
+                    navIdent = "saksbehandlerIdent",
+                    created = now,
+                    modified = now,
+                )
+            ),
             created = now,
             modified = now,
         )

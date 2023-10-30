@@ -21,7 +21,7 @@ data class TextView(
     val templateSectionIdList: Set<String>,
     val ytelseHjemmelIdList: Set<String>,
 
-    val editors: Set<String>,
+    val editors: List<EditorView>,
     val publishedDateTime: LocalDateTime?,
     val publishedBy: String?,
     val published: Boolean,

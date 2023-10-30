@@ -15,7 +15,7 @@ data class MaltekstseksjonView(
     val created: LocalDateTime,
     var modified: LocalDateTime,
 
-    val editors: Set<String>,
+    val editors: List<EditorView>,
     val publishedDateTime: LocalDateTime?,
     val publishedBy: String?,
     val published: Boolean,

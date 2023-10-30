@@ -40,14 +40,9 @@ class TextVersion(
     @Column(name = "ytelse_hjemmel")
     var ytelseHjemmelIdList: Set<String> = emptySet(),
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(
-        schema = "klage",
-        name = "text_version_editor",
-        joinColumns = [JoinColumn(name = "text_version_id")]
-    )
-    @Column(name = "nav_ident")
-    var editors: Set<String> = emptySet(),
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "text_version_id", referencedColumnName = "id", nullable = false)
+    var editors: Set<Editor> = setOf(),
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "text_id", nullable = false, updatable = false)

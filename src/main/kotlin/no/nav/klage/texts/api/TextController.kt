@@ -509,7 +509,13 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         enhetIdList = textVersion.enhetIdList,
         templateSectionIdList = textVersion.templateSectionIdList,
         ytelseHjemmelIdList = textVersion.ytelseHjemmelIdList,
-        editors = textVersion.editors,
+        editors = textVersion.editors.map {
+            EditorView(
+                navIdent = it.navIdent,
+                created = it.created,
+                modified = it.modified,
+            )
+        },
         publishedDateTime = textVersion.publishedDateTime,
         publishedBy = textVersion.publishedBy,
         published = textVersion.published,

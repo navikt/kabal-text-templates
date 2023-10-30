@@ -373,7 +373,13 @@ fun mapToMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): Malteksts
         ytelseHjemmelIdList = maltekstseksjonVersion.ytelseHjemmelIdList,
         created = maltekstseksjonVersion.created,
         modified = maltekstseksjonVersion.modified,
-        editors = maltekstseksjonVersion.editors,
+        editors = maltekstseksjonVersion.editors.map {
+            EditorView(
+                navIdent = it.navIdent,
+                created = it.created,
+                modified = it.modified,
+            )
+        },
         publishedDateTime = maltekstseksjonVersion.publishedDateTime,
         publishedBy = maltekstseksjonVersion.publishedBy,
         published = maltekstseksjonVersion.published,

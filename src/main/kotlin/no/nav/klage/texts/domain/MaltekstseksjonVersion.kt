@@ -55,14 +55,9 @@ class MaltekstseksjonVersion(
     @Column(name = "ytelse_hjemmel")
     var ytelseHjemmelIdList: Set<String> = emptySet(),
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(
-        schema = "klage",
-        name = "maltekstseksjon_version_editor",
-        joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")]
-    )
-    @Column(name = "nav_ident")
-    var editors: Set<String> = emptySet(),
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "maltekstseksjon_version_id", referencedColumnName = "id", nullable = false)
+    var editors: Set<Editor> = setOf(),
 
     @Column(name = "published_date_time")
     var publishedDateTime: LocalDateTime?,

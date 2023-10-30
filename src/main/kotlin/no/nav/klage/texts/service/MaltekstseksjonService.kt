@@ -2,6 +2,7 @@ package no.nav.klage.texts.service
 
 import no.nav.klage.texts.api.views.MaltekstseksjonInput
 import no.nav.klage.texts.api.views.VersionInput
+import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.Maltekstseksjon
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.exceptions.ClientErrorException
@@ -11,6 +12,7 @@ import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepository
 import no.nav.klage.texts.repositories.TextRepository
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
+import no.nav.klage.texts.util.getUpdatedEditors
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -80,7 +82,13 @@ class MaltekstseksjonService(
                 enhetIdList = maltekstseksjonInput.enhetIdList,
                 templateSectionIdList = maltekstseksjonInput.templateSectionIdList,
                 ytelseHjemmelIdList = maltekstseksjonInput.ytelseHjemmelIdList,
-                editors = setOf(saksbehandlerIdent),
+                editors = setOf(
+                    Editor(
+                        navIdent = saksbehandlerIdent,
+                        created = now,
+                        modified = now,
+                    )
+                ),
                 maltekstseksjon = maltekstseksjon,
                 created = now,
                 modified = now,
@@ -168,7 +176,10 @@ class MaltekstseksjonService(
             this.enhetIdList = enhetIdList
             this.templateSectionIdList = templateSectionIdList
             this.ytelseHjemmelIdList = ytelseHjemmelIdList
-            this.editors += saksbehandlerIdent
+            this.editors = getUpdatedEditors(
+                existingEditors = this.editors,
+                newEditorNavIdent = saksbehandlerIdent
+            )
         }
 
         return maltekstseksjonVersion
@@ -183,7 +194,10 @@ class MaltekstseksjonService(
 
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.title = input
-        maltekstseksjonVersion.editors += saksbehandlerIdent
+        maltekstseksjonVersion.editors = getUpdatedEditors(
+            existingEditors = maltekstseksjonVersion.editors,
+            newEditorNavIdent = saksbehandlerIdent
+        )
         return maltekstseksjonVersion
     }
 
@@ -196,7 +210,10 @@ class MaltekstseksjonService(
 
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.texts = input.map { textRepository.getReferenceById(UUID.fromString(it)) }
-        maltekstseksjonVersion.editors += saksbehandlerIdent
+        maltekstseksjonVersion.editors = getUpdatedEditors(
+            existingEditors = maltekstseksjonVersion.editors,
+            newEditorNavIdent = saksbehandlerIdent
+        )
         return maltekstseksjonVersion
     }
 
@@ -209,7 +226,10 @@ class MaltekstseksjonService(
 
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.utfallIdList = input
-        maltekstseksjonVersion.editors += saksbehandlerIdent
+        maltekstseksjonVersion.editors = getUpdatedEditors(
+            existingEditors = maltekstseksjonVersion.editors,
+            newEditorNavIdent = saksbehandlerIdent
+        )
         return maltekstseksjonVersion
     }
 
@@ -222,7 +242,10 @@ class MaltekstseksjonService(
 
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.enhetIdList = input
-        maltekstseksjonVersion.editors += saksbehandlerIdent
+        maltekstseksjonVersion.editors = getUpdatedEditors(
+            existingEditors = maltekstseksjonVersion.editors,
+            newEditorNavIdent = saksbehandlerIdent
+        )
         return maltekstseksjonVersion
     }
 
@@ -235,7 +258,10 @@ class MaltekstseksjonService(
 
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.templateSectionIdList = input
-        maltekstseksjonVersion.editors += saksbehandlerIdent
+        maltekstseksjonVersion.editors = getUpdatedEditors(
+            existingEditors = maltekstseksjonVersion.editors,
+            newEditorNavIdent = saksbehandlerIdent
+        )
         return maltekstseksjonVersion
     }
 
@@ -248,7 +274,10 @@ class MaltekstseksjonService(
 
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.ytelseHjemmelIdList = input
-        maltekstseksjonVersion.editors += saksbehandlerIdent
+        maltekstseksjonVersion.editors = getUpdatedEditors(
+            existingEditors = maltekstseksjonVersion.editors,
+            newEditorNavIdent = saksbehandlerIdent
+        )
         return maltekstseksjonVersion
     }
 
