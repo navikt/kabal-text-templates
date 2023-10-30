@@ -188,6 +188,7 @@ class TextService(
                 existingEditors = this.editors,
                 newEditorNavIdent = saksbehandlerIdent
             )
+            this.modified = LocalDateTime.now()
         }
 
         return textVersion
@@ -201,6 +202,7 @@ class TextService(
         validateIfTextIsDeleted(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.title = input
+        textVersion.modified = LocalDateTime.now()
         updateEditors(
             existingEditors = textVersion.editors,
             newEditorNavIdent = saksbehandlerIdent
@@ -216,6 +218,7 @@ class TextService(
         validateIfTextIsDeleted(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.textType = input
+        textVersion.modified = LocalDateTime.now()
         updateEditors(
             existingEditors = textVersion.editors,
             newEditorNavIdent = saksbehandlerIdent
@@ -231,6 +234,7 @@ class TextService(
         validateIfTextIsDeleted(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.smartEditorVersion = input
+        textVersion.modified = LocalDateTime.now()
         updateEditors(
             existingEditors = textVersion.editors,
             newEditorNavIdent = saksbehandlerIdent
@@ -246,6 +250,7 @@ class TextService(
         validateIfTextIsDeleted(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.content = input
+        textVersion.modified = LocalDateTime.now()
         updateEditors(
             existingEditors = textVersion.editors,
             newEditorNavIdent = saksbehandlerIdent
@@ -261,6 +266,7 @@ class TextService(
         validateIfTextIsDeleted(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.plainText = input
+        textVersion.modified = LocalDateTime.now()
         updateEditors(
             existingEditors = textVersion.editors,
             newEditorNavIdent = saksbehandlerIdent
@@ -276,6 +282,7 @@ class TextService(
         validateIfTextIsDeleted(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.utfallIdList = input
+        textVersion.modified = LocalDateTime.now()
         updateEditors(
             existingEditors = textVersion.editors,
             newEditorNavIdent = saksbehandlerIdent
@@ -291,6 +298,7 @@ class TextService(
         validateIfTextIsDeleted(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.enhetIdList = input
+        textVersion.modified = LocalDateTime.now()
         updateEditors(
             existingEditors = textVersion.editors,
             newEditorNavIdent = saksbehandlerIdent
@@ -306,6 +314,7 @@ class TextService(
         validateIfTextIsDeleted(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.templateSectionIdList = input
+        textVersion.modified = LocalDateTime.now()
         updateEditors(
             existingEditors = textVersion.editors,
             newEditorNavIdent = saksbehandlerIdent
@@ -321,6 +330,7 @@ class TextService(
         validateIfTextIsDeleted(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.ytelseHjemmelIdList = input
+        textVersion.modified = LocalDateTime.now()
         updateEditors(
             existingEditors = textVersion.editors,
             newEditorNavIdent = saksbehandlerIdent
