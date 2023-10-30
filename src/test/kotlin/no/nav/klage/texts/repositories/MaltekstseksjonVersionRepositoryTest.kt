@@ -65,7 +65,7 @@ class MaltekstseksjonVersionRepositoryTest {
             enhetIdList = setOf("1"),
             templateSectionIdList = setOf("1"),
             ytelseHjemmelIdList = setOf("1"),
-            editors = setOf(
+            editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = now,

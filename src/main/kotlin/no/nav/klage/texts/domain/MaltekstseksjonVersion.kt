@@ -57,7 +57,7 @@ class MaltekstseksjonVersion(
 
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "maltekstseksjon_version_id", referencedColumnName = "id", nullable = false)
-    var editors: Set<Editor> = setOf(),
+    val editors: MutableSet<Editor> = mutableSetOf(),
 
     @Column(name = "published_date_time")
     var publishedDateTime: LocalDateTime?,

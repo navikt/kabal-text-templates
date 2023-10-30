@@ -42,7 +42,7 @@ class TextVersion(
 
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     @JoinColumn(name = "text_version_id", referencedColumnName = "id", nullable = false)
-    var editors: Set<Editor> = setOf(),
+    val editors: MutableSet<Editor> = mutableSetOf(),
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "text_id", nullable = false, updatable = false)
