@@ -140,7 +140,10 @@ class TextService(
         text.deleted = true
 
         text.maltekstseksjonVersions.forEach { mv ->
-            mv.texts.removeIf { it.id == text.id }
+            //Only affect drafts of maltekstseksjoner.
+            if (mv.publishedDateTime == null) {
+                mv.texts.removeIf { it.id == text.id }
+            }
         }
     }
 
