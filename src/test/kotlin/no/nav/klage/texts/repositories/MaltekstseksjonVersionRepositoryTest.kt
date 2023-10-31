@@ -33,6 +33,9 @@ class MaltekstseksjonVersionRepositoryTest {
     @Autowired
     lateinit var maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository
 
+    @Autowired
+    lateinit var textRepository: TextRepository
+
     @Test
     fun `add maltekstseksjonVersion works`() {
         val now = LocalDateTime.now()
@@ -46,12 +49,12 @@ class MaltekstseksjonVersionRepositoryTest {
             )
         )
 
-        val text = testEntityManager.persist(
+        val text = textRepository.save(
             Text(
                 created = now,
                 modified = now,
                 deleted = false,
-                maltekstseksjonVersionList = emptyList(),
+                maltekstseksjonVersions = mutableListOf(),
                 createdBy = "abc",
             )
         )
@@ -59,7 +62,7 @@ class MaltekstseksjonVersionRepositoryTest {
         val maltekstseksjonVersion = MaltekstseksjonVersion(
             title = "title",
             maltekstseksjon = maltekstseksjon,
-            texts = listOf(text),
+            texts = mutableListOf(text),
             publishedDateTime = null,
             publishedBy = null,
             published = false,
@@ -83,8 +86,76 @@ class MaltekstseksjonVersionRepositoryTest {
         testEntityManager.flush()
         testEntityManager.clear()
 
-        val foundMaltekstseksjonVersion = maltekstseksjonVersionRepository.findById(maltekstseksjonVersion.id).get()
+        val foundMaltekstseksjonVersion = maltekstseksjonVersionRepository.getReferenceById(maltekstseksjonVersion.id)
         assertThat(foundMaltekstseksjonVersion).isEqualTo(maltekstseksjonVersion)
+    }
+
+    @Test
+    fun `delete text also removes from maltekstseksjonVersion works`() {
+        val now = LocalDateTime.now()
+
+        val maltekstseksjon = testEntityManager.persist(
+            Maltekstseksjon(
+                created = now,
+                modified = now,
+                deleted = false,
+                createdBy = "abc",
+            )
+        )
+
+        val text = testEntityManager.persist(
+            Text(
+                created = now,
+                modified = now,
+                deleted = false,
+                maltekstseksjonVersions = mutableListOf(),
+                createdBy = "abc",
+            )
+        )
+
+        val maltekstseksjonVersion = MaltekstseksjonVersion(
+            title = "title",
+            maltekstseksjon = maltekstseksjon,
+            texts = mutableListOf(text),
+            publishedDateTime = null,
+            publishedBy = null,
+            published = false,
+            utfallIdList = setOf("1"),
+            enhetIdList = setOf("1"),
+            templateSectionIdList = setOf("1"),
+            ytelseHjemmelIdList = setOf("1"),
+            editors = mutableSetOf(
+                Editor(
+                    navIdent = "saksbehandlerIdent",
+                    created = now,
+                    modified = now,
+                )
+            ),
+            created = now,
+            modified = now,
+        )
+
+        maltekstseksjonVersionRepository.save(maltekstseksjonVersion)
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
+        var foundMaltekstseksjonVersion = maltekstseksjonVersionRepository.getReferenceById(maltekstseksjonVersion.id)
+
+        assertThat(foundMaltekstseksjonVersion.texts).hasSize(1)
+
+        val textFetched = textRepository.getReferenceById(text.id)
+
+        textFetched.maltekstseksjonVersions.forEach { mv ->
+            mv.texts.removeIf { it.id == textFetched.id }
+        }
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
+        foundMaltekstseksjonVersion = maltekstseksjonVersionRepository.getReferenceById(maltekstseksjonVersion.id)
+
+        assertThat(foundMaltekstseksjonVersion.texts).isEmpty()
     }
 
 }

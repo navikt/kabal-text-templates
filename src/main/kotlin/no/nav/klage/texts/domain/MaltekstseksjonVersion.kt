@@ -25,7 +25,7 @@ class MaltekstseksjonVersion(
         inverseJoinColumns = [JoinColumn(name = "text_id")]
     )
     @OrderColumn(name = "index", nullable = false)
-    var texts: List<Text> = emptyList(),
+    val texts: MutableList<Text> = mutableListOf(),
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(schema = "klage", name = "utfall", joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")])
@@ -128,6 +128,6 @@ class MaltekstseksjonVersion(
     }
 
     override fun toString(): String {
-        return "MaltekstseksjonVersion(id=$id, title='$title', maltekstseksjon=$maltekstseksjon, texts=$texts, utfallIdList=$utfallIdList, enhetIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, editors=$editors, publishedDateTime=$publishedDateTime, publishedBy=$publishedBy, published=$published, created=$created, modified=$modified)"
+        return "MaltekstseksjonVersion(id=$id, title='$title', maltekstseksjon=$maltekstseksjon, texts=${texts.map { it.id }}, utfallIdList=$utfallIdList, enhetIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, editors=$editors, publishedDateTime=$publishedDateTime, publishedBy=$publishedBy, published=$published, created=$created, modified=$modified)"
     }
 }

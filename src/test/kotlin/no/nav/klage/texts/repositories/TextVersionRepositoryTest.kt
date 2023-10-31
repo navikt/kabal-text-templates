@@ -41,7 +41,7 @@ class TextVersionRepositoryTest {
                 created = now,
                 modified = now,
                 deleted = false,
-                maltekstseksjonVersionList = emptyList(),
+                maltekstseksjonVersions = mutableListOf(),
                 createdBy = "abc",
             )
         )
@@ -79,43 +79,5 @@ class TextVersionRepositoryTest {
         val foundText = textVersionRepository.findById(textVersion.id).get()
         assertThat(foundText).isEqualTo(textVersion)
     }
-    /*
-    @Test
-    fun `delete textVersion works, and log remains`() {
-        val now = LocalDateTime.now()
 
-        val textVersion = TextVersion(
-            title = "title",
-            textType = "type",
-            smartEditorVersion = 1,
-            content = "{}",
-            plainText = null,
-            created = now,
-            modified = now,
-        )
-
-        val logEntry = ChangelogEntry(
-            saksbehandlerident = "abc",
-            action = Action.NEW,
-            field = Field.TEXT,
-            fromValue = null,
-            toValue = null,
-            textId = textVersion.id
-        )
-
-        textVersionRepository.save(textVersion)
-        changelogRepository.save(logEntry)
-
-        testEntityManager.flush()
-        testEntityManager.clear()
-
-        textVersionRepository.deleteById(textVersion.id)
-
-        testEntityManager.flush()
-        testEntityManager.clear()
-
-        assertThat(textVersionRepository.findAll()).isEmpty()
-        assertThat(changelogRepository.findAll()).hasSize(1)
-    }
-*/
 }

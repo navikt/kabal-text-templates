@@ -71,7 +71,7 @@ class TextService(
             Text(
                 created = now,
                 modified = now,
-                maltekstseksjonVersionList = emptyList(),
+                maltekstseksjonVersions = mutableListOf(),
                 createdBy = saksbehandlerIdent,
             )
         )
@@ -136,7 +136,12 @@ class TextService(
         saksbehandlerIdent: String,
     ) {
         validateIfTextIsDeleted(textId)
-        textRepository.getReferenceById(textId).deleted = true
+        val text = textRepository.getReferenceById(textId)
+        text.deleted = true
+
+        text.maltekstseksjonVersions.forEach { mv ->
+            mv.texts.removeIf { it.id == text.id }
+        }
     }
 
     fun deleteTextDraftVersion(textId: UUID, saksbehandlerIdent: String) {
@@ -413,12 +418,12 @@ class TextService(
     private fun getCurrentDraft(textId: UUID): TextVersion {
         return textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
             textId = textId
-        ) ?: throw ClientErrorException("no draft was found")
+        ) ?: throw ClientErrorException("Utkast ikke funnet")
     }
 
     private fun validateIfTextIsDeleted(textId: UUID) {
         if (textRepository.getReferenceById(textId).deleted) {
-            throw TextNotFoundException("Text $textId is deleted.")
+            throw TextNotFoundException("Teksten $textId er slettet.")
         }
     }
 }

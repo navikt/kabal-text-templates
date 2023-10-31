@@ -19,7 +19,7 @@ class Text(
     var createdBy: String?,
 
     @ManyToMany(mappedBy = "texts")
-    val maltekstseksjonVersionList: List<MaltekstseksjonVersion>
+    val maltekstseksjonVersions: MutableList<MaltekstseksjonVersion>
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -33,7 +33,7 @@ class Text(
     override fun hashCode() = id.hashCode()
 
     override fun toString(): String {
-        return "Text(id=$id, created=$created, modified=$modified, deleted=$deleted, createdBy=$createdBy, maltekstseksjonVersionList=$maltekstseksjonVersionList)"
+        return "Text(id=$id, created=$created, modified=$modified, deleted=$deleted, createdBy=$createdBy, maltekstseksjonVersions=${maltekstseksjonVersions.map { it.id }})"
     }
 
 }

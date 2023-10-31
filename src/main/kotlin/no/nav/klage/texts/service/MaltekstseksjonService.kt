@@ -172,7 +172,8 @@ class MaltekstseksjonService(
 
         maltekstseksjonVersion.apply {
             this.title = title
-            this.texts = textIdList.map { textRepository.getReferenceById(UUID.fromString(it)) }
+            this.texts.clear()
+            this.texts.addAll(textIdList.map { textRepository.getReferenceById(UUID.fromString(it)) })
             this.utfallIdList = utfallIdList
             this.enhetIdList = enhetIdList
             this.templateSectionIdList = templateSectionIdList
@@ -212,7 +213,8 @@ class MaltekstseksjonService(
         validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
 
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
-        maltekstseksjonVersion.texts = input.map { textRepository.getReferenceById(UUID.fromString(it)) }
+        maltekstseksjonVersion.texts.clear()
+        maltekstseksjonVersion.texts.addAll(input.map { textRepository.getReferenceById(UUID.fromString(it)) })
         maltekstseksjonVersion.modified = LocalDateTime.now()
         updateEditors(
             existingEditors = maltekstseksjonVersion.editors,

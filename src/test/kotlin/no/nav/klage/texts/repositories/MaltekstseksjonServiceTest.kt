@@ -68,7 +68,7 @@ class MaltekstseksjonServiceTest {
                 created = now,
                 modified = now,
                 deleted = false,
-                maltekstseksjonVersionList = emptyList(),
+                maltekstseksjonVersions = mutableListOf(),
                 createdBy = "abc",
             )
         )

@@ -72,7 +72,8 @@ class MaltekstseksjonVersionsMigrationsController(
 
             maltekstseksjonVersion.apply {
                 title = currentMaltekstseksjonInput.title
-                texts = currentMaltekstseksjonInput.textIdList.map { textRepository.getReferenceById(UUID.fromString(it)) }
+                texts.clear()
+                texts.addAll(currentMaltekstseksjonInput.textIdList.map { textRepository.getReferenceById(UUID.fromString(it)) })
                 utfallIdList = currentMaltekstseksjonInput.utfallIdList
                 enhetIdList = currentMaltekstseksjonInput.enhetIdList
                 templateSectionIdList = currentMaltekstseksjonInput.templateSectionIdList
