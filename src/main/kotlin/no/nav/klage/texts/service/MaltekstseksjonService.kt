@@ -151,9 +151,11 @@ class MaltekstseksjonService(
     fun getCurrentMaltekstseksjonVersion(maltekstseksjonId: UUID): MaltekstseksjonVersion {
         validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
 
-        return maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
+        return maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
             maltekstseksjonId = maltekstseksjonId
-        ) ?: throw ClientErrorException("there is no published maltekstseksjon version")
+        ) ?: maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
+            maltekstseksjonId = maltekstseksjonId
+        ) ?: throw ClientErrorException("Det finnes ikke hverken utkast eller en publisert versjon")
     }
 
     fun updateMaltekstseksjon(

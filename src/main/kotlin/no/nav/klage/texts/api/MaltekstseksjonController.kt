@@ -344,8 +344,8 @@ class MaltekstseksjonController(
     }
 
     @Operation(
-        summary = "Get published maltekstseksjon",
-        description = "Get published maltekstseksjon"
+        summary = "Get current maltekstseksjon",
+        description = "Get current maltekstseksjon. Draft or published."
     )
     @GetMapping("/{maltekstseksjonId}")
     fun getMaltekst(
