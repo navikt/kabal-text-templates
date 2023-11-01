@@ -116,7 +116,7 @@ class ConsumerController(
             logger = logger,
         )
         return mapToConsumerTextView(
-            textVersion = textService.getCurrentTextVersion(textId),
+            textVersion = textService.getPublishedTextVersion(textId),
         )
     }
 

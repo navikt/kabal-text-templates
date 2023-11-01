@@ -157,11 +157,21 @@ class TextService(
         }
     }
 
-    fun getCurrentTextVersion(textId: UUID): TextVersion {
+    fun getPublishedTextVersion(textId: UUID): TextVersion {
         validateIfTextIsDeleted(textId)
         return textVersionRepository.findByPublishedIsTrueAndTextId(
             textId = textId
         ) ?: throw ClientErrorException("there is no published text version")
+    }
+
+    fun getCurrentTextVersion(textId: UUID): TextVersion {
+        validateIfTextIsDeleted(textId)
+
+        return textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
+            textId = textId
+        ) ?: textVersionRepository.findByPublishedIsTrueAndTextId(
+            textId = textId
+        ) ?: throw ClientErrorException("Det finnes ikke hverken utkast eller en publisert versjon")
     }
 
     fun updateText(
