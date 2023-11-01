@@ -46,7 +46,7 @@ class TextVersion(
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "text_id", nullable = false, updatable = false)
-    val text: Text,
+    var text: Text,
 
     @Column(name = "published_date_time")
     var publishedDateTime: LocalDateTime?,
@@ -57,7 +57,7 @@ class TextVersion(
     var published: Boolean,
 
     @Column(name = "created")
-    val created: LocalDateTime,
+    var created: LocalDateTime,
     @Column(name = "modified")
     var modified: LocalDateTime,
 ) {
@@ -81,6 +81,25 @@ class TextVersion(
             created = now,
             modified = now,
         )
+    }
+
+    fun resetDraftWithValuesFrom(source: TextVersion) {
+        val now = LocalDateTime.now()
+        title = source.title
+        textType = source.textType
+        content = source.content
+        plainText = source.plainText
+        smartEditorVersion = source.smartEditorVersion
+        text = source.text
+        utfallIdList = source.utfallIdList
+        enhetIdList = source.enhetIdList
+        templateSectionIdList = source.templateSectionIdList
+        ytelseHjemmelIdList = source.ytelseHjemmelIdList
+        publishedDateTime = null
+        published = false
+        publishedBy = null
+        created = now
+        modified = now
     }
 
     override fun equals(other: Any?): Boolean {

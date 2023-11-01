@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import no.nav.klage.texts.api.views.TextInput
 import no.nav.klage.texts.api.views.VersionInput
 import no.nav.klage.texts.domain.Editor
+import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.domain.TextVersion
 import no.nav.klage.texts.exceptions.ClientErrorException
@@ -27,6 +28,7 @@ class TextService(
     private val textVersionRepository: TextVersionRepository,
     private val searchTextService: SearchTextService,
     private val maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository,
+    private val publishMaltekstseksjonService: PublishMaltekstseksjonService,
 ) {
 
     companion object {
@@ -122,29 +124,93 @@ class TextService(
             textId = textId
         )
 
-        if (existingDraft != null) {
-            textVersionRepository.delete(existingDraft)
+        return if (existingDraft != null) {
+            //Reset draft
+            existingDraft.resetDraftWithValuesFrom(existingVersion)
+            existingDraft
+        } else {
+            textVersionRepository.save(
+                existingVersion.createDraft()
+            )
         }
 
-        return textVersionRepository.save(
-            existingVersion.createDraft()
-        )
     }
 
     fun deleteText(
         textId: UUID,
         saksbehandlerIdent: String,
-    ) {
+    ): List<MaltekstseksjonVersion> {
         validateIfTextIsDeleted(textId)
         val text = textRepository.getReferenceById(textId)
         text.deleted = true
 
-        text.maltekstseksjonVersions.forEach { mv ->
-            //Only affect drafts of maltekstseksjoner.
-            if (mv.publishedDateTime == null) {
-                mv.texts.removeIf { it.id == text.id }
-            }
+        val affectedMaltekstseksjonVersionDrafts = text.maltekstseksjonVersions.filter { mv ->
+            mv.publishedDateTime == null && mv.texts.any { it.id == text.id }
         }
+
+        val affectedMaltekstseksjonVersionPublished = text.maltekstseksjonVersions.filter { mv ->
+            mv.published && mv.texts.any { it.id == text.id }
+        }
+
+        val affectedMaltekstseksjonVersionsGroupedByMaltekstseksjonId = text.maltekstseksjonVersions.filter { mv ->
+            (mv.publishedDateTime == null || mv.published) && mv.texts.any { it.id == text.id }
+        }.groupBy { it.maltekstseksjon.id }
+
+        //Only published version is OK when creating new draft, remove text and publish
+        val publishedToReturn =
+            affectedMaltekstseksjonVersionsGroupedByMaltekstseksjonId.filter { it.value.size == 1 && it.value.first().published }
+                .map { (maltekstseksjonId, _) ->
+                    val draft = publishMaltekstseksjonService.createNewDraft(
+                        maltekstseksjonId = maltekstseksjonId,
+                        versionInput = null,
+                        saksbehandlerIdent = saksbehandlerIdent,
+                    )
+
+                    draft.texts.removeIf { it.id == text.id }
+
+                    publishMaltekstseksjonService.publishMaltekstseksjonVersion(
+                        maltekstseksjonId = maltekstseksjonId,
+                        saksbehandlerIdent = saksbehandlerIdent
+                    )
+                }
+
+        //Only draft, should only update draft, not publish
+        val draftsToReturn =
+            affectedMaltekstseksjonVersionsGroupedByMaltekstseksjonId.filter { it.value.size == 1 && it.value.first().publishedDateTime == null }
+                .map { (_, maltekstseksjonVersions) ->
+                    val draft = maltekstseksjonVersions.first()
+                    draft.texts.removeIf { it.id == text.id }
+                    draft
+                }
+
+        //published AND draft, keep old draft (same id), but also create new draft and publish.
+        val publishedAndDraftToReturn =
+            affectedMaltekstseksjonVersionsGroupedByMaltekstseksjonId.filter { it.value.size > 1 }
+                .map { (maltekstseksjonId, maltekstseksjonVersions) ->
+                    //get current draft, with new cool changes
+                    val draft = maltekstseksjonVersions.find { it.publishedDateTime == null }!!
+                    //fix current draft
+                    draft.texts.removeIf { it.id == text.id }
+                    draft.modified = LocalDateTime.now()
+
+                    //get currently published version
+                    val published = maltekstseksjonVersions.find { it.published }!!
+
+                    //Create this draft only to be able to publish changed version with removed text.
+                    val tempDraft = published.createDraft()
+                    tempDraft.texts.removeIf { it.id == text.id }
+
+                    maltekstseksjonVersionRepository.save(tempDraft)
+
+                    listOf(publishMaltekstseksjonService.publishMaltekstseksjonVersion(
+                        maltekstseksjonId = maltekstseksjonId,
+                        saksbehandlerIdent = saksbehandlerIdent,
+                        overrideDraft = tempDraft,
+                    ), draft)
+                }
+
+        return publishedToReturn + draftsToReturn + publishedAndDraftToReturn.flatten()
+
     }
 
     fun deleteTextDraftVersion(textId: UUID, saksbehandlerIdent: String) {

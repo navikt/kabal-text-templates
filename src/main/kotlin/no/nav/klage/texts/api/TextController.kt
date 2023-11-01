@@ -1,11 +1,9 @@
 package no.nav.klage.texts.api
 
-import com.fasterxml.jackson.module.kotlin.jsonMapper
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
-import no.nav.klage.texts.domain.TextVersion
 import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
@@ -404,7 +402,7 @@ class TextController(
     @DeleteMapping("/{textId}")
     fun deleteText(
         @PathVariable("textId") textId: UUID,
-    ) {
+    ): DeletedText {
         logMethodDetails(
             methodName = ::deleteText.name,
             innloggetIdent = tokenUtil.getIdent(),
@@ -412,9 +410,18 @@ class TextController(
             logger = logger,
         )
 
-        textService.deleteText(
+        val affectedMaltekstseksjonVersions = textService.deleteText(
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+        )
+
+        return DeletedText(
+            maltekstseksjonVersions = affectedMaltekstseksjonVersions.groupBy { it.maltekstseksjon.id }.map {
+                DeletedText.MaltekstseksjonVersionWithId(
+                    maltekstseksjonId = it.key,
+                    maltekstseksjonVersions = it.value.map { mapToMaltekstView(it) }
+                )
+            }
         )
     }
 
@@ -493,33 +500,3 @@ class TextController(
         )
     }
 }
-
-fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair<List<UUID>, List<UUID>>): TextView =
-    TextView(
-        id = textVersion.text.id,
-        versionId = textVersion.id,
-        title = textVersion.title,
-        textType = textVersion.textType,
-        content = if (textVersion.content != null) jsonMapper().readTree(textVersion.content) else null,
-        plainText = textVersion.plainText,
-        version = textVersion.smartEditorVersion,
-        created = textVersion.created,
-        modified = textVersion.modified,
-        utfallIdList = textVersion.utfallIdList,
-        enhetIdList = textVersion.enhetIdList,
-        templateSectionIdList = textVersion.templateSectionIdList,
-        ytelseHjemmelIdList = textVersion.ytelseHjemmelIdList,
-        editors = textVersion.editors.map {
-            EditorView(
-                navIdent = it.navIdent,
-                created = it.created,
-                modified = it.modified,
-            )
-        }.sortedByDescending { it.modified },
-        publishedDateTime = textVersion.publishedDateTime,
-        publishedBy = textVersion.publishedBy,
-        published = textVersion.published,
-        publishedMaltekstseksjonIdList = connectedMaltekstseksjonIdList.first,
-        draftMaltekstseksjonIdList = connectedMaltekstseksjonIdList.second,
-        createdBy = textVersion.text.createdBy,
-    )

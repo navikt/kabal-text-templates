@@ -15,7 +15,7 @@ class MaltekstseksjonVersion(
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "maltekstseksjon_id", nullable = false, updatable = false)
-    val maltekstseksjon: Maltekstseksjon,
+    var maltekstseksjon: Maltekstseksjon,
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -68,7 +68,7 @@ class MaltekstseksjonVersion(
     var published: Boolean,
 
     @Column(name = "created")
-    val created: LocalDateTime,
+    var created: LocalDateTime,
     @Column(name = "modified")
     var modified: LocalDateTime,
 ) {
@@ -89,6 +89,23 @@ class MaltekstseksjonVersion(
             created = now,
             modified = now,
         )
+    }
+
+    fun resetDraftWithValuesFrom(source: MaltekstseksjonVersion) {
+        val now = LocalDateTime.now()
+        title = source.title
+        maltekstseksjon = source.maltekstseksjon
+        texts.clear()
+        texts.addAll(source.texts)
+        utfallIdList = source.utfallIdList
+        enhetIdList = source.enhetIdList
+        templateSectionIdList = source.templateSectionIdList
+        ytelseHjemmelIdList = source.ytelseHjemmelIdList
+        publishedDateTime = null
+        published = false
+        publishedBy = null
+        created = now
+        modified = now
     }
 
     override fun equals(other: Any?): Boolean {

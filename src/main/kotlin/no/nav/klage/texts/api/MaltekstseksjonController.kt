@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
-import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
@@ -360,28 +359,3 @@ class MaltekstseksjonController(
         return mapToMaltekstView(maltekstseksjonService.getCurrentMaltekstseksjonVersion(maltekstseksjonId))
     }
 }
-
-fun mapToMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): MaltekstseksjonView =
-    MaltekstseksjonView(
-        id = maltekstseksjonVersion.maltekstseksjon.id,
-        title = maltekstseksjonVersion.title,
-        versionId = maltekstseksjonVersion.id,
-        textIdList = maltekstseksjonVersion.texts.map { it.id.toString() },
-        utfallIdList = maltekstseksjonVersion.utfallIdList,
-        enhetIdList = maltekstseksjonVersion.enhetIdList,
-        templateSectionIdList = maltekstseksjonVersion.templateSectionIdList,
-        ytelseHjemmelIdList = maltekstseksjonVersion.ytelseHjemmelIdList,
-        created = maltekstseksjonVersion.created,
-        modified = maltekstseksjonVersion.modified,
-        editors = maltekstseksjonVersion.editors.map {
-            EditorView(
-                navIdent = it.navIdent,
-                created = it.created,
-                modified = it.modified,
-            )
-        }.sortedByDescending { it.modified },
-        publishedDateTime = maltekstseksjonVersion.publishedDateTime,
-        publishedBy = maltekstseksjonVersion.publishedBy,
-        published = maltekstseksjonVersion.published,
-        createdBy = maltekstseksjonVersion.maltekstseksjon.createdBy,
-    )

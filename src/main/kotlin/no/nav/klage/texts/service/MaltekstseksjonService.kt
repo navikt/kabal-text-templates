@@ -26,6 +26,7 @@ class MaltekstseksjonService(
     private val maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository,
     private val textRepository: TextRepository,
     private val searchMaltekstseksjonService: SearchMaltekstseksjonService,
+    private val publishMaltekstseksjonService: PublishMaltekstseksjonService,
 ) {
 
     companion object {
@@ -35,25 +36,10 @@ class MaltekstseksjonService(
     }
 
     fun publishMaltekstseksjonVersion(maltekstseksjonId: UUID, saksbehandlerIdent: String): MaltekstseksjonVersion {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
-
-        val possiblePublishedVersion =
-            maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(maltekstseksjonId)
-
-        if (possiblePublishedVersion != null) {
-            possiblePublishedVersion.published = false
-        }
-
-        val maltekstseksjonVersionDraft =
-            maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
-                maltekstseksjonId = maltekstseksjonId
-            ) ?: throw ClientErrorException("there was no draft to publish")
-
-        maltekstseksjonVersionDraft.publishedDateTime = LocalDateTime.now()
-        maltekstseksjonVersionDraft.published = true
-        maltekstseksjonVersionDraft.publishedBy = saksbehandlerIdent
-
-        return maltekstseksjonVersionDraft
+        return publishMaltekstseksjonService.publishMaltekstseksjonVersion(
+            maltekstseksjonId = maltekstseksjonId,
+            saksbehandlerIdent = saksbehandlerIdent,
+        )
     }
 
     fun getMaltekstseksjonVersions(maltekstseksjonId: UUID): List<MaltekstseksjonVersion> {
@@ -105,26 +91,10 @@ class MaltekstseksjonService(
         versionInput: VersionInput?,
         saksbehandlerIdent: String,
     ): MaltekstseksjonVersion {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
-
-        val existingVersion = if (versionInput != null) {
-            maltekstseksjonVersionRepository.getReferenceById(versionInput.versionId)
-        } else {
-            maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
-                maltekstseksjonId = maltekstseksjonId
-            ) ?: throw ClientErrorException("must exist a published version before a draft is created")
-        }
-
-        val existingDraft = maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
-            maltekstseksjonId = maltekstseksjonId
-        )
-
-        if (existingDraft != null) {
-            maltekstseksjonVersionRepository.delete(existingDraft)
-        }
-
-        return maltekstseksjonVersionRepository.save(
-            existingVersion.createDraft()
+        return publishMaltekstseksjonService.createNewDraft(
+            maltekstseksjonId = maltekstseksjonId,
+            versionInput = versionInput,
+            saksbehandlerIdent = saksbehandlerIdent,
         )
     }
 
