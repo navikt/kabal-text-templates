@@ -18,8 +18,10 @@ import no.nav.klage.texts.util.getSecureLogger
 import no.nav.klage.texts.util.logMethodDetails
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.util.*
 
 @RestController
 @Tag(name = "kabal-text-templates", description = "API for text templates")
@@ -99,7 +101,26 @@ class ConsumerController(
         }
     }
 
-    fun mapToConsumerTextView(textVersion: TextVersion): ConsumerTextView =
+    @Operation(
+        summary = "Get published text version",
+        description = "Get published text version"
+    )
+    @GetMapping("/texts/{textId}")
+    fun getText(
+        @PathVariable("textId") textId: UUID,
+    ): ConsumerTextView {
+        logMethodDetails(
+            methodName = ::getText.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = textId,
+            logger = logger,
+        )
+        return mapToConsumerTextView(
+            textVersion = textService.getCurrentTextVersion(textId),
+        )
+    }
+
+    private fun mapToConsumerTextView(textVersion: TextVersion): ConsumerTextView =
         ConsumerTextView(
             id = textVersion.text.id,
             textType = textVersion.textType,
@@ -111,7 +132,7 @@ class ConsumerController(
             ytelseHjemmelIdList = textVersion.ytelseHjemmelIdList,
         )
 
-    fun mapToConsumerMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): ConsumerMaltekstseksjonView =
+    private fun mapToConsumerMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): ConsumerMaltekstseksjonView =
         ConsumerMaltekstseksjonView(
             id = maltekstseksjonVersion.maltekstseksjon.id,
             textIdList = maltekstseksjonVersion.texts.map { it.id.toString() },
