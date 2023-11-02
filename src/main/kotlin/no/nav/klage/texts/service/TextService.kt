@@ -112,6 +112,7 @@ class TextService(
         saksbehandlerIdent: String,
     ): TextVersion {
         validateIfTextIsDeleted(textId)
+
         val existingVersion = if (versionInput != null) {
             textVersionRepository.getReferenceById(versionInput.versionId)
         } else {
@@ -136,21 +137,12 @@ class TextService(
 
     }
 
-    fun deleteText(
+    fun deleteOrUnpublishText(
         textId: UUID,
         saksbehandlerIdent: String,
     ): List<MaltekstseksjonVersion> {
         validateIfTextIsDeleted(textId)
         val text = textRepository.getReferenceById(textId)
-        text.deleted = true
-
-        val affectedMaltekstseksjonVersionDrafts = text.maltekstseksjonVersions.filter { mv ->
-            mv.publishedDateTime == null && mv.texts.any { it.id == text.id }
-        }
-
-        val affectedMaltekstseksjonVersionPublished = text.maltekstseksjonVersions.filter { mv ->
-            mv.published && mv.texts.any { it.id == text.id }
-        }
 
         val affectedMaltekstseksjonVersionsGroupedByMaltekstseksjonId = text.maltekstseksjonVersions.filter { mv ->
             (mv.publishedDateTime == null || mv.published) && mv.texts.any { it.id == text.id }
@@ -187,7 +179,7 @@ class TextService(
         val publishedAndDraftToReturn =
             affectedMaltekstseksjonVersionsGroupedByMaltekstseksjonId.filter { it.value.size > 1 }
                 .map { (maltekstseksjonId, maltekstseksjonVersions) ->
-                    //get current draft, with new cool changes
+                    //get current draft
                     val draft = maltekstseksjonVersions.find { it.publishedDateTime == null }!!
                     //fix current draft
                     draft.texts.removeIf { it.id == text.id }
@@ -197,10 +189,10 @@ class TextService(
                     val published = maltekstseksjonVersions.find { it.published }!!
 
                     //Create this draft only to be able to publish changed version with removed text.
-                    val tempDraft = published.createDraft()
+                    var tempDraft = published.createDraft()
                     tempDraft.texts.removeIf { it.id == text.id }
 
-                    maltekstseksjonVersionRepository.save(tempDraft)
+                    tempDraft = maltekstseksjonVersionRepository.save(tempDraft)
 
                     listOf(publishMaltekstseksjonService.publishMaltekstseksjonVersion(
                         maltekstseksjonId = maltekstseksjonId,
@@ -208,6 +200,21 @@ class TextService(
                         overrideDraft = tempDraft,
                     ), draft)
                 }
+
+        //unpublish and or delete draft text
+        val possibleDraft = textVersionRepository.findByPublishedDateTimeIsNullAndTextId(textId)
+        val possiblePublishedTextVersion = textVersionRepository.findByPublishedIsTrueAndTextId(textId)
+
+        if (possibleDraft != null) {
+            textVersionRepository.delete(possibleDraft)
+        }
+
+        if (possiblePublishedTextVersion != null) {
+            possiblePublishedTextVersion.published = false
+        } else {
+            //If no published version, delete the whole text.
+            textRepository.deleteById(textId)
+        }
 
         return publishedToReturn + draftsToReturn + publishedAndDraftToReturn.flatten()
 
@@ -432,7 +439,7 @@ class TextService(
         var textVersions: List<TextVersion>
 
         val millis = measureTimeMillis {
-            textVersions = textVersionRepository.findByPublishedIsTrueAndTextDeletedIsFalse()
+            textVersions = textVersionRepository.findByPublishedIsTrue()
         }
 
         logger.debug("searchTexts getting all texts took {} millis. Found {} texts", millis, textVersions.size)
@@ -458,9 +465,9 @@ class TextService(
 
         val millis = measureTimeMillis {
             //get all drafts
-            val drafts = textVersionRepository.findByPublishedDateTimeIsNullAndTextDeletedIsFalse()
+            val drafts = textVersionRepository.findByPublishedDateTimeIsNull()
             //get published
-            val published = textVersionRepository.findByPublishedIsTrueAndTextDeletedIsFalse()
+            val published = textVersionRepository.findByPublishedIsTrue()
 
             val draftsTextList = drafts.map { it.text }
 
@@ -501,8 +508,8 @@ class TextService(
     }
 
     private fun validateIfTextIsDeleted(textId: UUID) {
-        if (textRepository.getReferenceById(textId).deleted) {
-            throw TextNotFoundException("Teksten $textId er slettet.")
+        if (textVersionRepository.findByTextId(textId).none { it.published || it.publishedDateTime == null }) {
+            throw TextNotFoundException("Teksten $textId er avpublisert eller finnes ikke.")
         }
     }
 }

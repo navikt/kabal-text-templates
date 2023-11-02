@@ -15,7 +15,7 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
         "templateSectionIdList",
         "ytelseHjemmelIdList",
     ])
-    fun findByPublishedIsTrueAndMaltekstseksjonDeletedIsFalse(): List<MaltekstseksjonVersion>
+    fun findByPublishedIsTrue(): List<MaltekstseksjonVersion>
 
     @EntityGraph(attributePaths = [
         "texts",
@@ -24,7 +24,7 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
         "templateSectionIdList",
         "ytelseHjemmelIdList",
     ])
-    fun findByPublishedDateTimeIsNullAndMaltekstseksjonDeletedIsFalse(): List<MaltekstseksjonVersion>
+    fun findByPublishedDateTimeIsNull(): List<MaltekstseksjonVersion>
 
     fun findByPublishedIsTrueAndMaltekstseksjonId(
         maltekstseksjonId: UUID

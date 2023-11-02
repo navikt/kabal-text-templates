@@ -13,8 +13,6 @@ class Text(
     val created: LocalDateTime,
     @Column(name = "modified")
     var modified: LocalDateTime,
-    @Column(name = "deleted")
-    var deleted: Boolean = false,
     @Column(name = "created_by")
     var createdBy: String?,
 
@@ -33,7 +31,7 @@ class Text(
     override fun hashCode() = id.hashCode()
 
     override fun toString(): String {
-        return "Text(id=$id, created=$created, modified=$modified, deleted=$deleted, createdBy=$createdBy, maltekstseksjonVersions=${maltekstseksjonVersions.map { it.id }})"
+        return "Text(id=$id, created=$created, modified=$modified, createdBy=$createdBy, maltekstseksjonVersions=${maltekstseksjonVersions.map { it.id }})"
     }
 
 }

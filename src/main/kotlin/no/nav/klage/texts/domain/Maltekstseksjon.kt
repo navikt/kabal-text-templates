@@ -16,8 +16,6 @@ class Maltekstseksjon(
     val created: LocalDateTime,
     @Column(name = "modified")
     var modified: LocalDateTime,
-    @Column(name = "deleted")
-    var deleted: Boolean = false,
     @Column(name = "created_by")
     var createdBy: String?,
 ) {
@@ -33,7 +31,7 @@ class Maltekstseksjon(
     override fun hashCode() = id.hashCode()
 
     override fun toString(): String {
-        return "Maltekstseksjon(id=$id, created=$created, modified=$modified, deleted=$deleted, createdBy=$createdBy)"
+        return "Maltekstseksjon(id=$id, created=$created, modified=$modified, createdBy=$createdBy)"
     }
 
 }

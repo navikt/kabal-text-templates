@@ -98,14 +98,26 @@ class MaltekstseksjonService(
         )
     }
 
-    fun deleteMaltekstseksjon(
+    fun deleteOrUnpublishMaltekstseksjon(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
     ) {
         validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
 
-        val maltekstseksjon = maltekstseksjonRepository.getReferenceById(maltekstseksjonId)
-        maltekstseksjon.deleted = true
+        //unpublish and or delete draft text
+        val possibleDraft = maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(maltekstseksjonId)
+        val possiblePublishedTextVersion = maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(maltekstseksjonId)
+
+        if (possibleDraft != null) {
+            maltekstseksjonVersionRepository.delete(possibleDraft)
+        }
+
+        if (possiblePublishedTextVersion != null) {
+            possiblePublishedTextVersion.published = false
+        } else {
+            //If no published version, delete the whole maltekstseksjon.
+            maltekstseksjonRepository.deleteById(maltekstseksjonId)
+        }
     }
 
     fun deleteMaltekstseksjonDraftVersion(maltekstseksjonId: UUID, saksbehandlerIdent: String) {
@@ -117,6 +129,15 @@ class MaltekstseksjonService(
             maltekstseksjonVersionRepository.delete(existingDraft)
         }
     }
+
+    fun getPublishedMaltekstseksjonVersion(maltekstseksjonId: UUID): MaltekstseksjonVersion {
+        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
+
+        return maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
+            maltekstseksjonId = maltekstseksjonId
+        ) ?: throw ClientErrorException("Det finnes ikke hverken utkast eller en publisert versjon")
+    }
+
 
     fun getCurrentMaltekstseksjonVersion(maltekstseksjonId: UUID): MaltekstseksjonVersion {
         validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
@@ -274,7 +295,7 @@ class MaltekstseksjonService(
 
         val millis = measureTimeMillis {
             maltekstseksjonVersions =
-                maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonDeletedIsFalse()
+                maltekstseksjonVersionRepository.findByPublishedIsTrue()
         }
 
         logger.debug(
@@ -305,9 +326,9 @@ class MaltekstseksjonService(
         val millis = measureTimeMillis {
             //get all drafts
             val drafts =
-                maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonDeletedIsFalse()
+                maltekstseksjonVersionRepository.findByPublishedDateTimeIsNull()
             //get published
-            val published = maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonDeletedIsFalse()
+            val published = maltekstseksjonVersionRepository.findByPublishedIsTrue()
 
             val draftsMaltekstseksjonList = drafts.map { it.maltekstseksjon }
 
@@ -348,8 +369,8 @@ class MaltekstseksjonService(
     }
 
     private fun validateIfMaltekstseksjonIsDeleted(maltekstseksjonId: UUID) {
-        if (maltekstseksjonRepository.getReferenceById(maltekstseksjonId).deleted) {
-            throw MaltekstseksjonNotFoundException("Maltekstseksjon $maltekstseksjonId is deleted.")
+        if (maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId).none { it.published || it.publishedDateTime == null }) {
+            throw MaltekstseksjonNotFoundException("Maltekstseksjon $maltekstseksjonId er avpublisert eller finnes ikke.")
         }
     }
 }

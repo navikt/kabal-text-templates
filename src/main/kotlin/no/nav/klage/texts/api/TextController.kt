@@ -396,30 +396,30 @@ class TextController(
     }
 
     @Operation(
-        summary = "Delete textVersion",
-        description = "Delete textVersion"
+        summary = "Delete/unpublish text",
+        description = "Delete/unpublish text"
     )
-    @DeleteMapping("/{textId}")
-    fun deleteText(
+    @PostMapping("/{textId}/unpublish")
+    fun deleteOrUnpublishText(
         @PathVariable("textId") textId: UUID,
     ): DeletedText {
         logMethodDetails(
-            methodName = ::deleteText.name,
+            methodName = ::deleteOrUnpublishText.name,
             innloggetIdent = tokenUtil.getIdent(),
             id = textId,
             logger = logger,
         )
 
-        val affectedMaltekstseksjonVersions = textService.deleteText(
+        val affectedMaltekstseksjonVersions = textService.deleteOrUnpublishText(
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
         )
 
         return DeletedText(
-            maltekstseksjonVersions = affectedMaltekstseksjonVersions.groupBy { it.maltekstseksjon.id }.map {
+            maltekstseksjonVersions = affectedMaltekstseksjonVersions.groupBy { it.maltekstseksjon.id }.map { (maltekstseksjonId, maltekstseksjonVersions) ->
                 DeletedText.MaltekstseksjonVersionWithId(
-                    maltekstseksjonId = it.key,
-                    maltekstseksjonVersions = it.value.map { mapToMaltekstView(it) }
+                    maltekstseksjonId = maltekstseksjonId,
+                    maltekstseksjonVersions = maltekstseksjonVersions.map { mapToMaltekstView(it) }
                 )
             }
         )

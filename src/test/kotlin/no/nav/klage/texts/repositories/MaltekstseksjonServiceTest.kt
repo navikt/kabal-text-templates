@@ -7,6 +7,7 @@ import no.nav.klage.texts.domain.Maltekstseksjon
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.service.MaltekstseksjonService
+import no.nav.klage.texts.service.PublishMaltekstseksjonService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -49,7 +50,7 @@ class MaltekstseksjonServiceTest {
             maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
             textRepository = mockk(),
             searchMaltekstseksjonService = mockk(),
-            publishMaltekstseksjonService = mockk(),
+            publishMaltekstseksjonService = PublishMaltekstseksjonService(maltekstseksjonVersionRepository),
         )
 
         val now = LocalDateTime.now()
@@ -59,7 +60,6 @@ class MaltekstseksjonServiceTest {
                 id = UUID.fromString("368f1610-7463-4688-b069-c07667a86b33"),
                 created = now,
                 modified = now,
-                deleted = false,
                 createdBy = "abc",
             )
         )
@@ -68,7 +68,6 @@ class MaltekstseksjonServiceTest {
             Text(
                 created = now,
                 modified = now,
-                deleted = false,
                 maltekstseksjonVersions = mutableListOf(),
                 createdBy = "abc",
             )

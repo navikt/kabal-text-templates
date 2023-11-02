@@ -270,21 +270,21 @@ class MaltekstseksjonController(
     }
 
     @Operation(
-        summary = "Delete maltekstseksjon",
-        description = "Delete maltekstseksjon"
+        summary = "Delete/unpublish maltekstseksjon",
+        description = "Delete/unpublish maltekstseksjon"
     )
-    @DeleteMapping("/{maltekstseksjonId}")
-    fun deleteMaltekst(
+    @PostMapping("/{maltekstseksjonId}/unpublish")
+    fun deleteOrUnpublishMaltekstseksjon(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
     ) {
         logMethodDetails(
-            methodName = ::deleteMaltekst.name,
+            methodName = ::deleteOrUnpublishMaltekstseksjon.name,
             innloggetIdent = tokenUtil.getIdent(),
             id = maltekstseksjonId,
             logger = logger,
         )
 
-        maltekstseksjonService.deleteMaltekstseksjon(
+        maltekstseksjonService.deleteOrUnpublishMaltekstseksjon(
             maltekstseksjonId = maltekstseksjonId,
             saksbehandlerIdent = tokenUtil.getIdent(),
         )

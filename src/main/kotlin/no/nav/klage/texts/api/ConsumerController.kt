@@ -102,6 +102,26 @@ class ConsumerController(
     }
 
     @Operation(
+        summary = "Get current maltekstseksjon texts",
+        description = "Get current maltekstseksjon texts"
+    )
+    @GetMapping("/maltekstseksjoner/{maltekstseksjonId}/texts")
+    fun getMaltekst(
+        @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
+    ): List<ConsumerTextView> {
+        logMethodDetails(
+            methodName = ::getMaltekst.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = maltekstseksjonId,
+            logger = logger,
+        )
+        return maltekstseksjonService.getPublishedMaltekstseksjonVersion(maltekstseksjonId).texts.map {
+            val textVersion = textService.getPublishedTextVersion(it.id)
+            mapToConsumerTextView(textVersion)
+        }
+    }
+
+    @Operation(
         summary = "Get published text version",
         description = "Get published text version"
     )

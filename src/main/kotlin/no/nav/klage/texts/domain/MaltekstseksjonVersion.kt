@@ -77,7 +77,7 @@ class MaltekstseksjonVersion(
         val now = LocalDateTime.now()
         return MaltekstseksjonVersion(
             title = title,
-            texts = texts,
+            texts = texts.toMutableList(),
             utfallIdList = utfallIdList,
             enhetIdList = enhetIdList,
             templateSectionIdList = templateSectionIdList,

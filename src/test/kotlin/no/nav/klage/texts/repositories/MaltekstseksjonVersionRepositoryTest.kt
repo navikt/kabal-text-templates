@@ -44,7 +44,6 @@ class MaltekstseksjonVersionRepositoryTest {
             Maltekstseksjon(
                 created = now,
                 modified = now,
-                deleted = false,
                 createdBy = "abc",
             )
         )
@@ -53,7 +52,6 @@ class MaltekstseksjonVersionRepositoryTest {
             Text(
                 created = now,
                 modified = now,
-                deleted = false,
                 maltekstseksjonVersions = mutableListOf(),
                 createdBy = "abc",
             )
@@ -98,7 +96,6 @@ class MaltekstseksjonVersionRepositoryTest {
             Maltekstseksjon(
                 created = now,
                 modified = now,
-                deleted = false,
                 createdBy = "abc",
             )
         )
@@ -107,7 +104,6 @@ class MaltekstseksjonVersionRepositoryTest {
             Text(
                 created = now,
                 modified = now,
-                deleted = false,
                 maltekstseksjonVersions = mutableListOf(),
                 createdBy = "abc",
             )

@@ -4,9 +4,7 @@ import no.nav.klage.texts.api.views.VersionInput
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.exceptions.ClientErrorException
 import no.nav.klage.texts.exceptions.MaltekstseksjonNotFoundException
-import no.nav.klage.texts.repositories.MaltekstseksjonRepository
 import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepository
-import no.nav.klage.texts.repositories.TextRepository
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
 import org.springframework.stereotype.Service
@@ -17,10 +15,7 @@ import java.util.*
 @Transactional
 @Service
 class PublishMaltekstseksjonService(
-    private val maltekstseksjonRepository: MaltekstseksjonRepository,
     private val maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository,
-    private val textRepository: TextRepository,
-    private val searchMaltekstseksjonService: SearchMaltekstseksjonService,
 ) {
 
     companion object {
@@ -82,8 +77,8 @@ class PublishMaltekstseksjonService(
     }
 
     private fun validateIfMaltekstseksjonIsDeleted(maltekstseksjonId: UUID) {
-        if (maltekstseksjonRepository.getReferenceById(maltekstseksjonId).deleted) {
-            throw MaltekstseksjonNotFoundException("Maltekstseksjon $maltekstseksjonId is deleted.")
+        if (maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId).none { it.published || it.publishedDateTime == null }) {
+            throw MaltekstseksjonNotFoundException("Maltekstseksjon $maltekstseksjonId er avpublisert eller finnes ikke.")
         }
     }
 }

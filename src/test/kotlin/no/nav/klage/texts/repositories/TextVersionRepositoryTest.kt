@@ -40,7 +40,6 @@ class TextVersionRepositoryTest {
             Text(
                 created = now,
                 modified = now,
-                deleted = false,
                 maltekstseksjonVersions = mutableListOf(),
                 createdBy = "abc",
             )
