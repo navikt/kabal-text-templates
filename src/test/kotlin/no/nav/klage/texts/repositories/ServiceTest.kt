@@ -5,7 +5,9 @@ import no.nav.klage.texts.api.views.TextInput
 import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.Maltekstseksjon
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
+import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.exceptions.TextNotFoundException
+import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.service.PublishMaltekstseksjonService
 import no.nav.klage.texts.service.TextService
 import org.assertj.core.api.Assertions.assertThat
@@ -27,13 +29,16 @@ import java.util.*
 @DataJpaTest
 @Testcontainers
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class TextServiceTest {
+class ServiceTest {
 
     companion object {
         @Container
         @JvmField
         val postgreSQLContainer: TestPostgresqlContainer = TestPostgresqlContainer.instance
     }
+
+    @Autowired
+    lateinit var maltekstseksjonRepository: MaltekstseksjonRepository
 
     @Autowired
     lateinit var maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository
@@ -49,7 +54,11 @@ class TextServiceTest {
 
     lateinit var textService: TextService
 
+    lateinit var maltekstseksjonService: MaltekstseksjonService
+
     lateinit var currentTextID: UUID
+
+    lateinit var currentMaltekstseksjonID: UUID
 
     @BeforeEach
     fun setup() {
@@ -58,6 +67,14 @@ class TextServiceTest {
             textVersionRepository = textVersionRepository,
             maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
             searchTextService = mockk(),
+            publishMaltekstseksjonService = PublishMaltekstseksjonService(maltekstseksjonVersionRepository),
+        )
+
+        maltekstseksjonService = MaltekstseksjonService(
+            maltekstseksjonRepository = maltekstseksjonRepository,
+            maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
+            textRepository = textRepository,
+            searchMaltekstseksjonService = mockk(),
             publishMaltekstseksjonService = PublishMaltekstseksjonService(maltekstseksjonVersionRepository),
         )
     }
@@ -151,6 +168,48 @@ class TextServiceTest {
         assertThat(draft!!.texts).hasSize(0)
         assertThat(draft.title).isEqualTo("new title")
         assertThat(draft.utfallIdList).containsExactlyInAnyOrder("1", "2")
+    }
+
+    @Test
+    fun `make sure updating texts bug does not return (CIRCULAR REFERENCE)`() {
+        setupDataForUpdatingTextList()
+
+        val now = LocalDateTime.now()
+
+        val t1 = Text(
+            created = now,
+            modified = now,
+            createdBy = "abc",
+            maltekstseksjonVersions = mutableListOf()
+        )
+        val t2 = Text(
+            created = now,
+            modified = now,
+            createdBy = "abc",
+            maltekstseksjonVersions = mutableListOf()
+        )
+
+        textRepository.save(t1)
+        textRepository.save(t2)
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
+        val maltekstseksjonVersion = maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(currentMaltekstseksjonID)!!
+        maltekstseksjonVersion.texts.add(t1)
+        maltekstseksjonVersion.texts.add(t2)
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
+        maltekstseksjonService.updateTexts(
+            input = listOf(t2.id.toString(), t1.id.toString()),
+            maltekstseksjonId = currentMaltekstseksjonID,
+            saksbehandlerIdent = "bac"
+        )
+
+        testEntityManager.flush()
+        testEntityManager.clear()
     }
 
     private fun setupDataForPublishedMaltekstseksjon() {
@@ -364,6 +423,74 @@ class TextServiceTest {
 
         textService.publishTextVersion(textId = currentTextID, saksbehandlerIdent = "abc")
         textService.createNewDraft(textId = currentTextID, versionInput = null, saksbehandlerIdent = "abc")
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+    }
+
+    private fun setupDataForUpdatingTextList() {
+        var someDateTime = LocalDateTime.now().minusDays(10)
+
+        val maltekstseksjon = testEntityManager.persist(
+            Maltekstseksjon(
+                created = someDateTime,
+                modified = someDateTime,
+                createdBy = "abc",
+            )
+        )
+
+        currentMaltekstseksjonID = maltekstseksjon.id
+
+        someDateTime = LocalDateTime.now().minusDays(9)
+
+        val maltekstseksjonVersionPublished = MaltekstseksjonVersion(
+            title = "title",
+            maltekstseksjon = maltekstseksjon,
+            texts = mutableListOf(),
+            publishedDateTime = someDateTime,
+            publishedBy = "noen",
+            published = true,
+            utfallIdList = setOf("1"),
+            enhetIdList = setOf("1"),
+            templateSectionIdList = setOf("1"),
+            ytelseHjemmelIdList = setOf("1"),
+            editors = mutableSetOf(
+                Editor(
+                    navIdent = "saksbehandlerIdent",
+                    created = someDateTime,
+                    modified = someDateTime,
+                )
+            ),
+            created = someDateTime,
+            modified = someDateTime,
+        )
+
+        someDateTime = LocalDateTime.now().minusDays(8)
+
+        val maltekstseksjonVersionDraft = MaltekstseksjonVersion(
+            title = "new title",
+            maltekstseksjon = maltekstseksjon,
+            texts = mutableListOf(),
+            publishedDateTime = null,
+            publishedBy = null,
+            published = false,
+            utfallIdList = setOf("1", "2"),
+            enhetIdList = setOf("1"),
+            templateSectionIdList = setOf("1"),
+            ytelseHjemmelIdList = setOf("1"),
+            editors = mutableSetOf(
+                Editor(
+                    navIdent = "saksbehandlerIdent",
+                    created = someDateTime,
+                    modified = someDateTime,
+                )
+            ),
+            created = someDateTime,
+            modified = someDateTime,
+        )
+
+        testEntityManager.persist(maltekstseksjonVersionPublished)
+        testEntityManager.persist(maltekstseksjonVersionDraft)
 
         testEntityManager.flush()
         testEntityManager.clear()

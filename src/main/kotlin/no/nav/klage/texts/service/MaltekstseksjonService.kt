@@ -206,12 +206,14 @@ class MaltekstseksjonService(
         validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
 
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
+
         maltekstseksjonVersion.texts.clear()
         maltekstseksjonVersion.texts.addAll(input.map { textRepository.getReferenceById(UUID.fromString(it)) })
+
         maltekstseksjonVersion.modified = LocalDateTime.now()
         updateEditors(
             existingEditors = maltekstseksjonVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent
+            newEditorNavIdent = saksbehandlerIdent,
         )
         return maltekstseksjonVersion
     }
