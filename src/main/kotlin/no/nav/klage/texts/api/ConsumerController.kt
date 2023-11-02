@@ -102,15 +102,15 @@ class ConsumerController(
     }
 
     @Operation(
-        summary = "Get current maltekstseksjon texts",
-        description = "Get current maltekstseksjon texts"
+        summary = "Get published maltekstseksjon texts",
+        description = "Get published maltekstseksjon texts"
     )
     @GetMapping("/maltekstseksjoner/{maltekstseksjonId}/texts")
-    fun getMaltekst(
+    fun getMaltekstseksjonTexts(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
     ): List<ConsumerTextView> {
         logMethodDetails(
-            methodName = ::getMaltekst.name,
+            methodName = ::getMaltekstseksjonTexts.name,
             innloggetIdent = tokenUtil.getIdent(),
             id = maltekstseksjonId,
             logger = logger,
