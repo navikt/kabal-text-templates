@@ -176,40 +176,47 @@ class ServiceTest {
 
         val now = LocalDateTime.now()
 
-        val t1 = Text(
+        val text1 = Text(
             created = now,
             modified = now,
             createdBy = "abc",
             maltekstseksjonVersions = mutableListOf()
         )
-        val t2 = Text(
+        val text2 = Text(
             created = now,
             modified = now,
             createdBy = "abc",
             maltekstseksjonVersions = mutableListOf()
         )
 
-        textRepository.save(t1)
-        textRepository.save(t2)
+        textRepository.save(text1)
+        textRepository.save(text2)
 
         testEntityManager.flush()
         testEntityManager.clear()
 
-        val maltekstseksjonVersion = maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(currentMaltekstseksjonID)!!
-        maltekstseksjonVersion.texts.add(t1)
-        maltekstseksjonVersion.texts.add(t2)
+        val maltekstseksjonVersion =
+            maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(currentMaltekstseksjonID)!!
+        maltekstseksjonVersion.texts.add(text1)
+        maltekstseksjonVersion.texts.add(text2)
 
         testEntityManager.flush()
         testEntityManager.clear()
 
         maltekstseksjonService.updateTexts(
-            input = listOf(t2.id.toString(), t1.id.toString()),
+            input = listOf(text2.id.toString(), text1.id.toString()),
             maltekstseksjonId = currentMaltekstseksjonID,
             saksbehandlerIdent = "bac"
         )
 
         testEntityManager.flush()
         testEntityManager.clear()
+
+        assertThat(
+            maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
+                currentMaltekstseksjonID
+            )!!.texts
+        ).containsExactly(text2, text1)
     }
 
     private fun setupDataForPublishedMaltekstseksjon() {
