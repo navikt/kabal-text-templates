@@ -39,6 +39,9 @@ class MaltekstseksjonServiceTest {
     lateinit var maltekstseksjonRepository: MaltekstseksjonRepository
 
     @Autowired
+    lateinit var textVersionRepository: TextVersionRepository
+
+    @Autowired
     lateinit var testEntityManager: TestEntityManager
 
     lateinit var maltekstseksjonService: MaltekstseksjonService
@@ -50,7 +53,10 @@ class MaltekstseksjonServiceTest {
             maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
             textRepository = mockk(),
             searchMaltekstseksjonService = mockk(),
-            publishMaltekstseksjonService = PublishMaltekstseksjonService(maltekstseksjonVersionRepository),
+            publishMaltekstseksjonService = PublishMaltekstseksjonService(
+                maltekstseksjonVersionRepository,
+                textVersionRepository = textVersionRepository
+            ),
         )
 
         val now = LocalDateTime.now()

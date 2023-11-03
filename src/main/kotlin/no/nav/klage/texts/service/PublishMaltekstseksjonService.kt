@@ -5,6 +5,7 @@ import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.exceptions.ClientErrorException
 import no.nav.klage.texts.exceptions.MaltekstseksjonNotFoundException
 import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepository
+import no.nav.klage.texts.repositories.TextVersionRepository
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
 import org.springframework.stereotype.Service
@@ -16,6 +17,7 @@ import java.util.*
 @Service
 class PublishMaltekstseksjonService(
     private val maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository,
+    private val textVersionRepository: TextVersionRepository,
 ) {
 
     companion object {
@@ -24,7 +26,11 @@ class PublishMaltekstseksjonService(
         private val secureLogger = getSecureLogger()
     }
 
-    fun publishMaltekstseksjonVersion(maltekstseksjonId: UUID, saksbehandlerIdent: String, overrideDraft: MaltekstseksjonVersion? = null): MaltekstseksjonVersion {
+    fun publishMaltekstseksjonVersion(
+        maltekstseksjonId: UUID,
+        saksbehandlerIdent: String,
+        overrideDraft: MaltekstseksjonVersion? = null
+    ): MaltekstseksjonVersion {
         validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
 
         val possiblePublishedVersion =
@@ -39,11 +45,22 @@ class PublishMaltekstseksjonService(
                 maltekstseksjonId = maltekstseksjonId
             ) ?: throw ClientErrorException("there was no draft to publish"))
 
+        validateTextsAreNotOnlyDrafts(maltekstseksjonVersionDraft)
+
         maltekstseksjonVersionDraft.publishedDateTime = LocalDateTime.now()
         maltekstseksjonVersionDraft.published = true
         maltekstseksjonVersionDraft.publishedBy = saksbehandlerIdent
 
         return maltekstseksjonVersionDraft
+    }
+
+    private fun validateTextsAreNotOnlyDrafts(maltekstseksjonVersion: MaltekstseksjonVersion) {
+        if (maltekstseksjonVersion.texts.any {
+                textVersionRepository.findByPublishedIsTrueAndTextId(it.id) == null
+            }
+        ) {
+            throw ClientErrorException("Kan ikke publisere maltekstseksjon fordi en eller flere av maltekstene ikke har en publisert versjon.")
+        }
     }
 
     fun createNewDraft(
@@ -77,7 +94,9 @@ class PublishMaltekstseksjonService(
     }
 
     private fun validateIfMaltekstseksjonIsDeleted(maltekstseksjonId: UUID) {
-        if (maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId).none { it.published || it.publishedDateTime == null }) {
+        if (maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId)
+                .none { it.published || it.publishedDateTime == null }
+        ) {
             throw MaltekstseksjonNotFoundException("Maltekstseksjon $maltekstseksjonId er avpublisert eller finnes ikke.")
         }
     }
