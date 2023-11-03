@@ -145,8 +145,12 @@ class TextService(
         val text = textRepository.getReferenceById(textId)
 
         val affectedMaltekstseksjonVersionsGroupedByMaltekstseksjonId = text.maltekstseksjonVersions.filter { mv ->
-            (mv.publishedDateTime == null || mv.published) && mv.texts.any { it.id == text.id }
+            (mv.publishedDateTime == null || mv.published)
         }.groupBy { it.maltekstseksjon.id }
+
+        val notAffectedMaltekstseksjonVersions = text.maltekstseksjonVersions.filter { mv ->
+            (mv.publishedDateTime != null && !mv.published)
+        }
 
         //Only published version is OK when creating new draft, remove text and publish
         val publishedToReturn =
@@ -194,11 +198,13 @@ class TextService(
 
                     tempDraft = maltekstseksjonVersionRepository.save(tempDraft)
 
-                    listOf(publishMaltekstseksjonService.publishMaltekstseksjonVersion(
-                        maltekstseksjonId = maltekstseksjonId,
-                        saksbehandlerIdent = saksbehandlerIdent,
-                        overrideDraft = tempDraft,
-                    ), draft)
+                    listOf(
+                        publishMaltekstseksjonService.publishMaltekstseksjonVersion(
+                            maltekstseksjonId = maltekstseksjonId,
+                            saksbehandlerIdent = saksbehandlerIdent,
+                            overrideDraft = tempDraft,
+                        ), draft
+                    )
                 }
 
         //unpublish and or delete draft text
@@ -211,13 +217,12 @@ class TextService(
 
         if (possiblePublishedTextVersion != null) {
             possiblePublishedTextVersion.published = false
-        } else {
-            //If no published version, delete the whole text.
+        } else if (notAffectedMaltekstseksjonVersions.isEmpty()) {
+            //If no published version of text, and no references to previously published maltekstseksjoner (this is weird for drafts), delete the whole text.
             textRepository.deleteById(textId)
         }
 
         return publishedToReturn + draftsToReturn + publishedAndDraftToReturn.flatten()
-
     }
 
     fun deleteTextDraftVersion(textId: UUID, saksbehandlerIdent: String) {
