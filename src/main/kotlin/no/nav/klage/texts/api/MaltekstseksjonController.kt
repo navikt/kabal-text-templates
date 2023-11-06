@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.service.MaltekstseksjonService
+import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
@@ -19,6 +20,7 @@ import java.util.*
 @ProtectedWithClaims(issuer = ISSUER_AAD)
 class MaltekstseksjonController(
     private val maltekstseksjonService: MaltekstseksjonService,
+    private val textService: TextService,
     private val tokenUtil: TokenUtil,
 ) {
 
@@ -68,6 +70,37 @@ class MaltekstseksjonController(
                 maltekstseksjonId = maltekstseksjonId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
             )
+        )
+    }
+
+    @Operation(
+        summary = "Publish maltekstseksjon and belonging texts (drafts)",
+        description = "Publish maltekstseksjon and belonging texts (drafts)"
+    )
+    @PostMapping("/{maltekstseksjonId}/publish-with-texts")
+    fun publishMaltekstseksjonWithTexts(
+        @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
+    ): MaltekstseksjonWithTextsView {
+        logMethodDetails(
+            methodName = ::publishMaltekstseksjon.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = maltekstseksjonId,
+            logger = logger,
+        )
+
+        val (maltekstseksjonVersion, textVersions) = maltekstseksjonService.publishMaltekstseksjonVersionWithTexts(
+            maltekstseksjonId = maltekstseksjonId,
+            saksbehandlerIdent = tokenUtil.getIdent(),
+        )
+
+        return MaltekstseksjonWithTextsView(
+            maltekstseksjon = mapToMaltekstView(maltekstseksjonVersion),
+            publishedTexts = textVersions.map { textVersion ->
+                mapToTextView(
+                    textVersion = textVersion,
+                    connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textVersion.text.id)
+                )
+            }
         )
     }
 

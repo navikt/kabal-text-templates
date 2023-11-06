@@ -30,3 +30,8 @@ data class ConsumerMaltekstseksjonView(
     val templateSectionIdList: Set<String> = emptySet(),
     val ytelseHjemmelIdList: Set<String> = emptySet(),
 )
+
+data class MaltekstseksjonWithTextsView(
+    val maltekstseksjon: MaltekstseksjonView,
+    val publishedTexts: List<TextView>,
+)

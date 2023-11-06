@@ -8,7 +8,7 @@ import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.exceptions.TextNotFoundException
 import no.nav.klage.texts.service.MaltekstseksjonService
-import no.nav.klage.texts.service.PublishMaltekstseksjonService
+import no.nav.klage.texts.service.PublishService
 import no.nav.klage.texts.service.TextService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -67,7 +67,7 @@ class ServiceTest {
             textVersionRepository = textVersionRepository,
             maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
             searchTextService = mockk(),
-            publishMaltekstseksjonService = PublishMaltekstseksjonService(
+            publishService = PublishService(
                 maltekstseksjonVersionRepository,
                 textVersionRepository
             ),
@@ -78,7 +78,7 @@ class ServiceTest {
             maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
             textRepository = textRepository,
             searchMaltekstseksjonService = mockk(),
-            publishMaltekstseksjonService = PublishMaltekstseksjonService(
+            publishService = PublishService(
                 maltekstseksjonVersionRepository,
                 textVersionRepository
             ),

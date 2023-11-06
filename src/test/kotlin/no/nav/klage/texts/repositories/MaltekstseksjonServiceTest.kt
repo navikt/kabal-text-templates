@@ -7,7 +7,7 @@ import no.nav.klage.texts.domain.Maltekstseksjon
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.service.MaltekstseksjonService
-import no.nav.klage.texts.service.PublishMaltekstseksjonService
+import no.nav.klage.texts.service.PublishService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -53,7 +53,7 @@ class MaltekstseksjonServiceTest {
             maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
             textRepository = mockk(),
             searchMaltekstseksjonService = mockk(),
-            publishMaltekstseksjonService = PublishMaltekstseksjonService(
+            publishService = PublishService(
                 maltekstseksjonVersionRepository,
                 textVersionRepository = textVersionRepository
             ),

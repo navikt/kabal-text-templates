@@ -28,7 +28,7 @@ class TextService(
     private val textVersionRepository: TextVersionRepository,
     private val searchTextService: SearchTextService,
     private val maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository,
-    private val publishMaltekstseksjonService: PublishMaltekstseksjonService,
+    private val publishService: PublishService,
 ) {
 
     companion object {
@@ -38,27 +38,16 @@ class TextService(
     }
 
     fun publishTextVersion(textId: UUID, saksbehandlerIdent: String): TextVersion {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
 
-        val possiblePreviouslyPublishedVersion = textVersionRepository.findByPublishedIsTrueAndTextId(textId)
-        if (possiblePreviouslyPublishedVersion != null) {
-            possiblePreviouslyPublishedVersion.published = false
-        }
-
-        val textVersionDraft =
-            textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
-                textId = textId
-            ) ?: throw ClientErrorException("there was no draft to publish")
-
-        textVersionDraft.publishedDateTime = LocalDateTime.now()
-        textVersionDraft.published = true
-        textVersionDraft.publishedBy = saksbehandlerIdent
-
-        return textVersionDraft
+        return publishService.publishTextVersion(
+            textId = textId,
+            saksbehandlerIdent = saksbehandlerIdent,
+        )
     }
 
     fun getTextVersions(textId: UUID): List<TextVersion> {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
         return textVersionRepository.findByTextId(textId)
             .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }
     }
@@ -111,7 +100,7 @@ class TextService(
         versionInput: VersionInput?,
         saksbehandlerIdent: String,
     ): TextVersion {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
 
         val existingVersion = if (versionInput != null) {
             textVersionRepository.getReferenceById(versionInput.versionId)
@@ -141,7 +130,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): List<MaltekstseksjonVersion> {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
         val text = textRepository.getReferenceById(textId)
 
         val affectedMaltekstseksjonVersionsGroupedByMaltekstseksjonId = text.maltekstseksjonVersions.filter { mv ->
@@ -156,7 +145,7 @@ class TextService(
         val publishedToReturn =
             affectedMaltekstseksjonVersionsGroupedByMaltekstseksjonId.filter { it.value.size == 1 && it.value.first().published }
                 .map { (maltekstseksjonId, _) ->
-                    val draft = publishMaltekstseksjonService.createNewDraft(
+                    val draft = publishService.createNewDraft(
                         maltekstseksjonId = maltekstseksjonId,
                         versionInput = null,
                         saksbehandlerIdent = saksbehandlerIdent,
@@ -164,7 +153,7 @@ class TextService(
 
                     draft.texts.removeIf { it.id == text.id }
 
-                    publishMaltekstseksjonService.publishMaltekstseksjonVersion(
+                    publishService.publishMaltekstseksjonVersion(
                         maltekstseksjonId = maltekstseksjonId,
                         saksbehandlerIdent = saksbehandlerIdent
                     )
@@ -199,7 +188,7 @@ class TextService(
                     tempDraft = maltekstseksjonVersionRepository.save(tempDraft)
 
                     listOf(
-                        publishMaltekstseksjonService.publishMaltekstseksjonVersion(
+                        publishService.publishMaltekstseksjonVersion(
                             maltekstseksjonId = maltekstseksjonId,
                             saksbehandlerIdent = saksbehandlerIdent,
                             overrideDraft = tempDraft,
@@ -226,7 +215,7 @@ class TextService(
     }
 
     fun deleteTextDraftVersion(textId: UUID, saksbehandlerIdent: String) {
-        validateIfTextIsDeleted(textId = textId)
+        validateIfTextIsUnpublished(textId = textId)
         val existingDraft = textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
             textId = textId
         )
@@ -236,14 +225,14 @@ class TextService(
     }
 
     fun getPublishedTextVersion(textId: UUID): TextVersion {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
         return textVersionRepository.findByPublishedIsTrueAndTextId(
             textId = textId
         ) ?: throw ClientErrorException("there is no published text version")
     }
 
     fun getCurrentTextVersion(textId: UUID): TextVersion {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
 
         return textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
             textId = textId
@@ -264,7 +253,7 @@ class TextService(
         templateSectionIdList: Set<String>,
         ytelseHjemmelIdList: Set<String>,
     ): TextVersion {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
         if (content != null && plainText != null) {
             error("there can only be one of content or plainText")
         }
@@ -295,7 +284,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.title = input
         textVersion.modified = LocalDateTime.now()
@@ -311,7 +300,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.textType = input
         textVersion.modified = LocalDateTime.now()
@@ -327,7 +316,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.smartEditorVersion = input
         textVersion.modified = LocalDateTime.now()
@@ -343,7 +332,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.content = input
         textVersion.modified = LocalDateTime.now()
@@ -359,7 +348,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.plainText = input
         textVersion.modified = LocalDateTime.now()
@@ -375,7 +364,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.utfallIdList = input
         textVersion.modified = LocalDateTime.now()
@@ -391,7 +380,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.enhetIdList = input
         textVersion.modified = LocalDateTime.now()
@@ -407,7 +396,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.templateSectionIdList = input
         textVersion.modified = LocalDateTime.now()
@@ -423,7 +412,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): TextVersion {
-        validateIfTextIsDeleted(textId)
+        validateIfTextIsUnpublished(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.ytelseHjemmelIdList = input
         textVersion.modified = LocalDateTime.now()
@@ -512,7 +501,7 @@ class TextService(
         ) ?: throw ClientErrorException("Utkast ikke funnet")
     }
 
-    private fun validateIfTextIsDeleted(textId: UUID) {
+    private fun validateIfTextIsUnpublished(textId: UUID) {
         if (textVersionRepository.findByTextId(textId).none { it.published || it.publishedDateTime == null }) {
             throw TextNotFoundException("Teksten $textId er avpublisert eller finnes ikke.")
         }

@@ -5,6 +5,7 @@ import no.nav.klage.texts.api.views.VersionInput
 import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.Maltekstseksjon
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
+import no.nav.klage.texts.domain.TextVersion
 import no.nav.klage.texts.exceptions.ClientErrorException
 import no.nav.klage.texts.exceptions.MaltekstseksjonNotFoundException
 import no.nav.klage.texts.repositories.MaltekstseksjonRepository
@@ -26,7 +27,7 @@ class MaltekstseksjonService(
     private val maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository,
     private val textRepository: TextRepository,
     private val searchMaltekstseksjonService: SearchMaltekstseksjonService,
-    private val publishMaltekstseksjonService: PublishMaltekstseksjonService,
+    private val publishService: PublishService,
 ) {
 
     companion object {
@@ -36,14 +37,23 @@ class MaltekstseksjonService(
     }
 
     fun publishMaltekstseksjonVersion(maltekstseksjonId: UUID, saksbehandlerIdent: String): MaltekstseksjonVersion {
-        return publishMaltekstseksjonService.publishMaltekstseksjonVersion(
+        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
+        return publishService.publishMaltekstseksjonVersion(
+            maltekstseksjonId = maltekstseksjonId,
+            saksbehandlerIdent = saksbehandlerIdent,
+        )
+    }
+
+    fun publishMaltekstseksjonVersionWithTexts(maltekstseksjonId: UUID, saksbehandlerIdent: String): Pair<MaltekstseksjonVersion, List<TextVersion>> {
+        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
+        return publishService.publishMaltekstseksjonVersionWithTexts(
             maltekstseksjonId = maltekstseksjonId,
             saksbehandlerIdent = saksbehandlerIdent,
         )
     }
 
     fun getMaltekstseksjonVersions(maltekstseksjonId: UUID): List<MaltekstseksjonVersion> {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
+        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
         return maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId)
             .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }
     }
@@ -91,7 +101,8 @@ class MaltekstseksjonService(
         versionInput: VersionInput?,
         saksbehandlerIdent: String,
     ): MaltekstseksjonVersion {
-        return publishMaltekstseksjonService.createNewDraft(
+        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
+        return publishService.createNewDraft(
             maltekstseksjonId = maltekstseksjonId,
             versionInput = versionInput,
             saksbehandlerIdent = saksbehandlerIdent,
@@ -102,7 +113,7 @@ class MaltekstseksjonService(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
     ) {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
+        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
         //unpublish and or delete draft text
         val possibleDraft = maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(maltekstseksjonId)
@@ -121,7 +132,7 @@ class MaltekstseksjonService(
     }
 
     fun deleteMaltekstseksjonDraftVersion(maltekstseksjonId: UUID, saksbehandlerIdent: String) {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
+        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
         val existingDraft = maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
             maltekstseksjonId = maltekstseksjonId
         )
@@ -131,7 +142,7 @@ class MaltekstseksjonService(
     }
 
     fun getPublishedMaltekstseksjonVersion(maltekstseksjonId: UUID): MaltekstseksjonVersion {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
+        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
         return maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
             maltekstseksjonId = maltekstseksjonId
@@ -140,7 +151,7 @@ class MaltekstseksjonService(
 
 
     fun getCurrentMaltekstseksjonVersion(maltekstseksjonId: UUID): MaltekstseksjonVersion {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
+        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
         return maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
             maltekstseksjonId = maltekstseksjonId
@@ -159,7 +170,7 @@ class MaltekstseksjonService(
         templateSectionIdList: Set<String>,
         ytelseHjemmelIdList: Set<String>,
     ): MaltekstseksjonVersion {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
+        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
 
@@ -186,7 +197,7 @@ class MaltekstseksjonService(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
     ): MaltekstseksjonVersion {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
+        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.title = input
@@ -203,7 +214,7 @@ class MaltekstseksjonService(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
     ): MaltekstseksjonVersion {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
+        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
 
@@ -223,7 +234,7 @@ class MaltekstseksjonService(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
     ): MaltekstseksjonVersion {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
+        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.utfallIdList = input
@@ -240,7 +251,7 @@ class MaltekstseksjonService(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
     ): MaltekstseksjonVersion {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
+        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.enhetIdList = input
@@ -257,7 +268,7 @@ class MaltekstseksjonService(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
     ): MaltekstseksjonVersion {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
+        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.templateSectionIdList = input
@@ -274,7 +285,7 @@ class MaltekstseksjonService(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
     ): MaltekstseksjonVersion {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
+        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.ytelseHjemmelIdList = input
@@ -370,7 +381,7 @@ class MaltekstseksjonService(
         ) ?: throw ClientErrorException("no draft was found")
     }
 
-    private fun validateIfMaltekstseksjonIsDeleted(maltekstseksjonId: UUID) {
+    private fun validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId: UUID) {
         if (maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId).none { it.published || it.publishedDateTime == null }) {
             throw MaltekstseksjonNotFoundException("Maltekstseksjon $maltekstseksjonId er avpublisert eller finnes ikke.")
         }

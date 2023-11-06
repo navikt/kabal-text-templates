@@ -2,8 +2,8 @@ package no.nav.klage.texts.service
 
 import no.nav.klage.texts.api.views.VersionInput
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
+import no.nav.klage.texts.domain.TextVersion
 import no.nav.klage.texts.exceptions.ClientErrorException
-import no.nav.klage.texts.exceptions.MaltekstseksjonNotFoundException
 import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepository
 import no.nav.klage.texts.repositories.TextVersionRepository
 import no.nav.klage.texts.util.getLogger
@@ -15,7 +15,7 @@ import java.util.*
 
 @Transactional
 @Service
-class PublishMaltekstseksjonService(
+class PublishService(
     private val maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository,
     private val textVersionRepository: TextVersionRepository,
 ) {
@@ -26,13 +26,45 @@ class PublishMaltekstseksjonService(
         private val secureLogger = getSecureLogger()
     }
 
+    fun publishMaltekstseksjonVersionWithTexts(
+        maltekstseksjonId: UUID,
+        saksbehandlerIdent: String,
+        overrideDraft: MaltekstseksjonVersion? = null
+    ): Pair<MaltekstseksjonVersion, List<TextVersion>> {
+        val possiblePublishedVersion =
+            maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(maltekstseksjonId)
+
+        if (possiblePublishedVersion != null) {
+            possiblePublishedVersion.published = false
+        }
+
+        val maltekstseksjonVersionDraft = overrideDraft
+            ?: (maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
+                maltekstseksjonId = maltekstseksjonId
+            ) ?: throw ClientErrorException("there was no draft to publish"))
+
+        validateTextsAreNotEmptyOrOnlyDrafts(maltekstseksjonVersionDraft)
+
+        maltekstseksjonVersionDraft.publishedDateTime = LocalDateTime.now()
+        maltekstseksjonVersionDraft.published = true
+        maltekstseksjonVersionDraft.publishedBy = saksbehandlerIdent
+
+        return maltekstseksjonVersionDraft to
+                maltekstseksjonVersionDraft.texts.filter {
+                    textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
+                        textId = it.id
+                    ) != null
+                }
+                    .map {
+                        publishTextVersion(textId = it.id, saksbehandlerIdent = saksbehandlerIdent)
+                    }
+    }
+
     fun publishMaltekstseksjonVersion(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
         overrideDraft: MaltekstseksjonVersion? = null
     ): MaltekstseksjonVersion {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
-
         val possiblePublishedVersion =
             maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(maltekstseksjonId)
 
@@ -68,8 +100,6 @@ class PublishMaltekstseksjonService(
         versionInput: VersionInput?,
         saksbehandlerIdent: String,
     ): MaltekstseksjonVersion {
-        validateIfMaltekstseksjonIsDeleted(maltekstseksjonId = maltekstseksjonId)
-
         val existingVersion = if (versionInput != null) {
             maltekstseksjonVersionRepository.getReferenceById(versionInput.versionId)
         } else {
@@ -93,11 +123,21 @@ class PublishMaltekstseksjonService(
         }
     }
 
-    private fun validateIfMaltekstseksjonIsDeleted(maltekstseksjonId: UUID) {
-        if (maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId)
-                .none { it.published || it.publishedDateTime == null }
-        ) {
-            throw MaltekstseksjonNotFoundException("Maltekstseksjon $maltekstseksjonId er avpublisert eller finnes ikke.")
+    fun publishTextVersion(textId: UUID, saksbehandlerIdent: String): TextVersion {
+        val possiblePreviouslyPublishedVersion = textVersionRepository.findByPublishedIsTrueAndTextId(textId)
+        if (possiblePreviouslyPublishedVersion != null) {
+            possiblePreviouslyPublishedVersion.published = false
         }
+
+        val textVersionDraft =
+            textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
+                textId = textId
+            ) ?: throw ClientErrorException("there was no draft to publish")
+
+        textVersionDraft.publishedDateTime = LocalDateTime.now()
+        textVersionDraft.published = true
+        textVersionDraft.publishedBy = saksbehandlerIdent
+
+        return textVersionDraft
     }
 }
