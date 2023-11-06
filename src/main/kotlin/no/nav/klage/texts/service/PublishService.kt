@@ -43,21 +43,21 @@ class PublishService(
                 maltekstseksjonId = maltekstseksjonId
             ) ?: throw ClientErrorException("there was no draft to publish"))
 
-        validateTextsAreNotEmptyOrOnlyDrafts(maltekstseksjonVersionDraft)
+        validateTextsAreNotEmptyWhenPublishingTogetherWithMaltekstseksjon(maltekstseksjonVersionDraft)
 
         maltekstseksjonVersionDraft.publishedDateTime = LocalDateTime.now()
         maltekstseksjonVersionDraft.published = true
         maltekstseksjonVersionDraft.publishedBy = saksbehandlerIdent
 
-        return maltekstseksjonVersionDraft to
-                maltekstseksjonVersionDraft.texts.filter {
-                    textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
-                        textId = it.id
-                    ) != null
-                }
-                    .map {
-                        publishTextVersion(textId = it.id, saksbehandlerIdent = saksbehandlerIdent)
-                    }
+        val textVersions = maltekstseksjonVersionDraft.texts.filter {
+            textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
+                textId = it.id
+            ) != null
+        }.map {
+            publishTextVersion(textId = it.id, saksbehandlerIdent = saksbehandlerIdent)
+        }
+
+        return maltekstseksjonVersionDraft to textVersions
     }
 
     fun publishMaltekstseksjonVersion(
@@ -92,6 +92,12 @@ class PublishService(
             }
         ) {
             throw ClientErrorException("Kan ikke publisere maltekstseksjon fordi det mangler en publisert versjon av en eller flere maltekster.")
+        }
+    }
+
+    private fun validateTextsAreNotEmptyWhenPublishingTogetherWithMaltekstseksjon(maltekstseksjonVersion: MaltekstseksjonVersion) {
+        if (maltekstseksjonVersion.texts.isEmpty()) {
+            throw ClientErrorException("Kan ikke publisere maltekstseksjon sammen med maltekstseksjon fordi det mangler maltekster.")
         }
     }
 
