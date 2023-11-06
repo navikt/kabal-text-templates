@@ -45,7 +45,7 @@ class PublishMaltekstseksjonService(
                 maltekstseksjonId = maltekstseksjonId
             ) ?: throw ClientErrorException("there was no draft to publish"))
 
-        validateTextsAreNotOnlyDrafts(maltekstseksjonVersionDraft)
+        validateTextsAreNotEmptyOrOnlyDrafts(maltekstseksjonVersionDraft)
 
         maltekstseksjonVersionDraft.publishedDateTime = LocalDateTime.now()
         maltekstseksjonVersionDraft.published = true
@@ -54,12 +54,12 @@ class PublishMaltekstseksjonService(
         return maltekstseksjonVersionDraft
     }
 
-    private fun validateTextsAreNotOnlyDrafts(maltekstseksjonVersion: MaltekstseksjonVersion) {
-        if (maltekstseksjonVersion.texts.any {
+    private fun validateTextsAreNotEmptyOrOnlyDrafts(maltekstseksjonVersion: MaltekstseksjonVersion) {
+        if (maltekstseksjonVersion.texts.isEmpty() || maltekstseksjonVersion.texts.any {
                 textVersionRepository.findByPublishedIsTrueAndTextId(it.id) == null
             }
         ) {
-            throw ClientErrorException("Kan ikke publisere maltekstseksjon fordi en eller flere av maltekstene ikke har en publisert versjon.")
+            throw ClientErrorException("Kan ikke publisere maltekstseksjon fordi det mangler en publisert versjon av en eller flere maltekster.")
         }
     }
 

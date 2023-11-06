@@ -100,7 +100,7 @@ class ServiceTest {
 
         var maltekstseksjonVersions = maltekstseksjonVersionRepository.findAll()
         assertThat(maltekstseksjonVersions).hasSize(1)
-        assertThat(maltekstseksjonVersions.first().texts).hasSize(1)
+        assertThat(maltekstseksjonVersions.first().texts).hasSize(2)
 
         textService.deleteOrUnpublishText(
             textId = currentTextID,
@@ -115,8 +115,8 @@ class ServiceTest {
         maltekstseksjonVersions = maltekstseksjonVersionRepository.findAll()
         assertThat(maltekstseksjonVersions).hasSize(2)
 
-        assertThat(maltekstseksjonVersions.find { !it.published }!!.texts).hasSize(1)
-        assertThat(maltekstseksjonVersions.find { it.published }!!.texts).hasSize(0)
+        assertThat(maltekstseksjonVersions.find { !it.published }!!.texts).hasSize(2)
+        assertThat(maltekstseksjonVersions.find { it.published }!!.texts).hasSize(1)
     }
 
     @Test
@@ -148,8 +148,8 @@ class ServiceTest {
 
         var maltekstseksjonVersions = maltekstseksjonVersionRepository.findAll()
         assertThat(maltekstseksjonVersions).hasSize(2)
-        assertThat(maltekstseksjonVersions.find { !it.published }!!.texts).hasSize(1)
-        assertThat(maltekstseksjonVersions.find { it.published }!!.texts).hasSize(1)
+        assertThat(maltekstseksjonVersions.find { !it.published }!!.texts).hasSize(2)
+        assertThat(maltekstseksjonVersions.find { it.published }!!.texts).hasSize(2)
 
         val result = textService.deleteOrUnpublishText(
             textId = currentTextID,
@@ -167,11 +167,11 @@ class ServiceTest {
 
         assertThat(maltekstseksjonVersions).containsAll(result)
 
-        assertThat(maltekstseksjonVersions.find { !it.published && it.publishedDateTime != null }!!.texts).hasSize(1)
-        assertThat(maltekstseksjonVersions.find { it.published }!!.texts).hasSize(0)
+        assertThat(maltekstseksjonVersions.find { !it.published && it.publishedDateTime != null }!!.texts).hasSize(2)
+        assertThat(maltekstseksjonVersions.find { it.published }!!.texts).hasSize(1)
 
         val draft = maltekstseksjonVersions.find { !it.published && it.publishedDateTime == null }
-        assertThat(draft!!.texts).hasSize(0)
+        assertThat(draft!!.texts).hasSize(1)
         assertThat(draft.title).isEqualTo("new title")
         assertThat(draft.utfallIdList).containsExactlyInAnyOrder("1", "2")
     }
@@ -236,7 +236,7 @@ class ServiceTest {
             )
         )
 
-        val textVersion = textService.createNewText(
+        val textVersion1 = textService.createNewText(
             textInput = TextInput(
                 title = "",
                 textType = "",
@@ -255,12 +255,33 @@ class ServiceTest {
             saksbehandlerIdent = "abc",
         )
 
-        currentTextID = textVersion.text.id
+        val textVersion2 = textService.createNewText(
+            textInput = TextInput(
+                title = "",
+                textType = "",
+                content = null,
+                plainText = null,
+                version = null,
+                utfall = setOf(),
+                enheter = setOf(),
+                templateSectionList = setOf(),
+                ytelseHjemmelList = setOf(),
+                utfallIdList = setOf(),
+                enhetIdList = setOf(),
+                templateSectionIdList = setOf(),
+                ytelseHjemmelIdList = setOf(),
+            ),
+            saksbehandlerIdent = "abc",
+        )
+
+        textService.publishTextVersion(textId = textVersion2.text.id, saksbehandlerIdent = "abc")
+
+        currentTextID = textVersion1.text.id
 
         val maltekstseksjonVersionPublished = MaltekstseksjonVersion(
             title = "title",
             maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(textVersion.text),
+            texts = mutableListOf(textVersion1.text, textVersion2.text),
             publishedDateTime = now,
             publishedBy = "noen",
             published = true,
@@ -362,7 +383,7 @@ class ServiceTest {
             )
         )
 
-        val textVersion = textService.createNewText(
+        val textVersion1 = textService.createNewText(
             textInput = TextInput(
                 title = "",
                 textType = "",
@@ -381,14 +402,35 @@ class ServiceTest {
             saksbehandlerIdent = "abc",
         )
 
-        currentTextID = textVersion.text.id
+        val textVersion2 = textService.createNewText(
+            textInput = TextInput(
+                title = "",
+                textType = "",
+                content = null,
+                plainText = null,
+                version = null,
+                utfall = setOf(),
+                enheter = setOf(),
+                templateSectionList = setOf(),
+                ytelseHjemmelList = setOf(),
+                utfallIdList = setOf(),
+                enhetIdList = setOf(),
+                templateSectionIdList = setOf(),
+                ytelseHjemmelIdList = setOf(),
+            ),
+            saksbehandlerIdent = "abc",
+        )
+
+        textService.publishTextVersion(textId = textVersion2.text.id, saksbehandlerIdent = "abc")
+
+        currentTextID = textVersion1.text.id
 
         someDateTime = LocalDateTime.now().minusDays(9)
 
         val maltekstseksjonVersionPublished = MaltekstseksjonVersion(
             title = "title",
             maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(textVersion.text),
+            texts = mutableListOf(textVersion1.text, textVersion2.text),
             publishedDateTime = someDateTime,
             publishedBy = "noen",
             published = true,
@@ -412,7 +454,7 @@ class ServiceTest {
         val maltekstseksjonVersionDraft = MaltekstseksjonVersion(
             title = "new title",
             maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(textVersion.text),
+            texts = mutableListOf(textVersion1.text, textVersion2.text),
             publishedDateTime = null,
             publishedBy = null,
             published = false,
