@@ -107,7 +107,7 @@ class TextService(
         } else {
             textVersionRepository.findByPublishedIsTrueAndTextId(
                 textId = textId
-            ) ?: throw ClientErrorException("must exist a published version before a draft is created")
+            ) ?: throw ClientErrorException("det må finnes en publisert versjon før et nytt utkast kan lages")
         }
 
         val existingDraft = textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
@@ -228,7 +228,7 @@ class TextService(
         validateIfTextIsUnpublished(textId)
         return textVersionRepository.findByPublishedIsTrueAndTextId(
             textId = textId
-        ) ?: throw ClientErrorException("there is no published text version")
+        ) ?: throw ClientErrorException("fant ingen publisert maltekst")
     }
 
     fun getCurrentTextVersion(textId: UUID): TextVersion {
@@ -238,7 +238,7 @@ class TextService(
             textId = textId
         ) ?: textVersionRepository.findByPublishedIsTrueAndTextId(
             textId = textId
-        ) ?: throw ClientErrorException("Det finnes ikke hverken utkast eller en publisert versjon")
+        ) ?: throw ClientErrorException("det finnes ikke hverken utkast eller en publisert versjon")
     }
 
     fun updateText(
@@ -255,7 +255,7 @@ class TextService(
     ): TextVersion {
         validateIfTextIsUnpublished(textId)
         if (content != null && plainText != null) {
-            error("there can only be one of content or plainText")
+            throw ClientErrorException("Kun 'content' eller 'plainText' kan sendes inn. Ikke begge samtidig.")
         }
 
         val textVersion = getCurrentDraft(textId)

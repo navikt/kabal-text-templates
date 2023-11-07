@@ -146,7 +146,7 @@ class MaltekstseksjonService(
 
         return maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
             maltekstseksjonId = maltekstseksjonId
-        ) ?: throw ClientErrorException("Det finnes ikke hverken utkast eller en publisert versjon")
+        ) ?: throw ClientErrorException("det finnes ikke hverken utkast eller en publisert versjon")
     }
 
 
@@ -157,7 +157,7 @@ class MaltekstseksjonService(
             maltekstseksjonId = maltekstseksjonId
         ) ?: maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
             maltekstseksjonId = maltekstseksjonId
-        ) ?: throw ClientErrorException("Det finnes ikke hverken utkast eller en publisert versjon")
+        ) ?: throw ClientErrorException("det finnes ikke hverken utkast eller en publisert versjon")
     }
 
     fun updateMaltekstseksjon(
@@ -378,7 +378,7 @@ class MaltekstseksjonService(
     private fun getCurrentDraft(maltekstseksjonId: UUID): MaltekstseksjonVersion {
         return maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
             maltekstseksjonId = maltekstseksjonId
-        ) ?: throw ClientErrorException("no draft was found")
+        ) ?: throw ClientErrorException("ikke noe utkast funnet")
     }
 
     private fun validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId: UUID) {

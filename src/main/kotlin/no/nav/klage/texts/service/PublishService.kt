@@ -41,7 +41,7 @@ class PublishService(
         val maltekstseksjonVersionDraft = overrideDraft
             ?: (maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
                 maltekstseksjonId = maltekstseksjonId
-            ) ?: throw ClientErrorException("there was no draft to publish"))
+            ) ?: throw ClientErrorException("ikke noe utkast funnet som kan publiseres"))
 
         validateTextsAreNotEmptyWhenPublishingTogetherWithMaltekstseksjon(maltekstseksjonVersionDraft)
 
@@ -75,7 +75,7 @@ class PublishService(
         val maltekstseksjonVersionDraft = overrideDraft
             ?: (maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
                 maltekstseksjonId = maltekstseksjonId
-            ) ?: throw ClientErrorException("there was no draft to publish"))
+            ) ?: throw ClientErrorException("ikke noe utkast funnet som kan publiseres"))
 
         validateTextsAreNotEmptyOrOnlyDrafts(maltekstseksjonVersionDraft)
 
@@ -111,7 +111,7 @@ class PublishService(
         } else {
             maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
                 maltekstseksjonId = maltekstseksjonId
-            ) ?: throw ClientErrorException("must exist a published version before a draft is created")
+            ) ?: throw ClientErrorException("det må finnes en publisert versjon før et nytt utkast kan lages")
         }
 
         val existingDraft = maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
@@ -138,7 +138,7 @@ class PublishService(
         val textVersionDraft =
             textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
                 textId = textId
-            ) ?: throw ClientErrorException("there was no draft to publish")
+            ) ?: throw ClientErrorException("ikke noe utkast funnet som kan publiseres")
 
         textVersionDraft.publishedDateTime = LocalDateTime.now()
         textVersionDraft.published = true
