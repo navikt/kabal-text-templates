@@ -46,7 +46,9 @@ class MaltekstseksjonController(
         )
 
         return maltekstseksjonService.getMaltekstseksjonVersions(maltekstseksjonId).map {
-            mapToMaltekstView(it)
+            mapToMaltekstView(
+                maltekstseksjonVersion = it,
+            )
         }
     }
 
@@ -66,10 +68,10 @@ class MaltekstseksjonController(
         )
 
         return mapToMaltekstView(
-            maltekstseksjonService.publishMaltekstseksjonVersion(
+            maltekstseksjonVersion = maltekstseksjonService.publishMaltekstseksjonVersion(
                 maltekstseksjonId = maltekstseksjonId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
         )
     }
 
@@ -94,7 +96,9 @@ class MaltekstseksjonController(
         )
 
         return MaltekstseksjonWithTextsView(
-            maltekstseksjon = mapToMaltekstView(maltekstseksjonVersion),
+            maltekstseksjon = mapToMaltekstView(
+                maltekstseksjonVersion = maltekstseksjonVersion,
+            ),
             publishedTexts = textVersions.map { textVersion ->
                 mapToTextView(
                     textVersion = textVersion,
@@ -120,10 +124,10 @@ class MaltekstseksjonController(
         )
 
         return mapToMaltekstView(
-            maltekstseksjonService.createNewMaltekstseksjon(
+            maltekstseksjonVersion = maltekstseksjonService.createNewMaltekstseksjon(
                 maltekstseksjonInput = input,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
         )
     }
 
@@ -144,11 +148,11 @@ class MaltekstseksjonController(
         )
 
         return mapToMaltekstView(
-            maltekstseksjonService.createNewDraft(
+            maltekstseksjonVersion = maltekstseksjonService.createNewDraft(
                 maltekstseksjonId = maltekstseksjonId,
                 versionInput = input,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
         )
     }
 
@@ -169,11 +173,11 @@ class MaltekstseksjonController(
         )
 
         return mapToMaltekstView(
-            maltekstseksjonService.updateTitle(
+            maltekstseksjonVersion = maltekstseksjonService.updateTitle(
                 input = input.title,
                 maltekstseksjonId = maltekstseksjonId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
         )
     }
 
@@ -194,11 +198,11 @@ class MaltekstseksjonController(
         )
 
         return mapToMaltekstView(
-            maltekstseksjonService.updateTexts(
+            maltekstseksjonVersion = maltekstseksjonService.updateTexts(
                 input = input.textIdList,
                 maltekstseksjonId = maltekstseksjonId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
         )
     }
 
@@ -219,11 +223,11 @@ class MaltekstseksjonController(
         )
 
         return mapToMaltekstView(
-            maltekstseksjonService.updateUtfall(
+            maltekstseksjonVersion = maltekstseksjonService.updateUtfall(
                 input = input.utfallIdList,
                 maltekstseksjonId = maltekstseksjonId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
         )
     }
 
@@ -244,11 +248,11 @@ class MaltekstseksjonController(
         )
 
         return mapToMaltekstView(
-            maltekstseksjonService.updateEnheter(
+            maltekstseksjonVersion = maltekstseksjonService.updateEnheter(
                 input = input.enhetIdList,
                 maltekstseksjonId = maltekstseksjonId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
         )
     }
 
@@ -269,11 +273,11 @@ class MaltekstseksjonController(
         )
 
         return mapToMaltekstView(
-            maltekstseksjonService.updateTemplateSectionList(
+            maltekstseksjonVersion = maltekstseksjonService.updateTemplateSectionList(
                 input = input.templateSectionIdList,
                 maltekstseksjonId = maltekstseksjonId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
         )
     }
 
@@ -294,11 +298,11 @@ class MaltekstseksjonController(
         )
 
         return mapToMaltekstView(
-            maltekstseksjonService.updateYtelseHjemmelList(
+            maltekstseksjonVersion = maltekstseksjonService.updateYtelseHjemmelList(
                 input = input.ytelseHjemmelIdList,
                 maltekstseksjonId = maltekstseksjonId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
         )
     }
 
@@ -371,7 +375,9 @@ class MaltekstseksjonController(
             ).sortedByDescending { it.created }
 
         return maltekstseksjonsVersions.map {
-            mapToMaltekstView(it)
+            mapToMaltekstView(
+                maltekstseksjonVersion = it,
+            )
         }
     }
 
@@ -389,6 +395,10 @@ class MaltekstseksjonController(
             id = maltekstseksjonId,
             logger = logger,
         )
-        return mapToMaltekstView(maltekstseksjonService.getCurrentMaltekstseksjonVersion(maltekstseksjonId))
+        return mapToMaltekstView(
+            maltekstseksjonVersion = maltekstseksjonService.getCurrentMaltekstseksjonVersion(
+                maltekstseksjonId
+            ),
+        )
     }
 }

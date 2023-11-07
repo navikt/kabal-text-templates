@@ -44,7 +44,10 @@ class MaltekstseksjonService(
         )
     }
 
-    fun publishMaltekstseksjonVersionWithTexts(maltekstseksjonId: UUID, saksbehandlerIdent: String): Pair<MaltekstseksjonVersion, List<TextVersion>> {
+    fun publishMaltekstseksjonVersionWithTexts(
+        maltekstseksjonId: UUID,
+        saksbehandlerIdent: String
+    ): Pair<MaltekstseksjonVersion, List<TextVersion>> {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
         return publishService.publishMaltekstseksjonVersionWithTexts(
             maltekstseksjonId = maltekstseksjonId,
@@ -116,8 +119,10 @@ class MaltekstseksjonService(
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
         //unpublish and or delete draft text
-        val possibleDraft = maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(maltekstseksjonId)
-        val possiblePublishedTextVersion = maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(maltekstseksjonId)
+        val possibleDraft =
+            maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(maltekstseksjonId)
+        val possiblePublishedTextVersion =
+            maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(maltekstseksjonId)
 
         if (possibleDraft != null) {
             maltekstseksjonVersionRepository.delete(possibleDraft)
@@ -369,6 +374,7 @@ class MaltekstseksjonService(
     }
 
     fun getAllMaltekstseksjonVersions(): List<MaltekstseksjonVersion> = maltekstseksjonVersionRepository.findAll()
+
     fun getMaltekstseksjonVersionsById(ids: List<UUID>): MutableList<MaltekstseksjonVersion> =
         maltekstseksjonVersionRepository.findAllById(ids)
 
@@ -382,7 +388,9 @@ class MaltekstseksjonService(
     }
 
     private fun validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId: UUID) {
-        if (maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId).none { it.published || it.publishedDateTime == null }) {
+        if (maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId)
+                .none { it.published || it.publishedDateTime == null }
+        ) {
             throw MaltekstseksjonNotFoundException("Maltekstseksjon $maltekstseksjonId er avpublisert eller finnes ikke.")
         }
     }

@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
+import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
@@ -19,6 +20,7 @@ import java.util.*
 @ProtectedWithClaims(issuer = ISSUER_AAD)
 class TextController(
     private val textService: TextService,
+    private val maltekstseksjonService: MaltekstseksjonService,
     private val tokenUtil: TokenUtil,
 ) {
 
@@ -396,30 +398,41 @@ class TextController(
     }
 
     @Operation(
-        summary = "Delete/unpublish text",
-        description = "Delete/unpublish text"
+        summary = "Unpublish text",
+        description = "Unpublish text"
     )
     @PostMapping("/{textId}/unpublish")
-    fun deleteOrUnpublishText(
+    fun unpublishText(
         @PathVariable("textId") textId: UUID,
     ): DeletedText {
         logMethodDetails(
-            methodName = ::deleteOrUnpublishText.name,
+            methodName = ::unpublishText.name,
             innloggetIdent = tokenUtil.getIdent(),
             id = textId,
             logger = logger,
         )
 
-        val affectedMaltekstseksjonVersions = textService.deleteOrUnpublishText(
+        val affectedMaltekstseksjonIdList =
+            textService.getCurrentTextVersion(textId = textId).text.maltekstseksjonVersions
+                .map { it.maltekstseksjon.id }
+                .toSet()
+
+
+        textService.unpublishText(
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
         )
 
         return DeletedText(
-            maltekstseksjonVersions = affectedMaltekstseksjonVersions.groupBy { it.maltekstseksjon.id }.map { (maltekstseksjonId, maltekstseksjonVersions) ->
+            maltekstseksjonVersions = affectedMaltekstseksjonIdList.map { maltekstseksjonId ->
                 DeletedText.MaltekstseksjonVersionWithId(
                     maltekstseksjonId = maltekstseksjonId,
-                    maltekstseksjonVersions = maltekstseksjonVersions.map { mapToMaltekstView(it) }
+                    maltekstseksjonVersions = maltekstseksjonService.getMaltekstseksjonVersions(maltekstseksjonId = maltekstseksjonId)
+                        .map {
+                            mapToMaltekstView(
+                                maltekstseksjonVersion = it,
+                            )
+                        }.sortedByDescending { it.created }
                 )
             }
         )
@@ -432,7 +445,7 @@ class TextController(
     @DeleteMapping("/{textId}/draft")
     fun deleteTextDraftVersion(
         @PathVariable("textId") textId: UUID,
-    ) {
+    ): DeletedText {
         logMethodDetails(
             methodName = ::deleteTextDraftVersion.name,
             innloggetIdent = tokenUtil.getIdent(),
@@ -440,9 +453,28 @@ class TextController(
             logger = logger,
         )
 
+        val affectedMaltekstseksjonIdList =
+            textService.getCurrentTextVersion(textId = textId).text.maltekstseksjonVersions
+                .map { it.maltekstseksjon.id }
+                .toSet()
+
         textService.deleteTextDraftVersion(
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+        )
+
+        return DeletedText(
+            maltekstseksjonVersions = affectedMaltekstseksjonIdList.map { maltekstseksjonId ->
+                DeletedText.MaltekstseksjonVersionWithId(
+                    maltekstseksjonId = maltekstseksjonId,
+                    maltekstseksjonVersions = maltekstseksjonService.getMaltekstseksjonVersions(maltekstseksjonId = maltekstseksjonId)
+                        .map {
+                            mapToMaltekstView(
+                                maltekstseksjonVersion = it,
+                            )
+                        }.sortedByDescending { it.created }
+                )
+            }
         )
     }
 

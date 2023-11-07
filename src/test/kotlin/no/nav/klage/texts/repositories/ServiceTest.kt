@@ -6,7 +6,6 @@ import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.Maltekstseksjon
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.Text
-import no.nav.klage.texts.exceptions.TextNotFoundException
 import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.service.PublishService
 import no.nav.klage.texts.service.TextService
@@ -14,7 +13,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
@@ -102,15 +100,13 @@ class ServiceTest {
         assertThat(maltekstseksjonVersions).hasSize(1)
         assertThat(maltekstseksjonVersions.first().texts).hasSize(2)
 
-        textService.deleteOrUnpublishText(
+        textService.unpublishText(
             textId = currentTextID,
             saksbehandlerIdent = "abc"
         )
 
         testEntityManager.flush()
         testEntityManager.clear()
-
-        assertThrows<TextNotFoundException> { textService.getCurrentTextVersion(currentTextID) }
 
         maltekstseksjonVersions = maltekstseksjonVersionRepository.findAll()
         assertThat(maltekstseksjonVersions).hasSize(2)
@@ -127,15 +123,13 @@ class ServiceTest {
         assertThat(maltekstseksjonVersions).hasSize(1)
         assertThat(maltekstseksjonVersions.first().texts).hasSize(1)
 
-        textService.deleteOrUnpublishText(
+        textService.unpublishText(
             textId = currentTextID,
             saksbehandlerIdent = "abc"
         )
 
         testEntityManager.flush()
         testEntityManager.clear()
-
-        assertThrows<TextNotFoundException> { textService.getCurrentTextVersion(currentTextID) }
 
         maltekstseksjonVersions = maltekstseksjonVersionRepository.findAll()
         assertThat(maltekstseksjonVersions).hasSize(1)
@@ -151,15 +145,13 @@ class ServiceTest {
         assertThat(maltekstseksjonVersions.find { !it.published }!!.texts).hasSize(2)
         assertThat(maltekstseksjonVersions.find { it.published }!!.texts).hasSize(2)
 
-        val result = textService.deleteOrUnpublishText(
+        val result = textService.unpublishText(
             textId = currentTextID,
             saksbehandlerIdent = "abc"
         )
 
         testEntityManager.flush()
         testEntityManager.clear()
-
-        assertThrows<TextNotFoundException> { textService.getCurrentTextVersion(currentTextID) }
 
         maltekstseksjonVersions = maltekstseksjonVersionRepository.findAll()
 

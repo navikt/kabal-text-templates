@@ -143,6 +143,7 @@ class ConsumerController(
     private fun mapToConsumerTextView(textVersion: TextVersion): ConsumerTextView =
         ConsumerTextView(
             id = textVersion.text.id,
+            title = textVersion.title,
             textType = textVersion.textType,
             content = if (textVersion.content != null) jsonMapper().readTree(textVersion.content) else null,
             plainText = textVersion.plainText,

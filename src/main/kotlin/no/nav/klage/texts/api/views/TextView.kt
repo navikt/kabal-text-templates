@@ -33,6 +33,7 @@ data class TextView(
 
 data class ConsumerTextView(
     val id: UUID,
+    val title: String,
     val textType: String,
     val content: JsonNode?,
     val plainText: String?,
