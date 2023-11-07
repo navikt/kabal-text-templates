@@ -368,7 +368,7 @@ class MaltekstseksjonController(
                 enhetIdList = searchMaltekstseksjonQueryParams.enhetIdList ?: emptyList(),
                 templateSectionIdList = searchMaltekstseksjonQueryParams.templateSectionIdList ?: emptyList(),
                 ytelseHjemmelIdList = searchMaltekstseksjonQueryParams.ytelseHjemmelIdList ?: emptyList(),
-            )
+            ).sortedByDescending { it.created }
 
         return maltekstseksjonsVersions.map {
             mapToMaltekstView(it)

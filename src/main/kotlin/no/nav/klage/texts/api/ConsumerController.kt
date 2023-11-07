@@ -63,7 +63,7 @@ class ConsumerController(
                 enhetIdList = searchTextQueryParams.enhetIdList ?: emptyList(),
                 templateSectionIdList = searchTextQueryParams.templateSectionIdList ?: emptyList(),
                 ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
-            )
+            ).sortedByDescending { it.created }
 
         return textVersions.map {
             mapToConsumerTextView(it)
@@ -94,7 +94,7 @@ class ConsumerController(
                 enhetIdList = searchMaltekstseksjonQueryParams.enhetIdList ?: emptyList(),
                 templateSectionIdList = searchMaltekstseksjonQueryParams.templateSectionIdList ?: emptyList(),
                 ytelseHjemmelIdList = searchMaltekstseksjonQueryParams.ytelseHjemmelIdList ?: emptyList(),
-            )
+            ).sortedByDescending { it.created }
 
         return maltekstseksjonsVersions.map {
             mapToConsumerMaltekstView(it)

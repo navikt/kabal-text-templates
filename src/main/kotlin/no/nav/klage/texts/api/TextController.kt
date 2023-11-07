@@ -470,7 +470,7 @@ class TextController(
                 enhetIdList = searchTextQueryParams.enhetIdList ?: emptyList(),
                 templateSectionIdList = searchTextQueryParams.templateSectionIdList ?: emptyList(),
                 ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
-            )
+            ).sortedByDescending { it.created }
 
         return textVersions.map {
             mapToTextView(
