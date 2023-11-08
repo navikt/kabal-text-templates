@@ -223,6 +223,8 @@ class TextService(
                 mv.texts.removeIf { it.id == textId }
             }
 
+            textVersionRepository.delete(existingDraft)
+
             //if only draft, delete text also.
             if (textVersions.size == 1) {
                 textRepository.deleteById(textId)
