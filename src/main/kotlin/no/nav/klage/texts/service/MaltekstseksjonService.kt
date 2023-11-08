@@ -123,6 +123,8 @@ class MaltekstseksjonService(
 
         if (possiblePublishedTextVersion != null) {
             possiblePublishedTextVersion.published = false
+        } else {
+            throw ClientErrorException("fant ingen maltekstseksjon å avpublisere")
         }
     }
 
