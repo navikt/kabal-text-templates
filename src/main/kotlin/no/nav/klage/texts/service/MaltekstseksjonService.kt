@@ -112,27 +112,17 @@ class MaltekstseksjonService(
         )
     }
 
-    fun deleteOrUnpublishMaltekstseksjon(
+    fun unpublishMaltekstseksjon(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
     ) {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
-        //unpublish and or delete draft text
-        val possibleDraft =
-            maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(maltekstseksjonId)
         val possiblePublishedTextVersion =
             maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(maltekstseksjonId)
 
-        if (possibleDraft != null) {
-            maltekstseksjonVersionRepository.delete(possibleDraft)
-        }
-
         if (possiblePublishedTextVersion != null) {
             possiblePublishedTextVersion.published = false
-        } else {
-            //If no published version, delete the whole maltekstseksjon.
-            maltekstseksjonRepository.deleteById(maltekstseksjonId)
         }
     }
 
@@ -142,7 +132,13 @@ class MaltekstseksjonService(
             maltekstseksjonId = maltekstseksjonId
         )
         if (existingDraft != null) {
+            val maltekstseksjonVersions = getMaltekstseksjonVersions(maltekstseksjonId = maltekstseksjonId)
+
             maltekstseksjonVersionRepository.delete(existingDraft)
+
+            if (maltekstseksjonVersions.size == 1) {
+                maltekstseksjonRepository.deleteById(maltekstseksjonId)
+            }
         }
     }
 

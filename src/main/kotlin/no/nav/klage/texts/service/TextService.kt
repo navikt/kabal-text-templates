@@ -200,7 +200,7 @@ class TextService(
         if (possiblePublishedTextVersion != null) {
             possiblePublishedTextVersion.published = false
         } else {
-            throw ClientErrorException("fant ingen maltekst at avpublisere")
+            throw ClientErrorException("fant ingen tekst å avpublisere")
         }
 
         return publishedMaltekstseksjonVersionsToReturn +
@@ -239,7 +239,7 @@ class TextService(
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         return textVersionRepository.findByPublishedIsTrueAndTextId(
             textId = textId
-        ) ?: throw ClientErrorException("fant ingen publisert maltekst")
+        ) ?: throw ClientErrorException("fant ingen publisert tekst")
     }
 
     fun getCurrentTextVersion(textId: UUID): TextVersion {
