@@ -91,13 +91,13 @@ class PublishService(
                 textVersionRepository.findByPublishedIsTrueAndTextId(it.id) == null
             }
         ) {
-            throw ClientErrorException("Kan ikke publisere maltekstseksjon fordi det mangler en publisert versjon av en eller flere maltekster.")
+            throw ClientErrorException("kan ikke publisere maltekstseksjon fordi det mangler en publisert versjon av en eller flere maltekster")
         }
     }
 
     private fun validateTextsAreNotEmptyWhenPublishingTogetherWithMaltekstseksjon(maltekstseksjonVersion: MaltekstseksjonVersion) {
         if (maltekstseksjonVersion.texts.isEmpty()) {
-            throw ClientErrorException("Kan ikke publisere maltekstseksjon sammen med maltekstseksjon fordi det mangler maltekster.")
+            throw ClientErrorException("kan ikke publisere maltekstseksjon sammen med tekster fordi det mangler tekster")
         }
     }
 
