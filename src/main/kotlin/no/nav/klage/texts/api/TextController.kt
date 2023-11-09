@@ -1,27 +1,26 @@
 package no.nav.klage.texts.api
 
-import com.fasterxml.jackson.module.kotlin.jsonMapper
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
-import no.nav.klage.texts.domain.Text
+import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
-import no.nav.klage.texts.util.logTextMethodDetails
+import no.nav.klage.texts.util.logMethodDetails
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDateTime
 import java.util.*
 
 @RestController
-@Tag(name = "kabal-text-templates", description = "API for template texts")
-@RequestMapping(value = ["/texts", "/texts/"])
+@Tag(name = "kabal-text-templates", description = "API for text templates")
+@RequestMapping(value = ["/texts"])
 @ProtectedWithClaims(issuer = ISSUER_AAD)
 class TextController(
     private val textService: TextService,
+    private val maltekstseksjonService: MaltekstseksjonService,
     private val tokenUtil: TokenUtil,
 ) {
 
@@ -32,6 +31,55 @@ class TextController(
     }
 
     @Operation(
+        summary = "Get versions for text",
+        description = "Get versions for text"
+    )
+    @GetMapping("/{textId}/versions")
+    fun getTextVersions(
+        @PathVariable("textId") textId: UUID,
+    ): List<TextView> {
+        logMethodDetails(
+            methodName = ::getTextVersions.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = textId,
+            logger = logger,
+        )
+
+        val connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
+
+        return textService.getTextVersions(textId).map {
+            mapToTextView(
+                textVersion = it,
+                connectedMaltekstseksjonIdList = connectedMaltekstseksjonIdList
+            )
+        }
+    }
+
+    @Operation(
+        summary = "Publish text",
+        description = "Publish text using current draft"
+    )
+    @PostMapping("/{textId}/publish")
+    fun publishText(
+        @PathVariable("textId") textId: UUID,
+    ): TextView {
+        logMethodDetails(
+            methodName = ::publishText.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = textId,
+            logger = logger,
+        )
+
+        return mapToTextView(
+            textVersion = textService.publishTextVersion(
+                textId = textId,
+                saksbehandlerIdent = tokenUtil.getIdent(),
+            ),
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
+        )
+    }
+
+    @Operation(
         summary = "Create text",
         description = "Create text"
     )
@@ -39,50 +87,79 @@ class TextController(
     fun createText(
         @RequestBody input: TextInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::createText.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = null,
+            id = null,
             logger = logger,
         )
 
+        val textVersion = textService.createNewText(
+            textInput = input,
+            saksbehandlerIdent = tokenUtil.getIdent(),
+        )
         return mapToTextView(
-            textService.createText(
-                text = input.toDomainModel(),
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            textVersion = textVersion,
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId = textVersion.text.id)
         )
     }
 
     @Operation(
-        summary = "Update text",
-        description = "Update text"
+        summary = "Create text draft",
+        description = "Create text draft, possibly based on existing version"
+    )
+    @PostMapping("/{textId}/draft")
+    fun createDraft(
+        @PathVariable("textId") textId: UUID,
+        @RequestBody input: VersionInput?
+    ): TextView {
+        logMethodDetails(
+            methodName = ::createDraft.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = textId,
+            logger = logger,
+        )
+
+        return mapToTextView(
+            textVersion = textService.createNewDraft(
+                textId = textId,
+                versionInput = input,
+                saksbehandlerIdent = tokenUtil.getIdent(),
+            ),
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
+        )
+    }
+
+    @Operation(
+        summary = "Update textVersion",
+        description = "Update textVersion"
     )
     @PutMapping("/{textId}")
     fun updateText(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: UpdateTextInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateText.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
         return mapToTextView(
-            textService.updateText(
+            textVersion = textService.updateText(
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
                 title = input.title,
                 textType = input.textType,
                 content = if (input.content == null || input.content.isNull) null else input.content,
                 plainText = input.plainText,
-                utfall = input.utfall,
-                enheter = input.enheter,
-                templateSectionList = input.templateSectionList,
-                ytelseHjemmelList = input.ytelseHjemmelList,
-            )
+                utfallIdList = input.utfall,
+                enhetIdList = input.enheter,
+                templateSectionIdList = input.templateSectionList,
+                ytelseHjemmelIdList = input.ytelseHjemmelList,
+            ),
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -95,44 +172,46 @@ class TextController(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: TitleInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateTitle.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
         return mapToTextView(
-            textService.updateTitle(
+            textVersion = textService.updateTitle(
                 input = input.title,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
     @Operation(
-        summary = "Update text type",
-        description = "Update text type"
+        summary = "Update textVersion type",
+        description = "Update textVersion type"
     )
     @PutMapping("/{textId}/texttype")
     fun updateTextType(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: TextTypeInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateTextType.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
         return mapToTextView(
-            textService.updateTextType(
+            textVersion = textService.updateTextType(
                 input = input.textType,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -145,19 +224,20 @@ class TextController(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: ContentInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateContent.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
         return mapToTextView(
-            textService.updateContent(
+            textVersion = textService.updateContent(
                 input = input.content.toString(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -170,19 +250,20 @@ class TextController(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: PlainTextInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updatePlainText.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
         return mapToTextView(
-            textService.updatePlainText(
+            textVersion = textService.updatePlainText(
                 input = input.plainText,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -195,19 +276,20 @@ class TextController(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: SmartEditorVersionInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateSmartEditorVersion.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
         return mapToTextView(
-            textService.updateSmartEditorVersion(
+            textVersion = textService.updateSmartEditorVersion(
                 input = input.version,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -215,24 +297,25 @@ class TextController(
         summary = "Update utfall",
         description = "Update utfall"
     )
-    @PutMapping("/{textId}/utfall")
+    @PutMapping("/{textId}/utfall", "/{textId}/utfall-id-list")
     fun updateUtfall(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: UtfallInput
+        @RequestBody input: UtfallIdListCompatibleInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateUtfall.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
         return mapToTextView(
-            textService.updateUtfall(
-                input = input.utfall,
+            textVersion = textService.updateUtfall(
+                input = input.utfallIdList ?: input.utfall ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -240,24 +323,25 @@ class TextController(
         summary = "Update enheter",
         description = "Update enheter"
     )
-    @PutMapping("/{textId}/enheter")
+    @PutMapping("/{textId}/enheter", "/{textId}/enhet-id-list")
     fun updateEnheter(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: EnheterInput
+        @RequestBody input: EnhetIdListCompatibleInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateEnheter.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
         return mapToTextView(
-            textService.updateEnheter(
-                input = input.enheter,
+            textVersion = textService.updateEnheter(
+                input = input.enheter ?: input.enhetIdList ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -265,24 +349,25 @@ class TextController(
         summary = "Update templateSectionList",
         description = "Update templateSectionList"
     )
-    @PutMapping("/{textId}/templatesectionlist")
+    @PutMapping("/{textId}/templatesectionlist", "/{textId}/template-section-id-list")
     fun updateTemplateSectionList(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: TemplateSectionListInput
+        @RequestBody input: TemplateSectionIdListCompatibleInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateTemplateSectionList.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
         return mapToTextView(
-            textService.updateTemplateSectionList(
-                input = input.templateSectionList,
+            textVersion = textService.updateTemplateSectionList(
+                input = input.templateSectionIdList ?: input.templateSectionList ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
@@ -290,45 +375,106 @@ class TextController(
         summary = "Update ytelseHjemmelList",
         description = "Update ytelseHjemmelList"
     )
-    @PutMapping("/{textId}/ytelsehjemmellist")
+    @PutMapping("/{textId}/ytelsehjemmellist", "/{textId}/ytelse-hjemmel-id-list")
     fun updateYtelseHjemmelList(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: YtelseHjemmelListInput
+        @RequestBody input: YtelseHjemmelIdListCompatibleInput
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::updateYtelseHjemmelList.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
         return mapToTextView(
-            textService.updateYtelseHjemmelList(
-                input = input.ytelseHjemmelList,
+            textVersion = textService.updateYtelseHjemmelList(
+                input = input.ytelseHjemmelIdList ?: input.ytelseHjemmelList ?: emptySet(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            )
+            ),
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 
     @Operation(
-        summary = "Delete text",
-        description = "Delete text"
+        summary = "Unpublish text",
+        description = "Unpublish text"
     )
-    @DeleteMapping("/{textId}")
-    fun deleteText(
+    @PostMapping("/{textId}/unpublish")
+    fun unpublishText(
         @PathVariable("textId") textId: UUID,
-    ) {
-        logTextMethodDetails(
-            methodName = ::deleteText.name,
+    ): DeletedText {
+        logMethodDetails(
+            methodName = ::unpublishText.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
 
-        textService.deleteText(
+        val affectedMaltekstseksjonIdList =
+            textService.getCurrentTextVersion(textId = textId).text.maltekstseksjonVersions
+                .map { it.maltekstseksjon.id }
+                .toSet()
+
+
+        textService.unpublishText(
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+        )
+
+        return DeletedText(
+            maltekstseksjonVersions = affectedMaltekstseksjonIdList.map { maltekstseksjonId ->
+                DeletedText.MaltekstseksjonVersionWithId(
+                    maltekstseksjonId = maltekstseksjonId,
+                    maltekstseksjonVersions = maltekstseksjonService.getMaltekstseksjonVersions(maltekstseksjonId = maltekstseksjonId)
+                        .map {
+                            mapToMaltekstView(
+                                maltekstseksjonVersion = it,
+                            )
+                        }.sortedByDescending { it.created }
+                )
+            }
+        )
+    }
+
+    @Operation(
+        summary = "Delete text draft version",
+        description = "Delete text draft version"
+    )
+    @DeleteMapping("/{textId}/draft")
+    fun deleteTextDraftVersion(
+        @PathVariable("textId") textId: UUID,
+    ): DeletedText {
+        logMethodDetails(
+            methodName = ::deleteTextDraftVersion.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = textId,
+            logger = logger,
+        )
+
+        val affectedMaltekstseksjonIdList =
+            textService.getCurrentTextVersion(textId = textId).text.maltekstseksjonVersions
+                .map { it.maltekstseksjon.id }
+                .toSet()
+
+        textService.deleteTextDraftVersion(
+            textId = textId,
+            saksbehandlerIdent = tokenUtil.getIdent(),
+        )
+
+        return DeletedText(
+            maltekstseksjonVersions = affectedMaltekstseksjonIdList.map { maltekstseksjonId ->
+                DeletedText.MaltekstseksjonVersionWithId(
+                    maltekstseksjonId = maltekstseksjonId,
+                    maltekstseksjonVersions = maltekstseksjonService.getMaltekstseksjonVersions(maltekstseksjonId = maltekstseksjonId)
+                        .map {
+                            mapToMaltekstView(
+                                maltekstseksjonVersion = it,
+                            )
+                        }.sortedByDescending { it.created }
+                )
+            }
         )
     }
 
@@ -338,78 +484,51 @@ class TextController(
     )
     @GetMapping
     fun searchTexts(
-        searchQueryParams: SearchQueryParams
+        searchTextQueryParams: SearchTextQueryParams
     ): List<TextView> {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::searchTexts.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = null,
+            id = null,
             logger = logger,
         )
 
-        logger.debug("searchTexts called with params {}", searchQueryParams)
+        logger.debug("searchTexts called with params {}", searchTextQueryParams)
 
-        val texts = textService.searchTexts(
-            textType = searchQueryParams.textType,
-            utfall = searchQueryParams.utfall ?: emptyList(),
-            enheter = searchQueryParams.enheter ?: emptyList(),
-            templateSectionList = searchQueryParams.templateSectionList ?: emptyList(),
-            ytelseHjemmelList = searchQueryParams.ytelseHjemmelList ?: emptyList(),
-            
-        )
-        return texts.map {
-            mapToTextView(it)
+        val textVersions =
+            textService.searchTextVersion(
+                textType = searchTextQueryParams.textType,
+                utfallIdList = searchTextQueryParams.utfallIdList ?: emptyList(),
+                enhetIdList = searchTextQueryParams.enhetIdList ?: emptyList(),
+                templateSectionIdList = searchTextQueryParams.templateSectionIdList ?: emptyList(),
+                ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
+            ).sortedByDescending { it.created }
+
+        return textVersions.map {
+            mapToTextView(
+                textVersion = it,
+                connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(it.text.id)
+            )
         }
     }
 
     @Operation(
-        summary = "Get text",
-        description = "Get text"
+        summary = "Get current text version",
+        description = "Get current text version"
     )
     @GetMapping("/{textId}")
     fun getText(
         @PathVariable("textId") textId: UUID,
     ): TextView {
-        logTextMethodDetails(
+        logMethodDetails(
             methodName = ::getText.name,
             innloggetIdent = tokenUtil.getIdent(),
-            textId = textId,
+            id = textId,
             logger = logger,
         )
-        return mapToTextView(textService.getText(textId))
-    }
-
-    private fun TextInput.toDomainModel(): Text {
-        val now = LocalDateTime.now()
-        return Text(
-            title = title,
-            textType = textType,
-            content = content?.toString(),
-            plainText = plainText,
-            smartEditorVersion = version,
-            utfall = utfall,
-            enheter = enheter,
-            templateSectionList = templateSectionList,
-            ytelseHjemmelList = ytelseHjemmelList,
-            created = now,
-            modified = now,
+        return mapToTextView(
+            textVersion = textService.getCurrentTextVersion(textId),
+            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
     }
 }
-
-fun mapToTextView(text: Text): TextView =
-    TextView(
-        id = text.id,
-        title = text.title,
-        textType = text.textType,
-        content = if (text.content != null) jsonMapper().readTree(text.content) else null,
-        plainText = text.plainText,
-        version = text.smartEditorVersion,
-        utfall = text.utfall,
-        enheter = text.enheter,
-        templateSectionList = text.templateSectionList,
-        ytelseHjemmelList = text.ytelseHjemmelList,
-        created = text.created,
-        modified = text.modified,
-    )
-

@@ -1,6 +1,7 @@
 package no.nav.klage.texts.config.problem
 
 import no.nav.klage.texts.exceptions.ClientErrorException
+import no.nav.klage.texts.exceptions.MaltekstseksjonNotFoundException
 import no.nav.klage.texts.exceptions.TextNotFoundException
 import no.nav.klage.texts.util.getSecureLogger
 import org.springframework.http.HttpStatus
@@ -21,6 +22,13 @@ class ProblemHandlingControllerAdvice : ResponseEntityExceptionHandler() {
     @ExceptionHandler
     fun handleTextNotFound(
         ex: TextNotFoundException,
+        request: NativeWebRequest
+    ): ProblemDetail =
+        create(HttpStatus.NOT_FOUND, ex)
+
+    @ExceptionHandler
+    fun handleMaltekstseksjonNotFound(
+        ex: MaltekstseksjonNotFoundException,
         request: NativeWebRequest
     ): ProblemDetail =
         create(HttpStatus.NOT_FOUND, ex)

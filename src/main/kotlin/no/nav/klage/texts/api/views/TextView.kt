@@ -6,19 +6,39 @@ import java.util.*
 
 data class TextView(
     val id: UUID,
+
+    val versionId: UUID,
     val title: String,
     val textType: String,
     val content: JsonNode?,
     val plainText: String?,
     val version: Int?,
-    val hjemler: Set<String> = emptySet(),
-    val ytelser: Set<String> = emptySet(),
-    val utfall: Set<String> = emptySet(),
-    val enheter: Set<String> = emptySet(),
-    val sections: Set<String> = emptySet(),
-    val templates: Set<String> = emptySet(),
-    val templateSectionList: Set<String> = emptySet(),
-    val ytelseHjemmelList: Set<String> = emptySet(),
     val created: LocalDateTime,
-    var modified: LocalDateTime,
+    val modified: LocalDateTime,
+    val createdBy: String?,
+
+    val utfallIdList: Set<String>,
+    val enhetIdList: Set<String>,
+    val templateSectionIdList: Set<String>,
+    val ytelseHjemmelIdList: Set<String>,
+
+    val editors: List<EditorView>,
+    val publishedDateTime: LocalDateTime?,
+    val publishedBy: String?,
+    val published: Boolean,
+
+    val draftMaltekstseksjonIdList: List<UUID>,
+    val publishedMaltekstseksjonIdList: List<UUID>
+)
+
+data class ConsumerTextView(
+    val id: UUID,
+    val title: String,
+    val textType: String,
+    val content: JsonNode?,
+    val plainText: String?,
+    val utfallIdList: Set<String>,
+    val enhetIdList: Set<String>,
+    val templateSectionIdList: Set<String>,
+    val ytelseHjemmelIdList: Set<String>,
 )
