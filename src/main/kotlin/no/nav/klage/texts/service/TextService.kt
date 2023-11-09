@@ -216,16 +216,16 @@ class TextService(
         if (existingDraft != null) {
             val textVersions = getTextVersions(textId)
 
-            existingDraft.text.maltekstseksjonVersions.filter { mv ->
-                (mv.publishedDateTime == null)
-            }.forEach { mv ->
-                mv.texts.removeIf { it.id == textId }
-            }
-
             textVersionRepository.delete(existingDraft)
 
-            //if only draft, delete text also.
+            //if only draft, delete text and references to maltekstseksjoner.
             if (textVersions.size == 1) {
+                existingDraft.text.maltekstseksjonVersions.filter { mv ->
+                    (mv.publishedDateTime == null)
+                }.forEach { mv ->
+                    mv.texts.removeIf { it.id == textId }
+                }
+
                 textRepository.deleteById(textId)
             }
 
