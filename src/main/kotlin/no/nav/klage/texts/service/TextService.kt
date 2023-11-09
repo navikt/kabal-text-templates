@@ -47,7 +47,6 @@ class TextService(
     }
 
     fun getTextVersions(textId: UUID): List<TextVersion> {
-        validateIfTextIsUnpublishedOrMissingDraft(textId)
         return textVersionRepository.findByTextId(textId)
             .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }
     }
