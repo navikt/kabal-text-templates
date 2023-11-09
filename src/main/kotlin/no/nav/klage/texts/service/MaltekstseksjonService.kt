@@ -149,7 +149,7 @@ class MaltekstseksjonService(
 
         return maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
             maltekstseksjonId = maltekstseksjonId
-        ) ?: throw ClientErrorException("det finnes ikke hverken utkast eller en publisert versjon")
+        ) ?: throw ClientErrorException("det fins hverken utkast eller publisert versjon")
     }
 
 
@@ -160,7 +160,7 @@ class MaltekstseksjonService(
             maltekstseksjonId = maltekstseksjonId
         ) ?: maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
             maltekstseksjonId = maltekstseksjonId
-        ) ?: throw ClientErrorException("det finnes ikke hverken utkast eller en publisert versjon")
+        ) ?: throw ClientErrorException("det fins hverken utkast eller publisert versjon")
     }
 
     fun updateMaltekstseksjon(

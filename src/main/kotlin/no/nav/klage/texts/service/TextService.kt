@@ -249,7 +249,7 @@ class TextService(
             textId = textId
         ) ?: textVersionRepository.findByPublishedIsTrueAndTextId(
             textId = textId
-        ) ?: throw ClientErrorException("det finnes ikke hverken utkast eller en publisert versjon")
+        ) ?: throw ClientErrorException("det fins hverken utkast eller publisert versjon")
     }
 
     fun updateText(
