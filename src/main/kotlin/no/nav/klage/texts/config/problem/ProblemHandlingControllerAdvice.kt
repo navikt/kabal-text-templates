@@ -27,7 +27,7 @@ class ProblemHandlingControllerAdvice : ResponseEntityExceptionHandler() {
         create(HttpStatus.NOT_FOUND, ex)
 
     @ExceptionHandler
-    fun handleTextNotFound(
+    fun handleMaltekstseksjonNotFound(
         ex: MaltekstseksjonNotFoundException,
         request: NativeWebRequest
     ): ProblemDetail =
