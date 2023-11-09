@@ -441,7 +441,7 @@ class TextService(
         templateSectionIdList: List<String>,
         ytelseHjemmelIdList: List<String>,
     ): List<TextVersion> {
-        var textVersions: List<TextVersion>
+        val textVersions: List<TextVersion>
 
         val millis = measureTimeMillis {
             textVersions = textVersionRepository.findByPublishedIsTrue()

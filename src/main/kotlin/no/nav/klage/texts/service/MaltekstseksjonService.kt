@@ -56,7 +56,6 @@ class MaltekstseksjonService(
     }
 
     fun getMaltekstseksjonVersions(maltekstseksjonId: UUID): List<MaltekstseksjonVersion> {
-        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
         return maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId)
             .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }
     }
