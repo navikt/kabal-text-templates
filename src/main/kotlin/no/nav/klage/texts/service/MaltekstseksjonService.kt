@@ -122,6 +122,7 @@ class MaltekstseksjonService(
 
         if (possiblePublishedTextVersion != null) {
             possiblePublishedTextVersion.published = false
+            possiblePublishedTextVersion.modified = LocalDateTime.now()
         } else {
             throw ClientErrorException("fant ingen maltekstseksjon å avpublisere")
         }

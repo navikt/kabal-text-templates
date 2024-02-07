@@ -198,6 +198,7 @@ class TextService(
         val possiblePublishedTextVersion = textVersionRepository.findByPublishedIsTrueAndTextId(textId)
         if (possiblePublishedTextVersion != null) {
             possiblePublishedTextVersion.published = false
+            possiblePublishedTextVersion.modified = LocalDateTime.now()
         } else {
             throw ClientErrorException("fant ingen tekst å avpublisere")
         }
