@@ -447,7 +447,7 @@ class TextService(
             textVersions = textVersionRepository.findByPublishedIsTrue()
         }
 
-        logger.debug("searchTexts getting all texts took {} millis. Found {} texts", millis, textVersions.size)
+        logger.debug("findByPublishedIsTrue took {} millis. Found {} texts", millis, textVersions.size)
 
         return searchTextService.searchTexts(
             texts = textVersions,
@@ -483,7 +483,7 @@ class TextService(
             texts = drafts + publishedWithNoDrafts
         }
 
-        logger.debug("searchTexts getting all texts took {} millis. Found {} texts", millis, texts.size)
+        logger.debug("combining all published texts and all drafts took {} millis. Found {} texts", millis, texts.size)
 
         return searchTextService.searchTexts(
             texts = texts,

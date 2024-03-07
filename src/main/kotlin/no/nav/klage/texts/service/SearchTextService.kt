@@ -5,6 +5,7 @@ import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.testCompositeValues
 import no.nav.klage.texts.util.testSets
 import org.springframework.stereotype.Service
+import kotlin.system.measureTimeMillis
 
 @Service
 class SearchTextService {
@@ -22,17 +23,67 @@ class SearchTextService {
         templateSectionIdList: List<String>,
         ytelseHjemmelIdList: List<String>,
     ): List<TextVersion> {
+        logger.debug(
+            "running searchTexts with textType {}, utfallIdList {}, enhetIdList {}, templateSectionIdList {}, ytelseHjemmelIdList{}. Number of texts: {}",
+            textType,
+            utfallIdList,
+            enhetIdList,
+            textType,
+            ytelseHjemmelIdList,
+            texts.size
+        )
 
-        return texts.filter { textVersion ->
-            val textTypeCondition = if (textType != null) {
-                textVersion.textType == textType
-            } else true
+        val textVersions: List<TextVersion>
 
-            textTypeCondition &&
-            testSets(utfallIdList, textVersion.utfallIdList) &&
-            testSets(enhetIdList, textVersion.enhetIdList) &&
-            testCompositeValues(templateSectionIdList, textVersion.templateSectionIdList) &&
-            testCompositeValues(ytelseHjemmelIdList, textVersion.ytelseHjemmelIdList)
+        val millis = measureTimeMillis {
+            textVersions = texts.filter { textVersion ->
+                val textTypeCondition = if (textType != null) {
+                    textVersion.textType == textType
+                } else true
+
+                val utfallIdListOutcome: Boolean
+                val enhetIdListOutcome: Boolean
+                val templateSectionOutcome: Boolean
+                val ytelseHjemmelOutcome: Boolean
+
+                var innerMillis = measureTimeMillis {
+                    utfallIdListOutcome = testSets(utfallIdList, textVersion.utfallIdList)
+                }
+
+                logger.debug("utfallIdListOutcome: {}", innerMillis)
+
+                innerMillis = measureTimeMillis {
+                    enhetIdListOutcome = testSets(enhetIdList, textVersion.enhetIdList)
+                }
+
+                logger.debug("enhetIdListOutcome: {}", innerMillis)
+
+                innerMillis = measureTimeMillis {
+                    templateSectionOutcome = testCompositeValues(templateSectionIdList, textVersion.templateSectionIdList)
+                }
+
+                logger.debug("templateSectionOutcome: {}", innerMillis)
+
+                innerMillis = measureTimeMillis {
+                    ytelseHjemmelOutcome = testCompositeValues(ytelseHjemmelIdList, textVersion.ytelseHjemmelIdList)
+                }
+
+                logger.debug("ytelseHjemmelOutcome: {}", innerMillis)
+
+                textTypeCondition &&
+                        utfallIdListOutcome &&
+                        enhetIdListOutcome &&
+                        templateSectionOutcome &&
+                        ytelseHjemmelOutcome
+//                        testSets(utfallIdList, textVersion.utfallIdList) &&
+//                        testSets(enhetIdList, textVersion.enhetIdList) &&
+//                        testCompositeValues(templateSectionIdList, textVersion.templateSectionIdList) &&
+//                        testCompositeValues(ytelseHjemmelIdList, textVersion.ytelseHjemmelIdList)
+            }
         }
+
+        logger.debug("textfiltering took {} millis. Found {} texts", millis, textVersions.size)
+
+        return texts
     }
 }
