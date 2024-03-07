@@ -84,6 +84,6 @@ class SearchTextService {
 
         logger.debug("textfiltering took {} millis. Found {} texts", millis, textVersions.size)
 
-        return texts
+        return textVersions
     }
 }
