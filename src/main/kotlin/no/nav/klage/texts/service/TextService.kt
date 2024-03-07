@@ -510,6 +510,7 @@ class TextService(
             )
         }
 
+        if (outcome.first.isNotEmpty() || outcome.second.isNotEmpty())
         logger.debug("getConnectedMaltekstseksjoner took {} millis. First size: {}, second size: {}", millis, outcome.first.size, outcome.second.size)
 
         return outcome
