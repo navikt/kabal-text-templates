@@ -34,18 +34,57 @@ class TextVersionRepositoryTest {
 
     @Test
     fun `add textVersion works`() {
+        val text = getText()
+        val textVersion = getUnpublishedTextVersion(text)
+
+        textVersionRepository.save(textVersion)
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
+        val foundText = textVersionRepository.findById(textVersion.id).get()
+        assertThat(foundText).isEqualTo(textVersion)
+    }
+
+    @Test
+    fun `findByPublishedDateTimeIsNull works`() {
+        val text = getText()
+        val text2 = getText()
+        val unpublishedTextVersion1 = getUnpublishedTextVersion(text)
+        val unpublishedTextVersion2 = getUnpublishedTextVersion(text2)
+
+        textVersionRepository.save(unpublishedTextVersion1)
+        textVersionRepository.save(unpublishedTextVersion2)
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
+        val foundUnpublishedTextVersions = textVersionRepository.findByPublishedDateTimeIsNull()
+        assertThat(foundUnpublishedTextVersions.size).isEqualTo(2)
+    }
+
+    @Test
+    fun `findByPublishedIsTrue works`() {
+        val text = getText()
+        val text2 = getText()
+        val publishedTextVersion1 = getPublishedTextVersion(text)
+        val publishedTextVersion2 = getPublishedTextVersion(text2)
+
+        textVersionRepository.save(publishedTextVersion1)
+        textVersionRepository.save(publishedTextVersion2)
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
+        val foundPublishedTextVersions = textVersionRepository.findByPublishedIsTrue()
+        assertThat(foundPublishedTextVersions.size).isEqualTo(2)
+    }
+
+    private fun getUnpublishedTextVersion(
+        text: Text,
+    ): TextVersion {
         val now = LocalDateTime.now()
-
-        val text = testEntityManager.persist(
-            Text(
-                created = now,
-                modified = now,
-                maltekstseksjonVersions = mutableListOf(),
-                createdBy = "abc",
-            )
-        )
-
-        val textVersion = TextVersion(
+        return TextVersion(
             title = "title",
             textType = "type",
             smartEditorVersion = 1,
@@ -69,14 +108,48 @@ class TextVersionRepositoryTest {
             created = now,
             modified = now,
         )
-
-        textVersionRepository.save(textVersion)
-
-        testEntityManager.flush()
-        testEntityManager.clear()
-
-        val foundText = textVersionRepository.findById(textVersion.id).get()
-        assertThat(foundText).isEqualTo(textVersion)
     }
 
+    private fun getPublishedTextVersion(
+        text: Text,
+    ): TextVersion {
+        val now = LocalDateTime.now()
+        return TextVersion(
+            title = "title",
+            textType = "type",
+            smartEditorVersion = 1,
+            content = "{}",
+            plainText = null,
+            publishedDateTime = null,
+            publishedBy = "ident",
+            published = true,
+            text = text,
+            utfallIdList = setOf("1"),
+            enhetIdList = setOf("1"),
+            templateSectionIdList = setOf("1"),
+            ytelseHjemmelIdList = setOf("1"),
+            editors = mutableSetOf(
+                Editor(
+                    navIdent = "saksbehandlerIdent",
+                    created = now,
+                    modified = now,
+                )
+            ),
+            created = now,
+            modified = now,
+        )
+    }
+
+    private fun getText(): Text {
+        val now = LocalDateTime.now()
+        val text = testEntityManager.persist(
+            Text(
+                created = now,
+                modified = now,
+                maltekstseksjonVersions = mutableListOf(),
+                createdBy = "abc",
+            )
+        )
+        return text
+    }
 }
