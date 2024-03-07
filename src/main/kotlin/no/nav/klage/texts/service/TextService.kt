@@ -503,15 +503,17 @@ class TextService(
         textVersionRepository.saveAll(textVersions)
 
     fun getConnectedMaltekstseksjoner(textId: UUID): Pair<List<UUID>, List<UUID>> {
-        val outcome: Pair<List<UUID>, List<UUID>>
-        val millis = measureTimeMillis {
-            outcome = maltekstseksjonVersionRepository.findConnectedMaltekstseksjonPublishedIdList(textId) to maltekstseksjonVersionRepository.findConnectedMaltekstseksjonDraftsIdList(
-                textId
+        val outcome: Pair<List<UUID>, List<UUID>> = maltekstseksjonVersionRepository.findConnectedMaltekstseksjonPublishedIdList(textId) to maltekstseksjonVersionRepository.findConnectedMaltekstseksjonDraftsIdList(
+            textId
+        )
+
+        if (outcome.first.isNotEmpty() || outcome.second.isNotEmpty()) {
+            logger.debug(
+                "getConnectedMaltekstseksjoner got results. First size: {}, second size: {}",
+                outcome.first.size,
+                outcome.second.size
             )
         }
-
-        if (outcome.first.isNotEmpty() || outcome.second.isNotEmpty())
-        logger.debug("getConnectedMaltekstseksjoner took {} millis. First size: {}, second size: {}", millis, outcome.first.size, outcome.second.size)
 
         return outcome
     }
