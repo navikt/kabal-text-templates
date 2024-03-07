@@ -41,44 +41,11 @@ class SearchTextService {
                     textVersion.textType == textType
                 } else true
 
-                val utfallIdListOutcome: Boolean
-                val enhetIdListOutcome: Boolean
-                val templateSectionOutcome: Boolean
-                val ytelseHjemmelOutcome: Boolean
-
-                var innerMillis = measureTimeMillis {
-                    utfallIdListOutcome = testSets(utfallIdList, textVersion.utfallIdList)
-                }
-
-                logger.debug("utfallIdListOutcome: {}", innerMillis)
-
-                innerMillis = measureTimeMillis {
-                    enhetIdListOutcome = testSets(enhetIdList, textVersion.enhetIdList)
-                }
-
-                logger.debug("enhetIdListOutcome: {}", innerMillis)
-
-                innerMillis = measureTimeMillis {
-                    templateSectionOutcome = testCompositeValues(templateSectionIdList, textVersion.templateSectionIdList)
-                }
-
-                logger.debug("templateSectionOutcome: {}", innerMillis)
-
-                innerMillis = measureTimeMillis {
-                    ytelseHjemmelOutcome = testCompositeValues(ytelseHjemmelIdList, textVersion.ytelseHjemmelIdList)
-                }
-
-                logger.debug("ytelseHjemmelOutcome: {}", innerMillis)
-
                 textTypeCondition &&
-                        utfallIdListOutcome &&
-                        enhetIdListOutcome &&
-                        templateSectionOutcome &&
-                        ytelseHjemmelOutcome
-//                        testSets(utfallIdList, textVersion.utfallIdList) &&
-//                        testSets(enhetIdList, textVersion.enhetIdList) &&
-//                        testCompositeValues(templateSectionIdList, textVersion.templateSectionIdList) &&
-//                        testCompositeValues(ytelseHjemmelIdList, textVersion.ytelseHjemmelIdList)
+                        testSets(utfallIdList, textVersion.utfallIdList) &&
+                        testSets(enhetIdList, textVersion.enhetIdList) &&
+                        testCompositeValues(templateSectionIdList, textVersion.templateSectionIdList) &&
+                        testCompositeValues(ytelseHjemmelIdList, textVersion.ytelseHjemmelIdList)
             }
         }
 
