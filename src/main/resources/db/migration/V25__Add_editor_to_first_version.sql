@@ -5,7 +5,7 @@ FROM klage.text_version tv
 WHERE ve.text_version_id IS NULL;
 
 INSERT INTO klage.version_editor (id, nav_ident, text_version_id, created, modified, maltekstseksjon_version_id)
-SELECT gen_random_uuid(), 'SYSTEMBRUKER', mv.id, mv.created, mv.modified, NULL
+SELECT gen_random_uuid(), 'SYSTEMBRUKER', NULL, mv.created, mv.modified, mv.id
 FROM klage.maltekstseksjon_version mv
-         LEFT JOIN klage.version_editor ve ON mv.id = ve.text_version_id
-WHERE ve.text_version_id IS NULL;
+         LEFT JOIN klage.version_editor ve ON mv.id = ve.maltekstseksjon_version_id
+WHERE ve.maltekstseksjon_version_id IS NULL;
