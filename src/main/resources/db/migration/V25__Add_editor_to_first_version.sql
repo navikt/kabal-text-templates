@@ -9,3 +9,13 @@ SELECT gen_random_uuid(), 'SYSTEMBRUKER', NULL, mv.created, mv.modified, mv.id
 FROM klage.maltekstseksjon_version mv
          LEFT JOIN klage.version_editor ve ON mv.id = ve.maltekstseksjon_version_id
 WHERE ve.maltekstseksjon_version_id IS NULL;
+
+UPDATE klage.text_version
+SET published_by = 'SYSTEMBRUKER'
+WHERE published_by IS NULL
+  AND published IS true;
+
+UPDATE klage.maltekstseksjon_version
+SET published_by = 'SYSTEMBRUKER'
+WHERE published_by IS NULL
+  AND published IS true;
