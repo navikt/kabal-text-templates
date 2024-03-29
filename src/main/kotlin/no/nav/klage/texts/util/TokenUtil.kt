@@ -10,7 +10,7 @@ class TokenUtil(
 ) {
 
     fun getIdent(): String =
-        tokenValidationContextHolder.tokenValidationContext.getJwtToken(SecurityConfiguration.ISSUER_AAD)
-            .jwtTokenClaims?.get("NAVident")?.toString()
+        tokenValidationContextHolder.getTokenValidationContext().getJwtToken(SecurityConfiguration.ISSUER_AAD)
+            ?.jwtTokenClaims?.get("NAVident")?.toString()
             ?: throw RuntimeException("Ident not found in token")
 }
