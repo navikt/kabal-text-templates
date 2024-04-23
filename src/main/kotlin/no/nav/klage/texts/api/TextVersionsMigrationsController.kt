@@ -12,7 +12,6 @@ import no.nav.klage.texts.util.getSecureLogger
 import no.nav.klage.texts.util.logMethodDetails
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.web.bind.annotation.*
-import java.time.LocalDateTime
 import java.util.*
 
 @RestController
@@ -66,32 +65,33 @@ class TextVersionsMigrationsController(
             id = null,
             logger = logger,
         )
+        TODO()
 
-        val updatedTexts = textService.getTextVersionsById(input.map { requireNotNull(it.id) }).map { textVersion ->
-
-            val currentTextInput = input.find { it.id == textVersion.id } ?: error("No matching input for id ${textVersion.id}")
-
-            textVersion.apply {
-                title = currentTextInput.title
-                textType = currentTextInput.textType
-                content = currentTextInput.content.toString()
-                plainText = currentTextInput.plainText
-                smartEditorVersion = currentTextInput.version
-                utfallIdList = currentTextInput.utfall
-                enhetIdList = currentTextInput.enheter
-                templateSectionIdList = currentTextInput.templateSectionList
-                ytelseHjemmelIdList = currentTextInput.ytelseHjemmelList
-
-                modified = LocalDateTime.now()
-            }
-        }
-
-        return textService.updateAll(updatedTexts).map {
-            mapToTextView(
-                textVersion = it,
-                connectedMaltekstseksjonIdList = emptyList<UUID>() to emptyList<UUID>()
-            )
-        }
+//        val updatedTexts = textService.getTextVersionsById(input.map { requireNotNull(it.id) }).map { textVersion ->
+//
+//            val currentTextInput = input.find { it.id == textVersion.id } ?: error("No matching input for id ${textVersion.id}")
+//
+//            textVersion.apply {
+//                title = currentTextInput.title
+//                textType = currentTextInput.textType
+//                content = currentTextInput.content.toString()
+//                plainText = currentTextInput.plainText
+//                smartEditorVersion = currentTextInput.version
+//                utfallIdList = currentTextInput.utfall
+//                enhetIdList = currentTextInput.enheter
+//                templateSectionIdList = currentTextInput.templateSectionList
+//                ytelseHjemmelIdList = currentTextInput.ytelseHjemmelList
+//
+//                modified = LocalDateTime.now()
+//            }
+//        }
+//
+//        return textService.updateAll(updatedTexts).map {
+//            mapToTextView(
+//                textVersion = it,
+//                connectedMaltekstseksjonIdList = emptyList<UUID>() to emptyList<UUID>()
+//            )
+//        }
     }
 }
 

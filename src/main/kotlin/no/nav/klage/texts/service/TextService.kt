@@ -1,6 +1,6 @@
 package no.nav.klage.texts.service
 
-import com.fasterxml.jackson.databind.JsonNode
+import no.nav.klage.texts.api.views.Language
 import no.nav.klage.texts.api.views.TextInput
 import no.nav.klage.texts.api.views.VersionInput
 import no.nav.klage.texts.domain.Editor
@@ -14,7 +14,6 @@ import no.nav.klage.texts.repositories.TextRepository
 import no.nav.klage.texts.repositories.TextVersionRepository
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
-import no.nav.klage.texts.util.updateEditors
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -70,18 +69,18 @@ class TextService(
             TextVersion(
                 title = textInput.title,
                 textType = textInput.textType,
-                content = textInput.content?.toString(),
-                plainText = textInput.plainText,
+                richTextNN = textInput.richTextNN?.toString(),
+                richTextNB = textInput.richTextNB?.toString(),
+                richTextUntranslated = textInput.richTextUntranslated?.toString(),
+                plainTextNN = textInput.plainTextNN,
+                plainTextNB = textInput.plainTextNB,
                 smartEditorVersion = textInput.version,
-                utfallIdList = textInput.utfallIdList ?: textInput.utfall,
-                enhetIdList = textInput.enhetIdList ?: textInput.enheter,
-                templateSectionIdList = textInput.templateSectionIdList ?: textInput.templateSectionList,
-                ytelseHjemmelIdList = textInput.ytelseHjemmelIdList ?: textInput.ytelseHjemmelList,
+                enhetIdList = textInput.enhetIdList ?: emptySet(),
                 editors = mutableSetOf(
                     Editor(
                         navIdent = saksbehandlerIdent,
                         created = now,
-                        modified = now,
+                        changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
                     )
                 ),
                 text = text,
@@ -252,44 +251,6 @@ class TextService(
         ) ?: throw ClientErrorException("det fins hverken utkast eller publisert versjon")
     }
 
-    fun updateText(
-        textId: UUID,
-        saksbehandlerIdent: String,
-        title: String,
-        textType: String,
-        content: JsonNode?,
-        plainText: String?,
-        utfallIdList: Set<String>,
-        enhetIdList: Set<String>,
-        templateSectionIdList: Set<String>,
-        ytelseHjemmelIdList: Set<String>,
-    ): TextVersion {
-        validateIfTextIsUnpublishedOrMissingDraft(textId)
-        if (content != null && plainText != null) {
-            throw ClientErrorException("Kun 'content' eller 'plainText' kan sendes inn. Ikke begge samtidig.")
-        }
-
-        val textVersion = getCurrentDraft(textId)
-
-        textVersion.apply {
-            this.title = title
-            this.textType = textType
-            this.content = content.toString()
-            this.plainText = plainText
-            this.utfallIdList = utfallIdList
-            this.enhetIdList = enhetIdList
-            this.templateSectionIdList = templateSectionIdList
-            this.ytelseHjemmelIdList = ytelseHjemmelIdList
-            updateEditors(
-                existingEditors = this.editors,
-                newEditorNavIdent = saksbehandlerIdent
-            )
-            this.modified = LocalDateTime.now()
-        }
-
-        return textVersion
-    }
-
     fun updateTitle(
         input: String,
         textId: UUID,
@@ -299,10 +260,11 @@ class TextService(
         val textVersion = getCurrentDraft(textId)
         textVersion.title = input
         textVersion.modified = LocalDateTime.now()
-        updateEditors(
-            existingEditors = textVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent
+        textVersion.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            changeType = Editor.ChangeType.TEXT_TITLE,
         )
+
         return textVersion
     }
 
@@ -315,9 +277,9 @@ class TextService(
         val textVersion = getCurrentDraft(textId)
         textVersion.textType = input
         textVersion.modified = LocalDateTime.now()
-        updateEditors(
-            existingEditors = textVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent
+        textVersion.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            changeType = Editor.ChangeType.TEXT_TYPE,
         )
         return textVersion
     }
@@ -331,25 +293,41 @@ class TextService(
         val textVersion = getCurrentDraft(textId)
         textVersion.smartEditorVersion = input
         textVersion.modified = LocalDateTime.now()
-        updateEditors(
-            existingEditors = textVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent
+        textVersion.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            changeType = Editor.ChangeType.SMART_EDITOR_VERSION,
         )
         return textVersion
     }
 
-    fun updateContent(
+    fun updateRichText(
         input: String,
         textId: UUID,
         saksbehandlerIdent: String,
+        language: Language,
     ): TextVersion {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
-        textVersion.content = input
+        val changeType: Editor.ChangeType
+
+        when(language) {
+            Language.NB -> {
+                textVersion.richTextNB = input
+                changeType = Editor.ChangeType.RICH_TEXT_NB
+            }
+            Language.NN -> {
+                textVersion.richTextNN = input
+                changeType = Editor.ChangeType.RICH_TEXT_NN
+            }
+            Language.UNTRANSLATED -> {
+                textVersion.richTextUntranslated = input
+                changeType = Editor.ChangeType.RICH_TEXT_UNTRANSLATED
+            }
+        }
         textVersion.modified = LocalDateTime.now()
-        updateEditors(
-            existingEditors = textVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent
+        textVersion.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            changeType = changeType,
         )
         return textVersion
     }
@@ -358,14 +336,26 @@ class TextService(
         input: String,
         textId: UUID,
         saksbehandlerIdent: String,
+        language: Language,
     ): TextVersion {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
-        textVersion.plainText = input
+        val changeType: Editor.ChangeType
+        when(language) {
+            Language.NB -> {
+                textVersion.plainTextNB = input
+                changeType = Editor.ChangeType.PLAIN_TEXT_NB
+            }
+            Language.NN -> {
+                textVersion.plainTextNN = input
+                changeType = Editor.ChangeType.PLAIN_TEXT_NN
+            }
+            else -> throw ClientErrorException("Ugyldig språk: $language")
+        }
         textVersion.modified = LocalDateTime.now()
-        updateEditors(
-            existingEditors = textVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent
+        textVersion.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            changeType = changeType,
         )
         return textVersion
     }
@@ -379,25 +369,9 @@ class TextService(
         val textVersion = getCurrentDraft(textId)
         textVersion.utfallIdList = input
         textVersion.modified = LocalDateTime.now()
-        updateEditors(
-            existingEditors = textVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent
-        )
-        return textVersion
-    }
-
-    fun updateEnheter(
-        input: Set<String>,
-        textId: UUID,
-        saksbehandlerIdent: String,
-    ): TextVersion {
-        validateIfTextIsUnpublishedOrMissingDraft(textId)
-        val textVersion = getCurrentDraft(textId)
-        textVersion.enhetIdList = input
-        textVersion.modified = LocalDateTime.now()
-        updateEditors(
-            existingEditors = textVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent
+        textVersion.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            changeType = Editor.ChangeType.TEXT_UTFALL,
         )
         return textVersion
     }
@@ -411,9 +385,9 @@ class TextService(
         val textVersion = getCurrentDraft(textId)
         textVersion.templateSectionIdList = input
         textVersion.modified = LocalDateTime.now()
-        updateEditors(
-            existingEditors = textVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent
+        textVersion.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            changeType = Editor.ChangeType.TEXT_SECTIONS,
         )
         return textVersion
     }
@@ -427,9 +401,25 @@ class TextService(
         val textVersion = getCurrentDraft(textId)
         textVersion.ytelseHjemmelIdList = input
         textVersion.modified = LocalDateTime.now()
-        updateEditors(
-            existingEditors = textVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent
+        textVersion.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            changeType = Editor.ChangeType.TEXT_YTELSE_HJEMMEL,
+        )
+        return textVersion
+    }
+
+    fun updateEnheter(
+        input: Set<String>,
+        textId: UUID,
+        saksbehandlerIdent: String,
+    ): TextVersion {
+        validateIfTextIsUnpublishedOrMissingDraft(textId)
+        val textVersion = getCurrentDraft(textId)
+        textVersion.enhetIdList = input
+        textVersion.modified = LocalDateTime.now()
+        textVersion.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            changeType = Editor.ChangeType.TEXT_ENHETER,
         )
         return textVersion
     }

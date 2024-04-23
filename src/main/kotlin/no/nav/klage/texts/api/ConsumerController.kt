@@ -3,10 +3,7 @@ package no.nav.klage.texts.api
 import com.fasterxml.jackson.module.kotlin.jsonMapper
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import no.nav.klage.texts.api.views.ConsumerMaltekstseksjonView
-import no.nav.klage.texts.api.views.ConsumerTextView
-import no.nav.klage.texts.api.views.SearchMaltekstseksjonQueryParams
-import no.nav.klage.texts.api.views.SearchTextQueryParams
+import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
@@ -43,8 +40,9 @@ class ConsumerController(
         summary = "Search texts",
         description = "Search texts"
     )
-    @GetMapping("/texts")
+    @GetMapping("/texts/{language}")
     fun searchTexts(
+        @PathVariable("language") language: Language,
         searchTextQueryParams: SearchTextQueryParams
     ): List<ConsumerTextView> {
         logMethodDetails(
@@ -66,7 +64,10 @@ class ConsumerController(
             ).sortedByDescending { it.created }
 
         return textVersions.map {
-            mapToConsumerTextView(it)
+            mapToConsumerTextView(
+                textVersion = it,
+                language = language,
+            )
         }
     }
 
@@ -105,9 +106,10 @@ class ConsumerController(
         summary = "Get published maltekstseksjon texts",
         description = "Get published maltekstseksjon texts"
     )
-    @GetMapping("/maltekstseksjoner/{maltekstseksjonId}/texts")
+    @GetMapping("/maltekstseksjoner/{maltekstseksjonId}/texts/{language}")
     fun getMaltekstseksjonTexts(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
+        @PathVariable("language") language: Language,
     ): List<ConsumerTextView> {
         logMethodDetails(
             methodName = ::getMaltekstseksjonTexts.name,
@@ -117,7 +119,10 @@ class ConsumerController(
         )
         return maltekstseksjonService.getPublishedMaltekstseksjonVersion(maltekstseksjonId).texts.map {
             val textVersion = textService.getPublishedTextVersion(it.id)
-            mapToConsumerTextView(textVersion)
+            mapToConsumerTextView(
+                textVersion = textVersion,
+                language = language,
+            )
         }
     }
 
@@ -125,9 +130,10 @@ class ConsumerController(
         summary = "Get published text version",
         description = "Get published text version"
     )
-    @GetMapping("/texts/{textId}")
+    @GetMapping("/texts/{textId}/{language}")
     fun getText(
         @PathVariable("textId") textId: UUID,
+        @PathVariable("language") language: Language,
     ): ConsumerTextView {
         logMethodDetails(
             methodName = ::getText.name,
@@ -137,20 +143,25 @@ class ConsumerController(
         )
         return mapToConsumerTextView(
             textVersion = textService.getPublishedTextVersion(textId),
+            language = language,
         )
     }
 
-    private fun mapToConsumerTextView(textVersion: TextVersion): ConsumerTextView =
+    private fun mapToConsumerTextView(textVersion: TextVersion, language: Language): ConsumerTextView =
         ConsumerTextView(
             id = textVersion.text.id,
             title = textVersion.title,
             textType = textVersion.textType,
-            content = if (textVersion.content != null) jsonMapper().readTree(textVersion.content) else null,
-            plainText = textVersion.plainText,
+            richText = when (language) {
+                Language.NN -> jsonMapper().readTree(textVersion.richTextNN)
+                Language.NB -> jsonMapper().readTree(textVersion.richTextNB)
+                Language.UNTRANSLATED -> jsonMapper().readTree(textVersion.richTextUntranslated)
+            },
             utfallIdList = textVersion.utfallIdList,
             enhetIdList = textVersion.enhetIdList,
             templateSectionIdList = textVersion.templateSectionIdList,
             ytelseHjemmelIdList = textVersion.ytelseHjemmelIdList,
+            language = language,
         )
 
     private fun mapToConsumerMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): ConsumerMaltekstseksjonView =

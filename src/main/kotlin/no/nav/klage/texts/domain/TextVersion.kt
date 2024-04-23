@@ -13,10 +13,16 @@ class TextVersion(
     var title: String,
     @Column(name = "text_type")
     var textType: String,
-    @Column(name = "content")
-    var content: String?,
-    @Column(name = "plain_text")
-    var plainText: String?,
+    @Column(name = "rich_text_nn")
+    var richTextNN: String?,
+    @Column(name = "rich_text_nb")
+    var richTextNB: String?,
+    @Column(name = "rich_text_untranslated")
+    var richTextUntranslated: String?,
+    @Column(name = "plain_text_nn")
+    var plainTextNN: String?,
+    @Column(name = "plain_text_nb")
+    var plainTextNB: String?,
     @Column(name = "smarteditor_version")
     var smartEditorVersion: Int?,
 
@@ -67,14 +73,14 @@ class TextVersion(
         return TextVersion(
             title = title,
             textType = textType,
-            content = content,
-            plainText = plainText,
+            richTextNN = richTextNN,
+            richTextNB = richTextNB,
+            richTextUntranslated = richTextUntranslated,
+            plainTextNN = plainTextNN,
+            plainTextNB = plainTextNB,
             smartEditorVersion = smartEditorVersion,
             text = text,
-            utfallIdList = utfallIdList,
             enhetIdList = enhetIdList,
-            templateSectionIdList = templateSectionIdList,
-            ytelseHjemmelIdList = ytelseHjemmelIdList,
             publishedDateTime = null,
             published = false,
             publishedBy = null,
@@ -87,14 +93,14 @@ class TextVersion(
         val now = LocalDateTime.now()
         title = source.title
         textType = source.textType
-        content = source.content
-        plainText = source.plainText
+        richTextNN = source.richTextNN
+        richTextNB = source.richTextNB
+        richTextUntranslated = source.richTextUntranslated
+        plainTextNN = source.plainTextNN
+        plainTextNB = source.plainTextNB
         smartEditorVersion = source.smartEditorVersion
         text = source.text
-        utfallIdList = source.utfallIdList
         enhetIdList = source.enhetIdList
-        templateSectionIdList = source.templateSectionIdList
-        ytelseHjemmelIdList = source.ytelseHjemmelIdList
         publishedDateTime = null
         published = false
         publishedBy = null
@@ -111,15 +117,19 @@ class TextVersion(
         if (id != other.id) return false
         if (title != other.title) return false
         if (textType != other.textType) return false
-        if (content != other.content) return false
-        if (plainText != other.plainText) return false
+        if (richTextNN != other.richTextNN) return false
+        if (richTextNB != other.richTextNB) return false
+        if (richTextUntranslated != other.richTextUntranslated) return false
+        if (plainTextNN != other.plainTextNN) return false
+        if (plainTextNB != other.plainTextNB) return false
         if (smartEditorVersion != other.smartEditorVersion) return false
-        if (text != other.text) return false
         if (utfallIdList != other.utfallIdList) return false
         if (enhetIdList != other.enhetIdList) return false
         if (templateSectionIdList != other.templateSectionIdList) return false
         if (ytelseHjemmelIdList != other.ytelseHjemmelIdList) return false
         if (editors != other.editors) return false
+        if (text != other.text) return false
+        if (publishedDateTime != other.publishedDateTime) return false
         if (publishedBy != other.publishedBy) return false
         if (published != other.published) return false
 
@@ -130,21 +140,26 @@ class TextVersion(
         var result = id.hashCode()
         result = 31 * result + title.hashCode()
         result = 31 * result + textType.hashCode()
-        result = 31 * result + (content?.hashCode() ?: 0)
-        result = 31 * result + (plainText?.hashCode() ?: 0)
+        result = 31 * result + (richTextNN?.hashCode() ?: 0)
+        result = 31 * result + (richTextNB?.hashCode() ?: 0)
+        result = 31 * result + (richTextUntranslated?.hashCode() ?: 0)
+        result = 31 * result + (plainTextNN?.hashCode() ?: 0)
+        result = 31 * result + (plainTextNB?.hashCode() ?: 0)
         result = 31 * result + (smartEditorVersion ?: 0)
-        result = 31 * result + text.hashCode()
         result = 31 * result + utfallIdList.hashCode()
         result = 31 * result + enhetIdList.hashCode()
         result = 31 * result + templateSectionIdList.hashCode()
         result = 31 * result + ytelseHjemmelIdList.hashCode()
         result = 31 * result + editors.hashCode()
+        result = 31 * result + text.hashCode()
+        result = 31 * result + (publishedDateTime?.hashCode() ?: 0)
         result = 31 * result + (publishedBy?.hashCode() ?: 0)
         result = 31 * result + published.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "TextVersion(id=$id, title='$title', textType='$textType', content=$content, plainText=$plainText, smartEditorVersion=$smartEditorVersion, utfallIdList=$utfallIdList, enhetIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, editors=$editors, text=$text, publishedDateTime=$publishedDateTime, publishedBy=$publishedBy, published=$published, created=$created, modified=$modified)"
+        return "TextVersion(id=$id, title='$title', textType='$textType', richTextNN=$richTextNN, richTextNB=$richTextNB, richTextUntranslated=$richTextUntranslated, plainTextNN=$plainTextNN, plainTextNB=$plainTextNB, smartEditorVersion=$smartEditorVersion, utfallIdList=$utfallIdList, enhetIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, editors=$editors, text=$text, publishedDateTime=$publishedDateTime, publishedBy=$publishedBy, published=$published, created=$created, modified=$modified)"
     }
+
 }

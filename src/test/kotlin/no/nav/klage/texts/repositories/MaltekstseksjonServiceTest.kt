@@ -94,7 +94,7 @@ class MaltekstseksjonServiceTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = now,
-                    modified = now,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON,
                 )
             ),
             created = now,

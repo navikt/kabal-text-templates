@@ -1,9 +1,6 @@
 package no.nav.klage.texts.domain
 
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.util.*
 
@@ -14,10 +11,11 @@ class Editor(
     val id: UUID = UUID.randomUUID(),
     @Column(name = "nav_ident")
     val navIdent: String,
+    @Enumerated(EnumType.STRING)
+    @Column(name = "change_type")
+    val changeType: ChangeType,
     @Column(name = "created")
-    var created: LocalDateTime,
-    @Column(name = "modified")
-    var modified: LocalDateTime,
+    var created: LocalDateTime = LocalDateTime.now(),
 ) {
 
     override fun equals(other: Any?): Boolean {
@@ -39,7 +37,32 @@ class Editor(
     }
 
     override fun toString(): String {
-        return "Editor(id=$id, navIdent='$navIdent', created=$created, modified=$modified)"
+        return "Editor(id=$id, navIdent='$navIdent', changeType=$changeType, created=$created)"
+    }
+
+    enum class ChangeType {
+        RICH_TEXT_NB,
+        RICH_TEXT_NN,
+        RICH_TEXT_UNTRANSLATED,
+        PLAIN_TEXT_NB,
+        PLAIN_TEXT_NN,
+        TEXT_TYPE,
+        MALTEKSTSEKSJON,
+        MALTEKSTSEKSJON_TITLE,
+        MALTEKSTSEKSJON_TEXTS,
+        MALTEKSTSEKSJON_VERSION_CREATED,
+        TEXT_VERSION_CREATED,
+        UNKNOWN,
+        TEXT_TITLE,
+        TEXT_UTFALL,
+        TEXT_SECTIONS,
+        TEXT_YTELSE_HJEMMEL,
+        SMART_EDITOR_VERSION,
+        TEXT_ENHETER,
+        MALTEKSTSEKSJON_UTFALL,
+        MALTEKSTSEKSJON_ENHETER,
+        MALTEKSTSEKSJON_SECTIONS,
+        MALTEKSTSEKSJON_YTELSE_HJEMMEL,
     }
 
 }

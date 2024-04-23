@@ -24,9 +24,10 @@ fun mapToMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): Malteksts
             EditorView(
                 navIdent = it.navIdent,
                 created = it.created,
-                modified = it.modified,
+                changeType = it.changeType,
+
             )
-        }.sortedByDescending { it.modified },
+        }.sortedByDescending { it.created },
         publishedDateTime = maltekstseksjonVersion.publishedDateTime,
         publishedBy = maltekstseksjonVersion.publishedBy,
         published = maltekstseksjonVersion.published,
@@ -39,8 +40,11 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         versionId = textVersion.id,
         title = textVersion.title,
         textType = textVersion.textType,
-        content = if (textVersion.content != null) jsonMapper().readTree(textVersion.content) else null,
-        plainText = textVersion.plainText,
+        richTextNN = if (textVersion.richTextNN != null) jsonMapper().readTree(textVersion.richTextNN) else null,
+        richTextNB = if (textVersion.richTextNB != null) jsonMapper().readTree(textVersion.richTextNB) else null,
+        richTextUntranslated = if (textVersion.richTextUntranslated != null) jsonMapper().readTree(textVersion.richTextUntranslated) else null,
+        plainTextNN = textVersion.plainTextNN,
+        plainTextNB = textVersion.plainTextNB,
         version = textVersion.smartEditorVersion,
         created = textVersion.created,
         modified = textVersion.modified,
@@ -52,9 +56,9 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
             EditorView(
                 navIdent = it.navIdent,
                 created = it.created,
-                modified = it.modified,
+                changeType = it.changeType,
             )
-        }.sortedByDescending { it.modified },
+        }.sortedByDescending { it.created },
         publishedDateTime = textVersion.publishedDateTime,
         publishedBy = textVersion.publishedBy,
         published = textVersion.published,
