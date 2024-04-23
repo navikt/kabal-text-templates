@@ -26,7 +26,7 @@ fun mapToMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): Malteksts
                 created = it.created,
                 changeType = it.changeType,
 
-            )
+                )
         }.sortedByDescending { it.created },
         publishedDateTime = maltekstseksjonVersion.publishedDateTime,
         publishedBy = maltekstseksjonVersion.publishedBy,
@@ -40,11 +40,8 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         versionId = textVersion.id,
         title = textVersion.title,
         textType = textVersion.textType,
-        richTextNN = if (textVersion.richTextNN != null) jsonMapper().readTree(textVersion.richTextNN) else null,
-        richTextNB = if (textVersion.richTextNB != null) jsonMapper().readTree(textVersion.richTextNB) else null,
-        richTextUntranslated = if (textVersion.richTextUntranslated != null) jsonMapper().readTree(textVersion.richTextUntranslated) else null,
-        plainTextNN = textVersion.plainTextNN,
-        plainTextNB = textVersion.plainTextNB,
+        richText = fillRichText(textVersion),
+        plainText = fillPlainText(textVersion),
         version = textVersion.smartEditorVersion,
         created = textVersion.created,
         modified = textVersion.modified,
@@ -66,3 +63,24 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         draftMaltekstseksjonIdList = connectedMaltekstseksjonIdList.second,
         createdBy = textVersion.text.createdBy,
     )
+
+private fun fillRichText(textVersion: TextVersion): TextView.RichText? =
+    if (textVersion.richTextNN != null || textVersion.richTextNB != null || textVersion.richTextUntranslated != null) {
+        TextView.RichText(
+            nn = if (textVersion.richTextNN != null) jsonMapper().readTree(textVersion.richTextNN) else null,
+            nb = if (textVersion.richTextNB != null) jsonMapper().readTree(textVersion.richTextNB) else null,
+            untranslated = if (textVersion.richTextUntranslated != null) jsonMapper().readTree(textVersion.richTextUntranslated) else null,
+        )
+    } else {
+        null
+    }
+
+private fun fillPlainText(textVersion: TextVersion): TextView.PlainText? =
+    if (textVersion.plainTextNN != null || textVersion.plainTextNB != null) {
+        TextView.PlainText(
+            nn = textVersion.plainTextNN,
+            nb = textVersion.plainTextNB,
+        )
+    } else {
+        null
+    }

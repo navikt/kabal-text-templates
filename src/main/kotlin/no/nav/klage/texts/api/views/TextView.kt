@@ -10,11 +10,8 @@ data class TextView(
     val versionId: UUID,
     val title: String,
     val textType: String,
-    val richTextNN: JsonNode?,
-    val richTextNB: JsonNode?,
-    val richTextUntranslated: JsonNode?,
-    val plainTextNN: String?,
-    val plainTextNB: String?,
+    val richText: RichText?,
+    val plainText: PlainText?,
     val version: Int?,
     val created: LocalDateTime,
     val modified: LocalDateTime,
@@ -32,7 +29,18 @@ data class TextView(
 
     val draftMaltekstseksjonIdList: List<UUID>,
     val publishedMaltekstseksjonIdList: List<UUID>
-)
+) {
+    data class RichText(
+        val nn: JsonNode?,
+        val nb: JsonNode?,
+        val untranslated: JsonNode?
+    )
+
+    data class PlainText(
+        val nn: String?,
+        val nb: String?
+    )
+}
 
 data class ConsumerTextView(
     val id: UUID,
