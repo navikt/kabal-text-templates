@@ -103,6 +103,13 @@ class MaltekstseksjonService(
         saksbehandlerIdent: String,
     ): MaltekstseksjonVersion {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
+
+        if (maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
+                maltekstseksjonId = maltekstseksjonId
+            ) != null) {
+            throw ClientErrorException("Utkast finnes allerede.")
+        }
+
         return publishService.createNewDraft(
             maltekstseksjonId = maltekstseksjonId,
             versionInput = versionInput,

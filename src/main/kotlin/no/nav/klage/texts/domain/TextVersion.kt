@@ -89,25 +89,6 @@ class TextVersion(
         )
     }
 
-    fun resetDraftWithValuesFrom(source: TextVersion) {
-        val now = LocalDateTime.now()
-        title = source.title
-        textType = source.textType
-        richTextNN = source.richTextNN
-        richTextNB = source.richTextNB
-        richTextUntranslated = source.richTextUntranslated
-        plainTextNN = source.plainTextNN
-        plainTextNB = source.plainTextNB
-        smartEditorVersion = source.smartEditorVersion
-        text = source.text
-        enhetIdList = source.enhetIdList
-        publishedDateTime = null
-        published = false
-        publishedBy = null
-        created = now
-        modified = now
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

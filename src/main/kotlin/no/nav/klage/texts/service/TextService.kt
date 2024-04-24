@@ -100,6 +100,12 @@ class TextService(
     ): TextVersion {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
 
+        if (textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
+                textId = textId
+            ) != null) {
+            throw ClientErrorException("Utkast finnes allerede.")
+        }
+
         val existingVersion = if (versionInput != null) {
             textVersionRepository.getReferenceById(versionInput.versionId)
         } else {
@@ -108,20 +114,9 @@ class TextService(
             ) ?: throw ClientErrorException("det må finnes en publisert versjon før et nytt utkast kan lages")
         }
 
-        val existingDraft = textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
-            textId = textId
+        return textVersionRepository.save(
+            existingVersion.createDraft()
         )
-
-        return if (existingDraft != null) {
-            //Reset draft
-            existingDraft.resetDraftWithValuesFrom(existingVersion)
-            existingDraft
-        } else {
-            textVersionRepository.save(
-                existingVersion.createDraft()
-            )
-        }
-
     }
 
     fun unpublishText(
