@@ -7,6 +7,7 @@ import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
+import no.nav.klage.texts.exceptions.LanguageNotFoundException
 import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
@@ -153,9 +154,29 @@ class ConsumerController(
             title = textVersion.title,
             textType = textVersion.textType,
             richText = when (language) {
-                Language.NN -> jsonMapper().readTree(textVersion.richTextNN)
-                Language.NB -> jsonMapper().readTree(textVersion.richTextNB)
-                Language.UNTRANSLATED -> jsonMapper().readTree(textVersion.richTextUntranslated)
+                Language.NN -> if (textVersion.richTextNN != null) {
+                    jsonMapper().readTree(textVersion.richTextNN)
+                } else {
+                    throw LanguageNotFoundException(
+                        "Inget innhold for språk NN"
+                    )
+                }
+
+                Language.NB -> if (textVersion.richTextNB != null) {
+                    jsonMapper().readTree(textVersion.richTextNB)
+                } else {
+                    throw LanguageNotFoundException(
+                        "Inget innhold for språk NB"
+                    )
+                }
+
+                Language.UNTRANSLATED -> if (textVersion.richTextUntranslated != null) {
+                    jsonMapper().readTree(textVersion.richTextUntranslated)
+                } else {
+                    throw LanguageNotFoundException(
+                        "Inget innhold for språk UNTRANSLATED"
+                    )
+                }
             },
             utfallIdList = textVersion.utfallIdList,
             enhetIdList = textVersion.enhetIdList,

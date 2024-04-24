@@ -211,7 +211,7 @@ class TextController(
     fun updateContent(
         @PathVariable("textId") textId: UUID,
         @PathVariable("language") language: Language,
-        @RequestBody input: ContentInput
+        @RequestBody input: RichTextInput
     ): TextView {
         logMethodDetails(
             methodName = ::updateContent.name,
@@ -222,7 +222,7 @@ class TextController(
 
         return mapToTextView(
             textVersion = textService.updateRichText(
-                input = input.content.toString(),
+                input = input.richText.toString(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
                 language = language,

@@ -1,6 +1,7 @@
 package no.nav.klage.texts.config.problem
 
 import no.nav.klage.texts.exceptions.ClientErrorException
+import no.nav.klage.texts.exceptions.LanguageNotFoundException
 import no.nav.klage.texts.exceptions.MaltekstseksjonNotFoundException
 import no.nav.klage.texts.exceptions.TextNotFoundException
 import no.nav.klage.texts.util.getSecureLogger
@@ -22,6 +23,13 @@ class ProblemHandlingControllerAdvice : ResponseEntityExceptionHandler() {
     @ExceptionHandler
     fun handleTextNotFound(
         ex: TextNotFoundException,
+        request: NativeWebRequest
+    ): ProblemDetail =
+        create(HttpStatus.NOT_FOUND, ex)
+
+    @ExceptionHandler
+    fun handleLanguageNotFound(
+        ex: LanguageNotFoundException,
         request: NativeWebRequest
     ): ProblemDetail =
         create(HttpStatus.NOT_FOUND, ex)

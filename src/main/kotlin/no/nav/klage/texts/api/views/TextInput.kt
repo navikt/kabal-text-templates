@@ -35,8 +35,8 @@ data class TextTypeInput(
     val textType: String
 )
 
-data class ContentInput(
-    val content: JsonNode
+data class RichTextInput(
+    val richText: JsonNode
 )
 
 data class PlainTextInput(
