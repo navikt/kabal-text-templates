@@ -69,11 +69,11 @@ class TextService(
             TextVersion(
                 title = textInput.title,
                 textType = textInput.textType,
-                richTextNN = textInput.richTextNN?.toString(),
-                richTextNB = textInput.richTextNB?.toString(),
-                richTextUntranslated = textInput.richTextUntranslated?.toString(),
-                plainTextNN = textInput.plainTextNN,
-                plainTextNB = textInput.plainTextNB,
+                richTextNN = textInput.richText?.nn?.toString(),
+                richTextNB = textInput.richText?.nb?.toString(),
+                richTextUntranslated = textInput.richText?.untranslated?.toString(),
+                plainTextNN = textInput.plainText?.nn,
+                plainTextNB = textInput.plainText?.nb,
                 smartEditorVersion = textInput.version,
                 enhetIdList = textInput.enhetIdList ?: emptySet(),
                 editors = mutableSetOf(

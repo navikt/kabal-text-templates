@@ -13,12 +13,8 @@ data class TextInput(
     val title: String,
     val textType: String,
 
-    val richTextNN: JsonNode?,
-    val richTextNB: JsonNode?,
-    val richTextUntranslated: JsonNode?,
-
-    val plainTextNN: String?,
-    val plainTextNB: String?,
+    val richText: TextView.RichText?,
+    val plainText: TextView.PlainText?,
 
     val version: Int?,
     val enhetIdList: Set<String>?,
