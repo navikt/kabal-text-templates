@@ -310,15 +310,17 @@ class TextService(
         val textVersion = getCurrentDraft(textId)
         val changeType: Editor.ChangeType
 
-        when(language) {
+        when (language) {
             Language.NB -> {
                 textVersion.richTextNB = input
                 changeType = Editor.ChangeType.RICH_TEXT_NB
             }
+
             Language.NN -> {
                 textVersion.richTextNN = input
                 changeType = Editor.ChangeType.RICH_TEXT_NN
             }
+
             Language.UNTRANSLATED -> {
                 textVersion.richTextUntranslated = input
                 changeType = Editor.ChangeType.RICH_TEXT_UNTRANSLATED
@@ -341,15 +343,17 @@ class TextService(
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
         val changeType: Editor.ChangeType
-        when(language) {
+        when (language) {
             Language.NB -> {
                 textVersion.plainTextNB = input
                 changeType = Editor.ChangeType.PLAIN_TEXT_NB
             }
+
             Language.NN -> {
                 textVersion.plainTextNN = input
                 changeType = Editor.ChangeType.PLAIN_TEXT_NN
             }
+
             else -> throw ClientErrorException("Ugyldig språk: $language")
         }
         textVersion.modified = LocalDateTime.now()
@@ -491,17 +495,11 @@ class TextService(
         return texts
     }
 
-    fun getAllTextVersions(): List<TextVersion> = textVersionRepository.findAll()
-
-    fun getTextVersionsById(ids: List<UUID>): MutableList<TextVersion> = textVersionRepository.findAllById(ids)
-
-    fun updateAll(textVersions: List<TextVersion>): MutableList<TextVersion> =
-        textVersionRepository.saveAll(textVersions)
-
     fun getConnectedMaltekstseksjoner(textId: UUID): Pair<List<UUID>, List<UUID>> {
-        val outcome: Pair<List<UUID>, List<UUID>> = maltekstseksjonVersionRepository.findConnectedMaltekstseksjonPublishedIdList(textId) to maltekstseksjonVersionRepository.findConnectedMaltekstseksjonDraftsIdList(
-            textId
-        )
+        val outcome: Pair<List<UUID>, List<UUID>> =
+            maltekstseksjonVersionRepository.findConnectedMaltekstseksjonPublishedIdList(textId) to maltekstseksjonVersionRepository.findConnectedMaltekstseksjonDraftsIdList(
+                textId
+            )
 
         if (outcome.first.isNotEmpty() || outcome.second.isNotEmpty()) {
             logger.debug(
