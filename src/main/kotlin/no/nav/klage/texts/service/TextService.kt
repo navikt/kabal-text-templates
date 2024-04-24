@@ -456,6 +456,20 @@ class TextService(
         templateSectionIdList: List<String>,
         ytelseHjemmelIdList: List<String>,
     ): List<TextVersion> {
+        return searchTextService.searchTexts(
+            texts = getAllCurrentTextVersions(),
+            textType = textType,
+            utfallIdList = utfallIdList,
+            enhetIdList = enhetIdList,
+            templateSectionIdList = templateSectionIdList,
+            ytelseHjemmelIdList = ytelseHjemmelIdList,
+        )
+    }
+
+    /**
+     * Get all current texts, both drafts and published.
+     */
+    fun getAllCurrentTextVersions(): List<TextVersion> {
         var texts: List<TextVersion>
 
         val millis = measureTimeMillis {
@@ -474,15 +488,7 @@ class TextService(
         }
 
         logger.debug("combining all published texts and all drafts took {} millis. Found {} texts", millis, texts.size)
-
-        return searchTextService.searchTexts(
-            texts = texts,
-            textType = textType,
-            utfallIdList = utfallIdList,
-            enhetIdList = enhetIdList,
-            templateSectionIdList = templateSectionIdList,
-            ytelseHjemmelIdList = ytelseHjemmelIdList,
-        )
+        return texts
     }
 
     fun getAllTextVersions(): List<TextVersion> = textVersionRepository.findAll()

@@ -34,6 +34,27 @@ class TextController(
         summary = "Get versions for text",
         description = "Get versions for text"
     )
+    @GetMapping("/searchable")
+    fun getTextVersionsAsSearchable(
+    ): List<SearchableListItem> {
+        logMethodDetails(
+            methodName = ::getTextVersionsAsSearchable.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = null,
+            logger = logger,
+        )
+
+        return textService.getAllCurrentTextVersions().map {
+            mapToSearchableListItem(
+                textVersion = it,
+            )
+        }
+    }
+
+    @Operation(
+        summary = "Get versions for text",
+        description = "Get versions for text"
+    )
     @GetMapping("/{textId}/versions")
     fun getTextVersions(
         @PathVariable("textId") textId: UUID,
@@ -346,7 +367,7 @@ class TextController(
         summary = "Update ytelseHjemmelList",
         description = "Update ytelseHjemmelList"
     )
-    @PutMapping( "/{textId}/ytelse-hjemmel-id-list")
+    @PutMapping("/{textId}/ytelse-hjemmel-id-list")
     fun updateYtelseHjemmelList(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: YtelseHjemmelIdListCompatibleInput

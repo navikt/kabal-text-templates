@@ -31,14 +31,14 @@ data class TextView(
     val publishedMaltekstseksjonIdList: List<UUID>
 ) {
     data class RichText(
-        val nn: JsonNode?,
-        val nb: JsonNode?,
-        val untranslated: JsonNode?
+        val nn: JsonNode,
+        val nb: JsonNode,
+        val untranslated: JsonNode,
     )
 
     data class PlainText(
-        val nn: String?,
-        val nb: String?
+        val nn: String,
+        val nb: String
     )
 }
 
@@ -52,4 +52,13 @@ data class ConsumerTextView(
     val ytelseHjemmelIdList: Set<String>,
     val utfallIdList: Set<String>,
     val language: Language,
+)
+
+data class SearchableListItem(
+    val id: UUID,
+    val textType: String,
+    val title: String,
+    val modified: LocalDateTime,
+    val richText: TextView.RichText?,
+    val plainText: TextView.PlainText?
 )

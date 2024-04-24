@@ -3,6 +3,7 @@ package no.nav.klage.texts.api
 import com.fasterxml.jackson.module.kotlin.jsonMapper
 import no.nav.klage.texts.api.views.EditorView
 import no.nav.klage.texts.api.views.MaltekstseksjonView
+import no.nav.klage.texts.api.views.SearchableListItem
 import no.nav.klage.texts.api.views.TextView
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
@@ -64,12 +65,22 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         createdBy = textVersion.text.createdBy,
     )
 
+fun mapToSearchableListItem(textVersion: TextVersion): SearchableListItem =
+    SearchableListItem(
+        id = textVersion.text.id,
+        title = textVersion.title,
+        textType = textVersion.textType,
+        richText = fillRichText(textVersion),
+        plainText = fillPlainText(textVersion),
+        modified = textVersion.editors.maxByOrNull { it.created }?.created ?: textVersion.created,
+    )
+
 private fun fillRichText(textVersion: TextVersion): TextView.RichText? =
     if (textVersion.richTextNN != null || textVersion.richTextNB != null || textVersion.richTextUntranslated != null) {
         TextView.RichText(
-            nn = if (textVersion.richTextNN != null) jsonMapper().readTree(textVersion.richTextNN) else null,
-            nb = if (textVersion.richTextNB != null) jsonMapper().readTree(textVersion.richTextNB) else null,
-            untranslated = if (textVersion.richTextUntranslated != null) jsonMapper().readTree(textVersion.richTextUntranslated) else null,
+            nn = if (textVersion.richTextNN != null) jsonMapper().readTree(textVersion.richTextNN) else emptyParagraph,
+            nb = if (textVersion.richTextNB != null) jsonMapper().readTree(textVersion.richTextNB) else emptyParagraph,
+            untranslated = if (textVersion.richTextUntranslated != null) jsonMapper().readTree(textVersion.richTextUntranslated) else emptyParagraph,
         )
     } else {
         null
@@ -78,9 +89,19 @@ private fun fillRichText(textVersion: TextVersion): TextView.RichText? =
 private fun fillPlainText(textVersion: TextVersion): TextView.PlainText? =
     if (textVersion.plainTextNN != null || textVersion.plainTextNB != null) {
         TextView.PlainText(
-            nn = textVersion.plainTextNN,
-            nb = textVersion.plainTextNB,
+            nn = textVersion.plainTextNN ?: "",
+            nb = textVersion.plainTextNB ?: "",
         )
     } else {
         null
     }
+
+private val emptyParagraph = jsonMapper().readTree(
+    """
+    [{
+      "type": "p",
+      "align": "left",
+      "children": [{ "text": "" }]
+    }]
+""".trimIndent()
+)
