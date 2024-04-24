@@ -31,14 +31,14 @@ data class TextView(
     val publishedMaltekstseksjonIdList: List<UUID>
 ) {
     data class RichText(
-        val nn: JsonNode,
-        val nb: JsonNode,
-        val untranslated: JsonNode,
+        val nn: JsonNode?,
+        val nb: JsonNode?,
+        val untranslated: JsonNode?,
     )
 
     data class PlainText(
-        val nn: String,
-        val nb: String
+        val nn: String?,
+        val nb: String?,
     )
 }
 

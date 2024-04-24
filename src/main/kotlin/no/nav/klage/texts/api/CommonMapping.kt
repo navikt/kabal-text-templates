@@ -78,9 +78,9 @@ fun mapToSearchableListItem(textVersion: TextVersion): SearchableListItem =
 private fun fillRichText(textVersion: TextVersion): TextView.RichText? =
     if (textVersion.richTextNN != null || textVersion.richTextNB != null || textVersion.richTextUntranslated != null) {
         TextView.RichText(
-            nn = if (textVersion.richTextNN != null) jsonMapper().readTree(textVersion.richTextNN) else emptyParagraph,
-            nb = if (textVersion.richTextNB != null) jsonMapper().readTree(textVersion.richTextNB) else emptyParagraph,
-            untranslated = if (textVersion.richTextUntranslated != null) jsonMapper().readTree(textVersion.richTextUntranslated) else emptyParagraph,
+            nn = if (textVersion.richTextNN != null) jsonMapper().readTree(textVersion.richTextNN) else null,
+            nb = if (textVersion.richTextNB != null) jsonMapper().readTree(textVersion.richTextNB) else null,
+            untranslated = if (textVersion.richTextUntranslated != null) jsonMapper().readTree(textVersion.richTextUntranslated) else null,
         )
     } else {
         null
@@ -89,19 +89,9 @@ private fun fillRichText(textVersion: TextVersion): TextView.RichText? =
 private fun fillPlainText(textVersion: TextVersion): TextView.PlainText? =
     if (textVersion.plainTextNN != null || textVersion.plainTextNB != null) {
         TextView.PlainText(
-            nn = textVersion.plainTextNN ?: "",
-            nb = textVersion.plainTextNB ?: "",
+            nn = textVersion.plainTextNN,
+            nb = textVersion.plainTextNB,
         )
     } else {
         null
     }
-
-private val emptyParagraph = jsonMapper().readTree(
-    """
-    [{
-      "type": "p",
-      "align": "left",
-      "children": [{ "text": "" }]
-    }]
-""".trimIndent()
-)
