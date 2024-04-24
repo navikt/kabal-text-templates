@@ -277,7 +277,7 @@ class ServiceTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = now,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
             ),
             created = now,
@@ -336,7 +336,7 @@ class ServiceTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = now,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
             ),
             created = now,
@@ -414,7 +414,7 @@ class ServiceTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = someDateTime,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
             ),
             created = someDateTime,
@@ -438,7 +438,7 @@ class ServiceTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = someDateTime,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
             ),
             created = someDateTime,
@@ -485,7 +485,7 @@ class ServiceTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = someDateTime,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
             ),
             created = someDateTime,
@@ -509,7 +509,7 @@ class ServiceTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = someDateTime,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
             ),
             created = someDateTime,

@@ -1,10 +1,7 @@
 package no.nav.klage.texts.api
 
 import com.fasterxml.jackson.module.kotlin.jsonMapper
-import no.nav.klage.texts.api.views.EditorView
-import no.nav.klage.texts.api.views.MaltekstseksjonView
-import no.nav.klage.texts.api.views.SearchableListItem
-import no.nav.klage.texts.api.views.TextView
+import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
 import java.util.*
@@ -22,12 +19,11 @@ fun mapToMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): Malteksts
         created = maltekstseksjonVersion.created,
         modified = maltekstseksjonVersion.modified,
         editors = maltekstseksjonVersion.editors.map {
-            EditorView(
+            MaltekstseksjonEditorView(
                 navIdent = it.navIdent,
                 created = it.created,
-                changeType = it.changeType,
-
-                )
+                changeType = MaltekstseksjonEditorView.ChangeTypeMaltekstseksjon.valueOf(it.changeType.name),
+            )
         }.sortedByDescending { it.created },
         publishedDateTime = maltekstseksjonVersion.publishedDateTime,
         publishedBy = maltekstseksjonVersion.publishedBy,
@@ -51,10 +47,10 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         templateSectionIdList = textVersion.templateSectionIdList,
         ytelseHjemmelIdList = textVersion.ytelseHjemmelIdList,
         editors = textVersion.editors.map {
-            EditorView(
+            TextEditorView(
                 navIdent = it.navIdent,
                 created = it.created,
-                changeType = it.changeType,
+                changeType = TextEditorView.ChangeTypeText.valueOf(it.changeType.name),
             )
         }.sortedByDescending { it.created },
         publishedDateTime = textVersion.publishedDateTime,
