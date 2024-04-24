@@ -469,7 +469,7 @@ class TextService(
     /**
      * Get all current texts, both drafts and published.
      */
-    fun getAllCurrentTextVersions(): List<TextVersion> {
+    private fun getAllCurrentTextVersions(): List<TextVersion> {
         var texts: List<TextVersion>
 
         val millis = measureTimeMillis {

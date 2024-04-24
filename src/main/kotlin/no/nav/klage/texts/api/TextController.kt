@@ -34,27 +34,6 @@ class TextController(
         summary = "Get versions for text",
         description = "Get versions for text"
     )
-    @GetMapping("/searchable")
-    fun getTextVersionsAsSearchable(
-    ): List<SearchableListItem> {
-        logMethodDetails(
-            methodName = ::getTextVersionsAsSearchable.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            id = null,
-            logger = logger,
-        )
-
-        return textService.getAllCurrentTextVersions().map {
-            mapToSearchableListItem(
-                textVersion = it,
-            )
-        }
-    }
-
-    @Operation(
-        summary = "Get versions for text",
-        description = "Get versions for text"
-    )
     @GetMapping("/{textId}/versions")
     fun getTextVersions(
         @PathVariable("textId") textId: UUID,
