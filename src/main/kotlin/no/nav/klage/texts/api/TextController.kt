@@ -187,13 +187,13 @@ class TextController(
         description = "Update richtext"
     )
     @PutMapping("/{textId}/{language}/richtext")
-    fun updateContent(
+    fun updateRichText(
         @PathVariable("textId") textId: UUID,
         @PathVariable("language") language: Language,
         @RequestBody input: RichTextInput
     ): TextView {
         logMethodDetails(
-            methodName = ::updateContent.name,
+            methodName = ::updateRichText.name,
             innloggetIdent = tokenUtil.getIdent(),
             id = textId,
             logger = logger,
