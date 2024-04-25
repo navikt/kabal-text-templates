@@ -183,6 +183,7 @@ class ConsumerController(
             templateSectionIdList = textVersion.templateSectionIdList,
             ytelseHjemmelIdList = textVersion.ytelseHjemmelIdList,
             language = language,
+            publishedDateTime = textVersion.publishedDateTime!!,
         )
 
     private fun mapToConsumerMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): ConsumerMaltekstseksjonView =

@@ -52,6 +52,7 @@ data class ConsumerTextView(
     val ytelseHjemmelIdList: Set<String>,
     val utfallIdList: Set<String>,
     val language: Language,
+    val publishedDateTime: LocalDateTime,
 )
 
 data class SearchableListItem(
