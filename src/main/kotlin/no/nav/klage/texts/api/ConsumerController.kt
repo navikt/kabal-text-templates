@@ -64,7 +64,7 @@ class ConsumerController(
                 ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
             ).sortedByDescending { it.created }
 
-        return textVersions.map {
+        return textVersions.mapNotNull {
             mapToConsumerTextView(
                 textVersion = it,
                 language = language,
@@ -118,7 +118,7 @@ class ConsumerController(
             id = maltekstseksjonId,
             logger = logger,
         )
-        return maltekstseksjonService.getPublishedMaltekstseksjonVersion(maltekstseksjonId).texts.map {
+        return maltekstseksjonService.getPublishedMaltekstseksjonVersion(maltekstseksjonId).texts.mapNotNull {
             val textVersion = textService.getPublishedTextVersion(it.id)
             mapToConsumerTextView(
                 textVersion = textVersion,
@@ -145,38 +145,31 @@ class ConsumerController(
         return mapToConsumerTextView(
             textVersion = textService.getPublishedTextVersion(textId),
             language = language,
-        )
+        ) ?: throw LanguageNotFoundException("Fant ikke tekst for språk $language")
     }
 
-    private fun mapToConsumerTextView(textVersion: TextVersion, language: Language): ConsumerTextView =
-        ConsumerTextView(
+    private fun mapToConsumerTextView(textVersion: TextVersion, language: Language): ConsumerTextView? {
+        when (language) {
+            Language.NN -> if (textVersion.richTextNN == null) {
+                return null
+            }
+
+            Language.NB -> if (textVersion.richTextNB == null) {
+                return null
+            }
+
+            Language.UNTRANSLATED -> if (textVersion.richTextUntranslated == null) {
+                return null
+            }
+        }
+        return ConsumerTextView(
             id = textVersion.text.id,
             title = textVersion.title,
             textType = textVersion.textType,
             richText = when (language) {
-                Language.NN -> if (textVersion.richTextNN != null) {
-                    jsonMapper().readTree(textVersion.richTextNN)
-                } else {
-                    throw LanguageNotFoundException(
-                        "Inget innhold for språk NN"
-                    )
-                }
-
-                Language.NB -> if (textVersion.richTextNB != null) {
-                    jsonMapper().readTree(textVersion.richTextNB)
-                } else {
-                    throw LanguageNotFoundException(
-                        "Inget innhold for språk NB"
-                    )
-                }
-
-                Language.UNTRANSLATED -> if (textVersion.richTextUntranslated != null) {
-                    jsonMapper().readTree(textVersion.richTextUntranslated)
-                } else {
-                    throw LanguageNotFoundException(
-                        "Inget innhold for språk UNTRANSLATED"
-                    )
-                }
+                Language.NN -> jsonMapper().readTree(textVersion.richTextNN)
+                Language.NB -> jsonMapper().readTree(textVersion.richTextNB)
+                Language.UNTRANSLATED -> jsonMapper().readTree(textVersion.richTextUntranslated)
             },
             utfallIdList = textVersion.utfallIdList,
             enhetIdList = textVersion.enhetIdList,
@@ -185,6 +178,7 @@ class ConsumerController(
             language = language,
             publishedDateTime = textVersion.publishedDateTime!!,
         )
+    }
 
     private fun mapToConsumerMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): ConsumerMaltekstseksjonView =
         ConsumerMaltekstseksjonView(
