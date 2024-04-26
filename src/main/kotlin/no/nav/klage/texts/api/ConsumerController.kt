@@ -150,11 +150,11 @@ class ConsumerController(
 
     private fun mapToConsumerTextView(textVersion: TextVersion, language: Language): ConsumerTextView? {
         when (language) {
-            Language.NN -> if (textVersion.richTextNN == null) {
+            Language.NN -> if (textVersion.richTextNN == null && textVersion.plainTextNN == null) {
                 return null
             }
 
-            Language.NB -> if (textVersion.richTextNB == null) {
+            Language.NB -> if (textVersion.richTextNB == null && textVersion.plainTextNB == null) {
                 return null
             }
 
@@ -170,6 +170,11 @@ class ConsumerController(
                 Language.NN -> jsonMapper().readTree(textVersion.richTextNN)
                 Language.NB -> jsonMapper().readTree(textVersion.richTextNB)
                 Language.UNTRANSLATED -> jsonMapper().readTree(textVersion.richTextUntranslated)
+            },
+            plainText = when (language) {
+                Language.NN -> textVersion.plainTextNN
+                Language.NB -> textVersion.plainTextNB
+                Language.UNTRANSLATED -> null
             },
             utfallIdList = textVersion.utfallIdList,
             enhetIdList = textVersion.enhetIdList,
