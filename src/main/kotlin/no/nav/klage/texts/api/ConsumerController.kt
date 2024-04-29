@@ -167,9 +167,9 @@ class ConsumerController(
             title = textVersion.title,
             textType = textVersion.textType,
             richText = when (language) {
-                Language.NN -> jsonMapper().readTree(textVersion.richTextNN)
-                Language.NB -> jsonMapper().readTree(textVersion.richTextNB)
-                Language.UNTRANSLATED -> jsonMapper().readTree(textVersion.richTextUntranslated)
+                Language.NN -> if (textVersion.richTextNN != null) jsonMapper().readTree(textVersion.richTextNN) else null
+                Language.NB -> if (textVersion.richTextNB != null) jsonMapper().readTree(textVersion.richTextNB) else null
+                Language.UNTRANSLATED -> if (textVersion.richTextUntranslated != null) jsonMapper().readTree(textVersion.richTextUntranslated) else null
             },
             plainText = when (language) {
                 Language.NN -> textVersion.plainTextNN
