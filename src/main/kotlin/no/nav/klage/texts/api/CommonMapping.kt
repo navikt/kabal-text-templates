@@ -39,7 +39,6 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         textType = textVersion.textType,
         richText = fillRichText(textVersion),
         plainText = fillPlainText(textVersion),
-        version = textVersion.smartEditorVersion,
         created = textVersion.created,
         modified = textVersion.modified,
         utfallIdList = textVersion.utfallIdList,

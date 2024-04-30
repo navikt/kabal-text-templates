@@ -73,7 +73,7 @@ class MaltekstseksjonVersion(
     var modified: LocalDateTime,
 ) {
 
-    fun createDraft(): MaltekstseksjonVersion {
+    fun createDraft(saksbehandlerIdent: String): MaltekstseksjonVersion {
         val now = LocalDateTime.now()
         return MaltekstseksjonVersion(
             title = title,
@@ -88,6 +88,12 @@ class MaltekstseksjonVersion(
             publishedBy = null,
             created = now,
             modified = now,
+            editors = mutableSetOf(
+                Editor(
+                    navIdent = saksbehandlerIdent,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_VERSION_CREATED
+                )
+            )
         )
     }
 

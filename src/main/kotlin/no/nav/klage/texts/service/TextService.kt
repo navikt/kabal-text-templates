@@ -74,12 +74,10 @@ class TextService(
                 richTextUntranslated = textInput.richText?.untranslated?.toString(),
                 plainTextNN = textInput.plainText?.nn,
                 plainTextNB = textInput.plainText?.nb,
-                smartEditorVersion = textInput.version,
                 enhetIdList = textInput.enhetIdList ?: emptySet(),
                 editors = mutableSetOf(
                     Editor(
                         navIdent = saksbehandlerIdent,
-                        created = now,
                         changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
                     )
                 ),
@@ -115,7 +113,7 @@ class TextService(
         }
 
         return textVersionRepository.save(
-            existingVersion.createDraft()
+            existingVersion.createDraft(saksbehandlerIdent = saksbehandlerIdent)
         )
     }
 
@@ -174,7 +172,7 @@ class TextService(
                     val published = maltekstseksjonVersions.find { it.published }!!
 
                     //Create this draft only to be able to publish changed version with removed text.
-                    var tempDraft = published.createDraft()
+                    var tempDraft = published.createDraft(saksbehandlerIdent)
                     tempDraft.texts.removeIf { it.id == textId }
 
                     tempDraft = maltekstseksjonVersionRepository.save(tempDraft)
@@ -275,22 +273,6 @@ class TextService(
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
             changeType = Editor.ChangeType.TEXT_TYPE,
-        )
-        return textVersion
-    }
-
-    fun updateSmartEditorVersion(
-        input: Int,
-        textId: UUID,
-        saksbehandlerIdent: String,
-    ): TextVersion {
-        validateIfTextIsUnpublishedOrMissingDraft(textId)
-        val textVersion = getCurrentDraft(textId)
-        textVersion.smartEditorVersion = input
-        textVersion.modified = LocalDateTime.now()
-        textVersion.editors += Editor(
-            navIdent = saksbehandlerIdent,
-            changeType = Editor.ChangeType.SMART_EDITOR_VERSION,
         )
         return textVersion
     }

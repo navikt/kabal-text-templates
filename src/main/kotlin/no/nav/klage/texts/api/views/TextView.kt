@@ -12,7 +12,6 @@ data class TextView(
     val textType: String,
     val richText: RichText?,
     val plainText: PlainText?,
-    val version: Int?,
     val created: LocalDateTime,
     val modified: LocalDateTime,
     val createdBy: String?,

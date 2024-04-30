@@ -22,7 +22,6 @@ class SearchTextServiceTest {
             richTextUntranslated = null,
             plainTextNN = null,
             plainTextNB = null,
-            smartEditorVersion = null,
             text = Text(
                 created = now,
                 modified = now,

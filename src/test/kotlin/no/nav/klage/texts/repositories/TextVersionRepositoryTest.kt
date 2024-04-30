@@ -87,7 +87,6 @@ class TextVersionRepositoryTest {
         return TextVersion(
             title = "title",
             textType = "type",
-            smartEditorVersion = 1,
             richTextNN = null,
             richTextNB = "{}",
             richTextUntranslated = null,
@@ -120,7 +119,6 @@ class TextVersionRepositoryTest {
         return TextVersion(
             title = "title",
             textType = "type",
-            smartEditorVersion = 1,
             richTextNN = null,
             richTextNB = null,
             richTextUntranslated = null,

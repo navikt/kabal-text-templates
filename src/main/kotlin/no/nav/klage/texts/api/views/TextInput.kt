@@ -39,10 +39,6 @@ data class PlainTextInput(
     val plainText: String
 )
 
-data class SmartEditorVersionInput(
-    val version: Int
-)
-
 data class UtfallIdListCompatibleInput(
     val utfall: Set<String>?,
     val utfallIdList: Set<String>?,

@@ -83,7 +83,6 @@ class MaltekstseksjonService(
                 editors = mutableSetOf(
                     Editor(
                         navIdent = saksbehandlerIdent,
-                        created = now,
                         changeType = Editor.ChangeType.MALTEKSTSEKSJON_VERSION_CREATED,
                     )
                 ),

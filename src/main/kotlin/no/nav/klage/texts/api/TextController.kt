@@ -239,32 +239,6 @@ class TextController(
     }
 
     @Operation(
-        summary = "Update smartEditorVersion",
-        description = "Update smartEditorVersion"
-    )
-    @PutMapping("/{textId}/version")
-    fun updateSmartEditorVersion(
-        @PathVariable("textId") textId: UUID,
-        @RequestBody input: SmartEditorVersionInput
-    ): TextView {
-        logMethodDetails(
-            methodName = ::updateSmartEditorVersion.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            id = textId,
-            logger = logger,
-        )
-
-        return mapToTextView(
-            textVersion = textService.updateSmartEditorVersion(
-                input = input.version,
-                textId = textId,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            ),
-            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
-        )
-    }
-
-    @Operation(
         summary = "Update utfall",
         description = "Update utfall"
     )

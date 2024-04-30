@@ -52,7 +52,6 @@ class Editor(
         TEXT_UTFALL,
         TEXT_SECTIONS,
         TEXT_YTELSE_HJEMMEL,
-        SMART_EDITOR_VERSION,
         TEXT_ENHETER,
 
         MALTEKSTSEKSJON_TITLE,
