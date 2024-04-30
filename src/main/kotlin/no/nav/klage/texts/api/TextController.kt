@@ -131,39 +131,6 @@ class TextController(
     }
 
     @Operation(
-        summary = "Update textVersion",
-        description = "Update textVersion"
-    )
-    @PutMapping("/{textId}")
-    fun updateText(
-        @PathVariable("textId") textId: UUID,
-        @RequestBody input: UpdateTextInput
-    ): TextView {
-        logMethodDetails(
-            methodName = ::updateText.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            id = textId,
-            logger = logger,
-        )
-
-        return mapToTextView(
-            textVersion = textService.updateText(
-                textId = textId,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-                title = input.title,
-                textType = input.textType,
-                content = if (input.content == null || input.content.isNull) null else input.content,
-                plainText = input.plainText,
-                utfallIdList = input.utfall,
-                enhetIdList = input.enheter,
-                templateSectionIdList = input.templateSectionList,
-                ytelseHjemmelIdList = input.ytelseHjemmelList,
-            ),
-            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
-        )
-    }
-
-    @Operation(
         summary = "Update title",
         description = "Update title"
     )
@@ -216,26 +183,28 @@ class TextController(
     }
 
     @Operation(
-        summary = "Update content",
-        description = "Update content"
+        summary = "Update richtext",
+        description = "Update richtext"
     )
-    @PutMapping("/{textId}/content")
-    fun updateContent(
+    @PutMapping("/{textId}/{language}/richtext")
+    fun updateRichText(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: ContentInput
+        @PathVariable("language") language: Language,
+        @RequestBody input: RichTextInput
     ): TextView {
         logMethodDetails(
-            methodName = ::updateContent.name,
+            methodName = ::updateRichText.name,
             innloggetIdent = tokenUtil.getIdent(),
             id = textId,
             logger = logger,
         )
 
         return mapToTextView(
-            textVersion = textService.updateContent(
-                input = input.content.toString(),
+            textVersion = textService.updateRichText(
+                input = input.richText.toString(),
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
+                language = language,
             ),
             connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
@@ -245,9 +214,10 @@ class TextController(
         summary = "Update plainText",
         description = "Update plainText"
     )
-    @PutMapping("/{textId}/plaintext")
+    @PutMapping("/{textId}/{language}/plaintext")
     fun updatePlainText(
         @PathVariable("textId") textId: UUID,
+        @PathVariable("language") language: Language,
         @RequestBody input: PlainTextInput
     ): TextView {
         logMethodDetails(
@@ -262,32 +232,7 @@ class TextController(
                 input = input.plainText,
                 textId = textId,
                 saksbehandlerIdent = tokenUtil.getIdent(),
-            ),
-            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
-        )
-    }
-
-    @Operation(
-        summary = "Update smartEditorVersion",
-        description = "Update smartEditorVersion"
-    )
-    @PutMapping("/{textId}/version")
-    fun updateSmartEditorVersion(
-        @PathVariable("textId") textId: UUID,
-        @RequestBody input: SmartEditorVersionInput
-    ): TextView {
-        logMethodDetails(
-            methodName = ::updateSmartEditorVersion.name,
-            innloggetIdent = tokenUtil.getIdent(),
-            id = textId,
-            logger = logger,
-        )
-
-        return mapToTextView(
-            textVersion = textService.updateSmartEditorVersion(
-                input = input.version,
-                textId = textId,
-                saksbehandlerIdent = tokenUtil.getIdent(),
+                language = language,
             ),
             connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
         )
@@ -297,7 +242,7 @@ class TextController(
         summary = "Update utfall",
         description = "Update utfall"
     )
-    @PutMapping("/{textId}/utfall", "/{textId}/utfall-id-list")
+    @PutMapping("/{textId}/utfall-id-list")
     fun updateUtfall(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: UtfallIdListCompatibleInput
@@ -323,7 +268,7 @@ class TextController(
         summary = "Update enheter",
         description = "Update enheter"
     )
-    @PutMapping("/{textId}/enheter", "/{textId}/enhet-id-list")
+    @PutMapping("/{textId}/enhet-id-list")
     fun updateEnheter(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: EnhetIdListCompatibleInput
@@ -349,7 +294,7 @@ class TextController(
         summary = "Update templateSectionList",
         description = "Update templateSectionList"
     )
-    @PutMapping("/{textId}/templatesectionlist", "/{textId}/template-section-id-list")
+    @PutMapping("/{textId}/template-section-id-list")
     fun updateTemplateSectionList(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: TemplateSectionIdListCompatibleInput
@@ -375,7 +320,7 @@ class TextController(
         summary = "Update ytelseHjemmelList",
         description = "Update ytelseHjemmelList"
     )
-    @PutMapping("/{textId}/ytelsehjemmellist", "/{textId}/ytelse-hjemmel-id-list")
+    @PutMapping("/{textId}/ytelse-hjemmel-id-list")
     fun updateYtelseHjemmelList(
         @PathVariable("textId") textId: UUID,
         @RequestBody input: YtelseHjemmelIdListCompatibleInput

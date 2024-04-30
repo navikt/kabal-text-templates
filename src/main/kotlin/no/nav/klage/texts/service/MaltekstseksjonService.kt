@@ -13,7 +13,6 @@ import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepository
 import no.nav.klage.texts.repositories.TextRepository
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
-import no.nav.klage.texts.util.updateEditors
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -84,8 +83,7 @@ class MaltekstseksjonService(
                 editors = mutableSetOf(
                     Editor(
                         navIdent = saksbehandlerIdent,
-                        created = now,
-                        modified = now,
+                        changeType = Editor.ChangeType.MALTEKSTSEKSJON_VERSION_CREATED,
                     )
                 ),
                 maltekstseksjon = maltekstseksjon,
@@ -104,6 +102,13 @@ class MaltekstseksjonService(
         saksbehandlerIdent: String,
     ): MaltekstseksjonVersion {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
+
+        if (maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
+                maltekstseksjonId = maltekstseksjonId
+            ) != null) {
+            throw ClientErrorException("Utkast finnes allerede.")
+        }
+
         return publishService.createNewDraft(
             maltekstseksjonId = maltekstseksjonId,
             versionInput = versionInput,
@@ -163,38 +168,6 @@ class MaltekstseksjonService(
         ) ?: throw ClientErrorException("det fins hverken utkast eller publisert versjon")
     }
 
-    fun updateMaltekstseksjon(
-        maltekstseksjonId: UUID,
-        saksbehandlerIdent: String,
-        title: String,
-        textIdList: List<String>,
-        utfallIdList: Set<String>,
-        enhetIdList: Set<String>,
-        templateSectionIdList: Set<String>,
-        ytelseHjemmelIdList: Set<String>,
-    ): MaltekstseksjonVersion {
-        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
-
-        val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
-
-        maltekstseksjonVersion.apply {
-            this.title = title
-            this.texts.clear()
-            this.texts.addAll(textIdList.map { textRepository.getReferenceById(UUID.fromString(it)) })
-            this.utfallIdList = utfallIdList
-            this.enhetIdList = enhetIdList
-            this.templateSectionIdList = templateSectionIdList
-            this.ytelseHjemmelIdList = ytelseHjemmelIdList
-            this.modified = LocalDateTime.now()
-            updateEditors(
-                existingEditors = this.editors,
-                newEditorNavIdent = saksbehandlerIdent
-            )
-        }
-
-        return maltekstseksjonVersion
-    }
-
     fun updateTitle(
         input: String,
         maltekstseksjonId: UUID,
@@ -205,9 +178,9 @@ class MaltekstseksjonService(
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.title = input
         maltekstseksjonVersion.modified = LocalDateTime.now()
-        updateEditors(
-            existingEditors = maltekstseksjonVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent
+        maltekstseksjonVersion.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
         )
         return maltekstseksjonVersion
     }
@@ -225,9 +198,9 @@ class MaltekstseksjonService(
         maltekstseksjonVersion.texts.addAll(input.map { textRepository.getReferenceById(UUID.fromString(it)) })
 
         maltekstseksjonVersion.modified = LocalDateTime.now()
-        updateEditors(
-            existingEditors = maltekstseksjonVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent,
+        maltekstseksjonVersion.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            changeType = Editor.ChangeType.MALTEKSTSEKSJON_TEXTS,
         )
         return maltekstseksjonVersion
     }
@@ -242,9 +215,9 @@ class MaltekstseksjonService(
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.utfallIdList = input
         maltekstseksjonVersion.modified = LocalDateTime.now()
-        updateEditors(
-            existingEditors = maltekstseksjonVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent
+        maltekstseksjonVersion.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            changeType = Editor.ChangeType.MALTEKSTSEKSJON_UTFALL,
         )
         return maltekstseksjonVersion
     }
@@ -259,9 +232,9 @@ class MaltekstseksjonService(
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.enhetIdList = input
         maltekstseksjonVersion.modified = LocalDateTime.now()
-        updateEditors(
-            existingEditors = maltekstseksjonVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent
+        maltekstseksjonVersion.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            changeType = Editor.ChangeType.MALTEKSTSEKSJON_ENHETER,
         )
         return maltekstseksjonVersion
     }
@@ -276,9 +249,9 @@ class MaltekstseksjonService(
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.templateSectionIdList = input
         maltekstseksjonVersion.modified = LocalDateTime.now()
-        updateEditors(
-            existingEditors = maltekstseksjonVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent
+        maltekstseksjonVersion.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            changeType = Editor.ChangeType.MALTEKSTSEKSJON_SECTIONS,
         )
         return maltekstseksjonVersion
     }
@@ -293,9 +266,9 @@ class MaltekstseksjonService(
         val maltekstseksjonVersion = getCurrentDraft(maltekstseksjonId)
         maltekstseksjonVersion.ytelseHjemmelIdList = input
         maltekstseksjonVersion.modified = LocalDateTime.now()
-        updateEditors(
-            existingEditors = maltekstseksjonVersion.editors,
-            newEditorNavIdent = saksbehandlerIdent
+        maltekstseksjonVersion.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            changeType = Editor.ChangeType.MALTEKSTSEKSJON_YTELSE_HJEMMEL,
         )
         return maltekstseksjonVersion
     }

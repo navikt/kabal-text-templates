@@ -1,6 +1,7 @@
 package no.nav.klage.texts.service
 
 import no.nav.klage.texts.api.views.VersionInput
+import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
 import no.nav.klage.texts.exceptions.ClientErrorException
@@ -121,10 +122,14 @@ class PublishService(
         return if (existingDraft != null) {
             //Reset draft
             existingDraft.resetDraftWithValuesFrom(existingVersion)
+            existingDraft.editors += Editor(
+                navIdent = saksbehandlerIdent,
+                changeType = Editor.ChangeType.MALTEKSTSEKSJON_VERSION_CREATED,
+            )
             existingDraft
         } else {
             maltekstseksjonVersionRepository.save(
-                existingVersion.createDraft()
+                existingVersion.createDraft(saksbehandlerIdent = saksbehandlerIdent)
             )
         }
     }

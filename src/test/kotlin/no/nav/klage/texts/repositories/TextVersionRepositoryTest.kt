@@ -87,9 +87,11 @@ class TextVersionRepositoryTest {
         return TextVersion(
             title = "title",
             textType = "type",
-            smartEditorVersion = 1,
-            content = "{}",
-            plainText = null,
+            richTextNN = null,
+            richTextNB = "{}",
+            richTextUntranslated = null,
+            plainTextNN = null,
+            plainTextNB = null,
             publishedDateTime = null,
             publishedBy = null,
             published = false,
@@ -102,7 +104,7 @@ class TextVersionRepositoryTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = now,
-                    modified = now,
+                    changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
                 )
             ),
             created = now,
@@ -117,9 +119,11 @@ class TextVersionRepositoryTest {
         return TextVersion(
             title = "title",
             textType = "type",
-            smartEditorVersion = 1,
-            content = "{}",
-            plainText = null,
+            richTextNN = null,
+            richTextNB = null,
+            richTextUntranslated = null,
+            plainTextNN = null,
+            plainTextNB = null,
             publishedDateTime = null,
             publishedBy = "ident",
             published = true,
@@ -132,7 +136,7 @@ class TextVersionRepositoryTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = now,
-                    modified = now,
+                    changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
                 )
             ),
             created = now,

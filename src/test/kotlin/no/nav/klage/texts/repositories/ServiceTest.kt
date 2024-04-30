@@ -232,13 +232,9 @@ class ServiceTest {
             textInput = TextInput(
                 title = "",
                 textType = "",
-                content = null,
+                richText = null,
                 plainText = null,
                 version = null,
-                utfall = setOf(),
-                enheter = setOf(),
-                templateSectionList = setOf(),
-                ytelseHjemmelList = setOf(),
                 utfallIdList = setOf(),
                 enhetIdList = setOf(),
                 templateSectionIdList = setOf(),
@@ -251,13 +247,9 @@ class ServiceTest {
             textInput = TextInput(
                 title = "",
                 textType = "",
-                content = null,
+                richText = null,
                 plainText = null,
                 version = null,
-                utfall = setOf(),
-                enheter = setOf(),
-                templateSectionList = setOf(),
-                ytelseHjemmelList = setOf(),
                 utfallIdList = setOf(),
                 enhetIdList = setOf(),
                 templateSectionIdList = setOf(),
@@ -285,7 +277,7 @@ class ServiceTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = now,
-                    modified = now,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
             ),
             created = now,
@@ -316,13 +308,9 @@ class ServiceTest {
             textInput = TextInput(
                 title = "",
                 textType = "",
-                content = null,
-                plainText = null,
                 version = null,
-                utfall = setOf(),
-                enheter = setOf(),
-                templateSectionList = setOf(),
-                ytelseHjemmelList = setOf(),
+                richText = null,
+                plainText = null,
                 utfallIdList = setOf(),
                 enhetIdList = setOf(),
                 templateSectionIdList = setOf(),
@@ -348,7 +336,7 @@ class ServiceTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = now,
-                    modified = now,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
             ),
             created = now,
@@ -379,13 +367,9 @@ class ServiceTest {
             textInput = TextInput(
                 title = "",
                 textType = "",
-                content = null,
+                richText = null,
                 plainText = null,
                 version = null,
-                utfall = setOf(),
-                enheter = setOf(),
-                templateSectionList = setOf(),
-                ytelseHjemmelList = setOf(),
                 utfallIdList = setOf(),
                 enhetIdList = setOf(),
                 templateSectionIdList = setOf(),
@@ -398,13 +382,9 @@ class ServiceTest {
             textInput = TextInput(
                 title = "",
                 textType = "",
-                content = null,
+                richText = null,
                 plainText = null,
                 version = null,
-                utfall = setOf(),
-                enheter = setOf(),
-                templateSectionList = setOf(),
-                ytelseHjemmelList = setOf(),
                 utfallIdList = setOf(),
                 enhetIdList = setOf(),
                 templateSectionIdList = setOf(),
@@ -434,7 +414,7 @@ class ServiceTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = someDateTime,
-                    modified = someDateTime,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
             ),
             created = someDateTime,
@@ -458,7 +438,7 @@ class ServiceTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = someDateTime,
-                    modified = someDateTime,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
             ),
             created = someDateTime,
@@ -505,7 +485,7 @@ class ServiceTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = someDateTime,
-                    modified = someDateTime,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
             ),
             created = someDateTime,
@@ -529,7 +509,7 @@ class ServiceTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = someDateTime,
-                    modified = someDateTime,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
             ),
             created = someDateTime,

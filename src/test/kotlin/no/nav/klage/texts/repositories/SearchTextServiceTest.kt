@@ -17,9 +17,11 @@ class SearchTextServiceTest {
         return TextVersion(
             title = "",
             textType = "",
-            content = null,
-            plainText = null,
-            smartEditorVersion = null,
+            richTextNN = null,
+            richTextNB = null,
+            richTextUntranslated = null,
+            plainTextNN = null,
+            plainTextNB = null,
             text = Text(
                 created = now,
                 modified = now,

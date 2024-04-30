@@ -3,13 +3,11 @@ package no.nav.klage.texts.api
 import com.fasterxml.jackson.module.kotlin.jsonMapper
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import no.nav.klage.texts.api.views.ConsumerMaltekstseksjonView
-import no.nav.klage.texts.api.views.ConsumerTextView
-import no.nav.klage.texts.api.views.SearchMaltekstseksjonQueryParams
-import no.nav.klage.texts.api.views.SearchTextQueryParams
+import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
+import no.nav.klage.texts.exceptions.LanguageNotFoundException
 import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
@@ -43,8 +41,9 @@ class ConsumerController(
         summary = "Search texts",
         description = "Search texts"
     )
-    @GetMapping("/texts")
+    @GetMapping("/texts/{language}")
     fun searchTexts(
+        @PathVariable("language") language: Language,
         searchTextQueryParams: SearchTextQueryParams
     ): List<ConsumerTextView> {
         logMethodDetails(
@@ -65,8 +64,11 @@ class ConsumerController(
                 ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
             ).sortedByDescending { it.created }
 
-        return textVersions.map {
-            mapToConsumerTextView(it)
+        return textVersions.mapNotNull {
+            mapToConsumerTextView(
+                textVersion = it,
+                language = language,
+            )
         }
     }
 
@@ -105,9 +107,10 @@ class ConsumerController(
         summary = "Get published maltekstseksjon texts",
         description = "Get published maltekstseksjon texts"
     )
-    @GetMapping("/maltekstseksjoner/{maltekstseksjonId}/texts")
+    @GetMapping("/maltekstseksjoner/{maltekstseksjonId}/texts/{language}")
     fun getMaltekstseksjonTexts(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
+        @PathVariable("language") language: Language,
     ): List<ConsumerTextView> {
         logMethodDetails(
             methodName = ::getMaltekstseksjonTexts.name,
@@ -115,9 +118,12 @@ class ConsumerController(
             id = maltekstseksjonId,
             logger = logger,
         )
-        return maltekstseksjonService.getPublishedMaltekstseksjonVersion(maltekstseksjonId).texts.map {
+        return maltekstseksjonService.getPublishedMaltekstseksjonVersion(maltekstseksjonId).texts.mapNotNull {
             val textVersion = textService.getPublishedTextVersion(it.id)
-            mapToConsumerTextView(textVersion)
+            mapToConsumerTextView(
+                textVersion = textVersion,
+                language = language,
+            )
         }
     }
 
@@ -125,9 +131,10 @@ class ConsumerController(
         summary = "Get published text version",
         description = "Get published text version"
     )
-    @GetMapping("/texts/{textId}")
+    @GetMapping("/texts/{textId}/{language}")
     fun getText(
         @PathVariable("textId") textId: UUID,
+        @PathVariable("language") language: Language,
     ): ConsumerTextView {
         logMethodDetails(
             methodName = ::getText.name,
@@ -137,21 +144,46 @@ class ConsumerController(
         )
         return mapToConsumerTextView(
             textVersion = textService.getPublishedTextVersion(textId),
-        )
+            language = language,
+        ) ?: throw LanguageNotFoundException("Fant ikke tekst for språk $language")
     }
 
-    private fun mapToConsumerTextView(textVersion: TextVersion): ConsumerTextView =
-        ConsumerTextView(
+    private fun mapToConsumerTextView(textVersion: TextVersion, language: Language): ConsumerTextView? {
+        when (language) {
+            Language.NN -> if (textVersion.richTextNN == null && textVersion.plainTextNN == null) {
+                return null
+            }
+
+            Language.NB -> if (textVersion.richTextNB == null && textVersion.plainTextNB == null) {
+                return null
+            }
+
+            Language.UNTRANSLATED -> if (textVersion.richTextUntranslated == null) {
+                return null
+            }
+        }
+        return ConsumerTextView(
             id = textVersion.text.id,
             title = textVersion.title,
             textType = textVersion.textType,
-            content = if (textVersion.content != null) jsonMapper().readTree(textVersion.content) else null,
-            plainText = textVersion.plainText,
+            richText = when (language) {
+                Language.NN -> if (textVersion.richTextNN != null) jsonMapper().readTree(textVersion.richTextNN) else null
+                Language.NB -> if (textVersion.richTextNB != null) jsonMapper().readTree(textVersion.richTextNB) else null
+                Language.UNTRANSLATED -> if (textVersion.richTextUntranslated != null) jsonMapper().readTree(textVersion.richTextUntranslated) else null
+            },
+            plainText = when (language) {
+                Language.NN -> textVersion.plainTextNN
+                Language.NB -> textVersion.plainTextNB
+                Language.UNTRANSLATED -> null
+            },
             utfallIdList = textVersion.utfallIdList,
             enhetIdList = textVersion.enhetIdList,
             templateSectionIdList = textVersion.templateSectionIdList,
             ytelseHjemmelIdList = textVersion.ytelseHjemmelIdList,
+            language = language,
+            publishedDateTime = textVersion.publishedDateTime!!,
         )
+    }
 
     private fun mapToConsumerMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): ConsumerMaltekstseksjonView =
         ConsumerMaltekstseksjonView(

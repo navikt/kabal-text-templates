@@ -72,7 +72,7 @@ class MaltekstseksjonVersionRepositoryTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = now,
-                    modified = now,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
             ),
             created = now,
@@ -124,7 +124,7 @@ class MaltekstseksjonVersionRepositoryTest {
                 Editor(
                     navIdent = "saksbehandlerIdent",
                     created = now,
-                    modified = now,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
             ),
             created = now,

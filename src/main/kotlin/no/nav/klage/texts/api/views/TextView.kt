@@ -10,9 +10,8 @@ data class TextView(
     val versionId: UUID,
     val title: String,
     val textType: String,
-    val content: JsonNode?,
-    val plainText: String?,
-    val version: Int?,
+    val richText: RichText?,
+    val plainText: PlainText?,
     val created: LocalDateTime,
     val modified: LocalDateTime,
     val createdBy: String?,
@@ -22,23 +21,45 @@ data class TextView(
     val templateSectionIdList: Set<String>,
     val ytelseHjemmelIdList: Set<String>,
 
-    val editors: List<EditorView>,
+    val editors: List<TextEditorView>,
     val publishedDateTime: LocalDateTime?,
     val publishedBy: String?,
     val published: Boolean,
 
     val draftMaltekstseksjonIdList: List<UUID>,
     val publishedMaltekstseksjonIdList: List<UUID>
-)
+) {
+    data class RichText(
+        val nn: JsonNode?,
+        val nb: JsonNode?,
+        val untranslated: JsonNode?,
+    )
+
+    data class PlainText(
+        val nn: String?,
+        val nb: String?,
+    )
+}
 
 data class ConsumerTextView(
     val id: UUID,
     val title: String,
     val textType: String,
-    val content: JsonNode?,
+    val richText: JsonNode?,
     val plainText: String?,
-    val utfallIdList: Set<String>,
     val enhetIdList: Set<String>,
     val templateSectionIdList: Set<String>,
     val ytelseHjemmelIdList: Set<String>,
+    val utfallIdList: Set<String>,
+    val language: Language,
+    val publishedDateTime: LocalDateTime,
+)
+
+data class SearchableListItem(
+    val id: UUID,
+    val textType: String,
+    val title: String,
+    val modified: LocalDateTime,
+    val richText: TextView.RichText?,
+    val plainText: TextView.PlainText?
 )
