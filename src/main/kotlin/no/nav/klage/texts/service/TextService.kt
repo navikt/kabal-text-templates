@@ -42,6 +42,7 @@ class TextService(
         return publishService.publishTextVersion(
             textId = textId,
             saksbehandlerIdent = saksbehandlerIdent,
+            timestamp = LocalDateTime.now(),
         )
     }
 

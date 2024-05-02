@@ -46,7 +46,8 @@ class PublishService(
 
         validateTextsAreNotEmptyWhenPublishingTogetherWithMaltekstseksjon(maltekstseksjonVersionDraft)
 
-        maltekstseksjonVersionDraft.publishedDateTime = LocalDateTime.now()
+        val now = LocalDateTime.now()
+        maltekstseksjonVersionDraft.publishedDateTime = now
         maltekstseksjonVersionDraft.published = true
         maltekstseksjonVersionDraft.publishedBy = saksbehandlerIdent
 
@@ -55,7 +56,7 @@ class PublishService(
                 textId = it.id
             ) != null
         }.map {
-            publishTextVersion(textId = it.id, saksbehandlerIdent = saksbehandlerIdent)
+            publishTextVersion(textId = it.id, saksbehandlerIdent = saksbehandlerIdent, timestamp = now)
         }
 
         return maltekstseksjonVersionDraft to textVersions
@@ -134,7 +135,7 @@ class PublishService(
         }
     }
 
-    fun publishTextVersion(textId: UUID, saksbehandlerIdent: String): TextVersion {
+    fun publishTextVersion(textId: UUID, saksbehandlerIdent: String, timestamp: LocalDateTime): TextVersion {
         val possiblePreviouslyPublishedVersion = textVersionRepository.findByPublishedIsTrueAndTextId(textId)
         if (possiblePreviouslyPublishedVersion != null) {
             possiblePreviouslyPublishedVersion.published = false
@@ -145,7 +146,7 @@ class PublishService(
                 textId = textId
             ) ?: throw ClientErrorException("ikke noe utkast funnet som kan publiseres")
 
-        textVersionDraft.publishedDateTime = LocalDateTime.now()
+        textVersionDraft.publishedDateTime = timestamp
         textVersionDraft.published = true
         textVersionDraft.publishedBy = saksbehandlerIdent
 
