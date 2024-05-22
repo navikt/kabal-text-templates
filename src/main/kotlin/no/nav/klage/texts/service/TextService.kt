@@ -491,7 +491,11 @@ class TextService(
     }
 
     fun getConnectedMaltekstseksjonerBulk(textVersions: List<TextVersion>): Map<UUID, Pair<Set<UUID>, Set<UUID>>> {
+        val map = mutableMapOf<UUID, Pair<MutableSet<UUID>, MutableSet<UUID>>>()
         val textIdList = textVersions.map { it.text.id }
+
+        textIdList.forEach { map[it] = Pair(mutableSetOf(), mutableSetOf()) }
+
         val published = maltekstseksjonVersionRepository.findConnectedMaltekstseksjonPublishedIdListBulk(textIdList)
         val drafts = maltekstseksjonVersionRepository.findConnectedMaltekstseksjonDraftsIdListBulk(textIdList)
 
@@ -503,24 +507,16 @@ class TextService(
             )
         }
 
-        val map = mutableMapOf<UUID, Pair<MutableSet<UUID>, MutableSet<UUID>>>()
-
         published.forEach {
             val maltekstseksjonId = it.first()
             val textId = it.last()
-
-            map[textId] = (map[textId] ?: Pair(mutableSetOf(), mutableSetOf())).apply {
-                first.add(maltekstseksjonId)
-            }
+            map[textId]!!.first.add(maltekstseksjonId)
         }
 
         drafts.forEach {
             val maltekstseksjonId = it.first()
             val textId = it.last()
-
-            map[textId] = (map[textId] ?: Pair(mutableSetOf(), mutableSetOf())).apply {
-                second.add(maltekstseksjonId)
-            }
+            map[textId]!!.second.add(maltekstseksjonId)
         }
 
         return map
