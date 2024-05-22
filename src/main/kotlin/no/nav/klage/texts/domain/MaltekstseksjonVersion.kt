@@ -16,6 +16,7 @@ import java.util.*
             NamedAttributeNode("ytelseHjemmelIdList"),
             NamedAttributeNode("texts"),
             NamedAttributeNode("editors"),
+            NamedAttributeNode("maltekstseksjon"),
         ]
     ),
 )
