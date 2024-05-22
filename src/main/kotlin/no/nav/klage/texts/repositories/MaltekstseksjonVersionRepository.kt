@@ -8,48 +8,26 @@ import java.util.*
 
 interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersion, UUID> {
 
-    @EntityGraph(attributePaths = [
-        "texts",
-        "utfallIdList",
-        "enhetIdList",
-        "templateSectionIdList",
-        "ytelseHjemmelIdList",
-    ])
+    @EntityGraph("MaltekstseksjonVersion.full")
     fun findByPublishedIsTrue(): List<MaltekstseksjonVersion>
 
-    @EntityGraph(attributePaths = [
-        "texts",
-        "utfallIdList",
-        "enhetIdList",
-        "templateSectionIdList",
-        "ytelseHjemmelIdList",
-    ])
+    @EntityGraph("MaltekstseksjonVersion.full")
     fun findByPublishedDateTimeIsNull(): List<MaltekstseksjonVersion>
 
+    @EntityGraph("MaltekstseksjonVersion.full")
     fun findByPublishedIsTrueAndMaltekstseksjonId(
         maltekstseksjonId: UUID
     ): MaltekstseksjonVersion?
 
+    @EntityGraph("MaltekstseksjonVersion.full")
     fun findByPublishedDateTimeIsNullAndMaltekstseksjonId(
         maltekstseksjonId: UUID
     ): MaltekstseksjonVersion?
 
-    @EntityGraph(attributePaths = [
-        "texts",
-        "utfallIdList",
-        "enhetIdList",
-        "templateSectionIdList",
-        "ytelseHjemmelIdList",
-    ])
+    @EntityGraph("MaltekstseksjonVersion.full")
     fun findByMaltekstseksjonId(maltekstseksjonId: UUID): List<MaltekstseksjonVersion>
 
-    @EntityGraph(attributePaths = [
-        "texts",
-        "utfallIdList",
-        "enhetIdList",
-        "templateSectionIdList",
-        "ytelseHjemmelIdList",
-    ])
+    @EntityGraph("MaltekstseksjonVersion.full")
     @Query(
         """
             select mv.maltekstseksjon.id from Text t inner join t.maltekstseksjonVersions mv
@@ -59,13 +37,17 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
     )
     fun findConnectedMaltekstseksjonPublishedIdList(textId: UUID): List<UUID>
 
-    @EntityGraph(attributePaths = [
-        "texts",
-        "utfallIdList",
-        "enhetIdList",
-        "templateSectionIdList",
-        "ytelseHjemmelIdList",
-    ])
+    @EntityGraph("MaltekstseksjonVersion.full")
+    @Query(
+        """
+            select mv.maltekstseksjon.id, t.id from Text t inner join t.maltekstseksjonVersions mv
+                where mv.published = true
+                and t.id in (:textIdList)
+        """
+    )
+    fun findConnectedMaltekstseksjonPublishedIdListBulk(textIdList: List<UUID>): List<List<UUID>>
+
+    @EntityGraph("MaltekstseksjonVersion.full")
     @Query(
         """
             select mvl.maltekstseksjon.id from Text t inner join t.maltekstseksjonVersions mvl
@@ -74,5 +56,21 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
         """
     )
     fun findConnectedMaltekstseksjonDraftsIdList(textId: UUID): List<UUID>
+
+    @EntityGraph("MaltekstseksjonVersion.full")
+    @Query(
+        """
+            select mvl.maltekstseksjon.id, t.id from Text t inner join t.maltekstseksjonVersions mvl
+                where mvl.publishedDateTime = null
+                and t.id in (:textIdList)
+        """
+    )
+    fun findConnectedMaltekstseksjonDraftsIdListBulk(textIdList: List<UUID>): List<List<UUID>>
+
+    @EntityGraph("MaltekstseksjonVersion.full")
+    override fun findAll(): List<MaltekstseksjonVersion>
+
+    @EntityGraph("MaltekstseksjonVersion.full")
+    override fun findAllById(ids: Iterable<UUID>): List<MaltekstseksjonVersion>
 
 }

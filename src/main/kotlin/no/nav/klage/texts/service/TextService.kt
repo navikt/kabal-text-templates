@@ -490,6 +490,42 @@ class TextService(
         return outcome
     }
 
+    fun getConnectedMaltekstseksjonerBulk(textVersions: List<TextVersion>): Map<UUID, Pair<Set<UUID>, Set<UUID>>> {
+        val textIdList = textVersions.map { it.text.id }
+        val published = maltekstseksjonVersionRepository.findConnectedMaltekstseksjonPublishedIdListBulk(textIdList)
+        val drafts = maltekstseksjonVersionRepository.findConnectedMaltekstseksjonDraftsIdListBulk(textIdList)
+
+        if (published.isNotEmpty() || drafts.isNotEmpty()) {
+            logger.debug(
+                "getConnectedMaltekstseksjoner got results. findConnectedMaltekstseksjonPublishedIdListBulk size: {}, findConnectedMaltekstseksjonDraftsIdListBulk size: {}",
+                published.size,
+                drafts.size
+            )
+        }
+
+        val map = mutableMapOf<UUID, Pair<MutableSet<UUID>, MutableSet<UUID>>>()
+
+        published.forEach {
+            val maltekstseksjonId = it.first()
+            val textId = it.last()
+
+            map[textId] = (map[textId] ?: Pair(mutableSetOf(), mutableSetOf())).apply {
+                first.add(maltekstseksjonId)
+            }
+        }
+
+        drafts.forEach {
+            val maltekstseksjonId = it.first()
+            val textId = it.last()
+
+            map[textId] = (map[textId] ?: Pair(mutableSetOf(), mutableSetOf())).apply {
+                second.add(maltekstseksjonId)
+            }
+        }
+
+        return map
+    }
+
     private fun getCurrentDraft(textId: UUID): TextVersion {
         return textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
             textId = textId

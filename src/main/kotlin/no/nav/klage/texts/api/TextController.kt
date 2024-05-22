@@ -449,10 +449,12 @@ class TextController(
                 ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
             ).sortedByDescending { it.created }
 
+        val connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjonerBulk(textVersions)
         return textVersions.map {
+            val connections = connectedMaltekstseksjonIdList[it.id]!!
             mapToTextView(
                 textVersion = it,
-                connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(it.text.id)
+                connectedMaltekstseksjonIdList = connections.first.toList() to connections.second.toList()
             )
         }
     }

@@ -346,7 +346,7 @@ class MaltekstseksjonService(
 
     fun getAllMaltekstseksjonVersions(): List<MaltekstseksjonVersion> = maltekstseksjonVersionRepository.findAll()
 
-    fun getMaltekstseksjonVersionsById(ids: List<UUID>): MutableList<MaltekstseksjonVersion> =
+    fun getMaltekstseksjonVersionsById(ids: List<UUID>): List<MaltekstseksjonVersion> =
         maltekstseksjonVersionRepository.findAllById(ids)
 
     fun updateAll(maltekstseksjonVersions: List<MaltekstseksjonVersion>): MutableList<MaltekstseksjonVersion> =
