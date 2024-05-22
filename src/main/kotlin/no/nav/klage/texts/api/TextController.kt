@@ -451,7 +451,7 @@ class TextController(
 
         val connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjonerBulk(textVersions)
         return textVersions.map {
-            val connections = connectedMaltekstseksjonIdList[it.id]!!
+            val connections = connectedMaltekstseksjonIdList[it.text.id]!!
             mapToTextView(
                 textVersion = it,
                 connectedMaltekstseksjonIdList = connections.first.toList() to connections.second.toList()
