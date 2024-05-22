@@ -7,36 +7,23 @@ import java.util.*
 
 interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
 
-    @EntityGraph(attributePaths = [
-        "utfallIdList",
-        "enhetIdList",
-        "templateSectionIdList",
-        "ytelseHjemmelIdList",
-    ])
+    @EntityGraph("TextVersion.full")
     fun findByPublishedIsTrue(): List<TextVersion>
 
-    @EntityGraph(attributePaths = [
-        "utfallIdList",
-        "enhetIdList",
-        "templateSectionIdList",
-        "ytelseHjemmelIdList",
-    ])
+    @EntityGraph("TextVersion.full")
     fun findByPublishedDateTimeIsNull(): List<TextVersion>
 
+    @EntityGraph("TextVersion.full")
     fun findByPublishedIsTrueAndTextId(
         textId: UUID
     ): TextVersion?
 
+    @EntityGraph("TextVersion.full")
     fun findByPublishedDateTimeIsNullAndTextId(
         textId: UUID
     ): TextVersion?
 
-    @EntityGraph(attributePaths = [
-        "utfallIdList",
-        "enhetIdList",
-        "templateSectionIdList",
-        "ytelseHjemmelIdList",
-    ])
+    @EntityGraph("TextVersion.full")
     fun findByTextId(textId: UUID): List<TextVersion>
 
 }

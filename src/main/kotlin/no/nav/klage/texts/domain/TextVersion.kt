@@ -6,6 +6,19 @@ import java.util.*
 
 @Entity
 @Table(name = "text_version", schema = "klage")
+@NamedEntityGraphs(
+    NamedEntityGraph(
+        name = "TextVersion.full",
+        attributeNodes = [
+            NamedAttributeNode("utfallIdList"),
+            NamedAttributeNode("enhetIdList"),
+            NamedAttributeNode("templateSectionIdList"),
+            NamedAttributeNode("ytelseHjemmelIdList"),
+            NamedAttributeNode("text"),
+            NamedAttributeNode("editors"),
+        ]
+    ),
+)
 class TextVersion(
     @Id
     val id: UUID = UUID.randomUUID(),
@@ -24,27 +37,27 @@ class TextVersion(
     @Column(name = "plain_text_nb")
     var plainTextNB: String?,
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(schema = "klage", name = "utfall", joinColumns = [JoinColumn(name = "text_version_id")])
     @Column(name = "utfall")
     var utfallIdList: Set<String> = emptySet(),
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(schema = "klage", name = "enhet", joinColumns = [JoinColumn(name = "text_version_id")])
     @Column(name = "enhet")
     var enhetIdList: Set<String> = emptySet(),
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(schema = "klage", name = "template_section", joinColumns = [JoinColumn(name = "text_version_id")])
     @Column(name = "template_section")
     var templateSectionIdList: Set<String> = emptySet(),
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(schema = "klage", name = "ytelse_hjemmel", joinColumns = [JoinColumn(name = "text_version_id")])
     @Column(name = "ytelse_hjemmel")
     var ytelseHjemmelIdList: Set<String> = emptySet(),
 
-    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "text_version_id", referencedColumnName = "id", nullable = false)
     val editors: MutableSet<Editor> = mutableSetOf(),
 

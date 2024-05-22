@@ -154,4 +154,58 @@ class MaltekstseksjonVersionRepositoryTest {
         assertThat(foundMaltekstseksjonVersion.texts).isEmpty()
     }
 
+    @Test
+    fun `find published bulk works`() {
+        val now = LocalDateTime.now()
+
+        val maltekstseksjon = testEntityManager.persist(
+            Maltekstseksjon(
+                created = now,
+                modified = now,
+                createdBy = "abc",
+            )
+        )
+
+        val text = textRepository.save(
+            Text(
+                created = now,
+                modified = now,
+                maltekstseksjonVersions = mutableListOf(),
+                createdBy = "abc",
+            )
+        )
+
+        val maltekstseksjonVersion = MaltekstseksjonVersion(
+            title = "title",
+            maltekstseksjon = maltekstseksjon,
+            texts = mutableListOf(text),
+            publishedDateTime = now,
+            publishedBy = "null",
+            published = true,
+            utfallIdList = setOf("1"),
+            enhetIdList = setOf("1"),
+            templateSectionIdList = setOf("1"),
+            ytelseHjemmelIdList = setOf("1"),
+            editors = mutableSetOf(
+                Editor(
+                    navIdent = "saksbehandlerIdent",
+                    created = now,
+                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
+                )
+            ),
+            created = now,
+            modified = now,
+        )
+
+        maltekstseksjonVersionRepository.save(maltekstseksjonVersion)
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
+        val bulk = maltekstseksjonVersionRepository.findConnectedMaltekstseksjonPublishedIdListBulk(listOf(text.id))
+
+        assertThat(bulk.first().first()).isEqualTo(maltekstseksjon.id)
+        assertThat(bulk.first().last()).isEqualTo(text.id)
+    }
+
 }

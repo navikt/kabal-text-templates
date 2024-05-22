@@ -6,6 +6,20 @@ import java.util.*
 
 @Entity
 @Table(name = "maltekstseksjon_version", schema = "klage")
+@NamedEntityGraphs(
+    NamedEntityGraph(
+        name = "MaltekstseksjonVersion.full",
+        attributeNodes = [
+            NamedAttributeNode("utfallIdList"),
+            NamedAttributeNode("enhetIdList"),
+            NamedAttributeNode("templateSectionIdList"),
+            NamedAttributeNode("ytelseHjemmelIdList"),
+            NamedAttributeNode("texts"),
+            NamedAttributeNode("editors"),
+            NamedAttributeNode("maltekstseksjon"),
+        ]
+    ),
+)
 class MaltekstseksjonVersion(
     @Id
     val id: UUID = UUID.randomUUID(),
@@ -17,7 +31,7 @@ class MaltekstseksjonVersion(
     @JoinColumn(name = "maltekstseksjon_id", nullable = false, updatable = false)
     var maltekstseksjon: Maltekstseksjon,
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         schema = "klage",
         name = "maltekstseksjon_version_text",
@@ -27,17 +41,17 @@ class MaltekstseksjonVersion(
     @OrderColumn(name = "index", nullable = false)
     val texts: MutableList<Text> = mutableListOf(),
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(schema = "klage", name = "utfall", joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")])
     @Column(name = "utfall")
     var utfallIdList: Set<String> = emptySet(),
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(schema = "klage", name = "enhet", joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")])
     @Column(name = "enhet")
     var enhetIdList: Set<String> = emptySet(),
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
         schema = "klage",
         name = "template_section",
@@ -46,7 +60,7 @@ class MaltekstseksjonVersion(
     @Column(name = "template_section")
     var templateSectionIdList: Set<String> = emptySet(),
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
         schema = "klage",
         name = "ytelse_hjemmel",
@@ -55,7 +69,7 @@ class MaltekstseksjonVersion(
     @Column(name = "ytelse_hjemmel")
     var ytelseHjemmelIdList: Set<String> = emptySet(),
 
-    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "maltekstseksjon_version_id", referencedColumnName = "id", nullable = false)
     val editors: MutableSet<Editor> = mutableSetOf(),
 
