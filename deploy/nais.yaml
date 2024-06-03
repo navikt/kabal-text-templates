@@ -48,10 +48,10 @@ spec:
     timeout: 1
   resources:
     limits:
-      memory: 2048Mi
+      memory: 4096Mi
     requests:
-      cpu: 400m
-      memory: 1024Mi
+      cpu: 600m
+      memory: 2048Mi
   {{#if ingresses}}
   ingresses:
   {{#each ingresses as |ingress|}}
@@ -60,7 +60,7 @@ spec:
   {{/if}}
   replicas:
     min: 2
-    max: 4
+    max: 5
     cpuThresholdPercentage: 80
   prometheus:
     enabled: true
