@@ -51,7 +51,7 @@ class CacheWithJCacheConfiguration(private val environment: Environment) : JCach
         if (environment.activeProfiles.contains("prod-gcp")) {
             Duration(TimeUnit.MINUTES, 45L)
         } else {
-            Duration(TimeUnit.MINUTES, 3L)
+            Duration(TimeUnit.MINUTES, 30L)
         }
 
 }
