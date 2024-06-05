@@ -15,6 +15,7 @@ import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
 import no.nav.klage.texts.util.logMethodDetails
 import no.nav.security.token.support.core.api.ProtectedWithClaims
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
@@ -37,6 +38,7 @@ class ConsumerController(
         private val secureLogger = getSecureLogger()
     }
 
+    @Cacheable("consumerTextSearch")
     @Operation(
         summary = "Search texts",
         description = "Search texts"
@@ -72,6 +74,7 @@ class ConsumerController(
         }
     }
 
+    @Cacheable("consumerMaltekstseksjonSearch")
     @Operation(
         summary = "Search maltekstseksjoner",
         description = "Search maltekstseksjoner"
@@ -103,6 +106,7 @@ class ConsumerController(
         }
     }
 
+    @Cacheable("consumerMaltekstseksjonTexts")
     @Operation(
         summary = "Get published maltekstseksjon texts",
         description = "Get published maltekstseksjon texts"
@@ -127,6 +131,7 @@ class ConsumerController(
         }
     }
 
+    @Cacheable("consumerText")
     @Operation(
         summary = "Get published text version",
         description = "Get published text version"

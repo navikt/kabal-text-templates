@@ -5,6 +5,7 @@ val logstashVersion = "7.4"
 val testContainersVersion = "1.19.7"
 val springDocVersion = "2.4.0"
 val tokenValidationVersion = "4.1.4"
+val ehcacheVersion = "3.10.8"
 
 repositories {
     mavenCentral()
@@ -29,6 +30,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+
+    implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("javax.cache:cache-api")
+    implementation("org.ehcache:ehcache:$ehcacheVersion")
 
     implementation("no.nav.security:token-validation-spring:$tokenValidationVersion")
     implementation("no.nav.security:token-client-spring:$tokenValidationVersion")
