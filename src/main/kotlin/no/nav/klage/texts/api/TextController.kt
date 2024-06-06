@@ -460,6 +460,42 @@ class TextController(
     }
 
     @Operation(
+        summary = "Search texts without published versions (or drafts)",
+        description = "Search texts without published versions (or drafts)"
+    )
+    @GetMapping("/trash")
+    fun searchHiddenTexts(
+        searchTextQueryParams: SearchTextQueryParams
+    ): List<TextView> {
+        logMethodDetails(
+            methodName = ::searchHiddenTexts.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = null,
+            logger = logger,
+        )
+
+        logger.debug("searchHiddenTexts called with params {}", searchTextQueryParams)
+
+        val textVersions =
+            textService.searchHiddenTextVersions(
+                textType = searchTextQueryParams.textType,
+                utfallIdList = searchTextQueryParams.utfallIdList ?: emptyList(),
+                enhetIdList = searchTextQueryParams.enhetIdList ?: emptyList(),
+                templateSectionIdList = searchTextQueryParams.templateSectionIdList ?: emptyList(),
+                ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
+            ).sortedByDescending { it.created }
+
+        val connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjonerBulk(textVersions)
+        return textVersions.map {
+            val connections = connectedMaltekstseksjonIdList[it.text.id]!!
+            mapToTextView(
+                textVersion = it,
+                connectedMaltekstseksjonIdList = connections.first.toList() to connections.second.toList()
+            )
+        }
+    }
+
+    @Operation(
         summary = "Get current text version",
         description = "Get current text version"
     )

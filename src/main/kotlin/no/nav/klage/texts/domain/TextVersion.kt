@@ -114,46 +114,11 @@ class TextVersion(
 
         other as TextVersion
 
-        if (id != other.id) return false
-        if (title != other.title) return false
-        if (textType != other.textType) return false
-        if (richTextNN != other.richTextNN) return false
-        if (richTextNB != other.richTextNB) return false
-        if (richTextUntranslated != other.richTextUntranslated) return false
-        if (plainTextNN != other.plainTextNN) return false
-        if (plainTextNB != other.plainTextNB) return false
-        if (utfallIdList != other.utfallIdList) return false
-        if (enhetIdList != other.enhetIdList) return false
-        if (templateSectionIdList != other.templateSectionIdList) return false
-        if (ytelseHjemmelIdList != other.ytelseHjemmelIdList) return false
-        if (editors != other.editors) return false
-        if (text != other.text) return false
-        if (publishedDateTime != other.publishedDateTime) return false
-        if (publishedBy != other.publishedBy) return false
-        if (published != other.published) return false
-
-        return true
+        return id == other.id
     }
 
     override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + title.hashCode()
-        result = 31 * result + textType.hashCode()
-        result = 31 * result + (richTextNN?.hashCode() ?: 0)
-        result = 31 * result + (richTextNB?.hashCode() ?: 0)
-        result = 31 * result + (richTextUntranslated?.hashCode() ?: 0)
-        result = 31 * result + (plainTextNN?.hashCode() ?: 0)
-        result = 31 * result + (plainTextNB?.hashCode() ?: 0)
-        result = 31 * result + utfallIdList.hashCode()
-        result = 31 * result + enhetIdList.hashCode()
-        result = 31 * result + templateSectionIdList.hashCode()
-        result = 31 * result + ytelseHjemmelIdList.hashCode()
-        result = 31 * result + editors.hashCode()
-        result = 31 * result + text.hashCode()
-        result = 31 * result + (publishedDateTime?.hashCode() ?: 0)
-        result = 31 * result + (publishedBy?.hashCode() ?: 0)
-        result = 31 * result + published.hashCode()
-        return result
+        return id.hashCode()
     }
 
     override fun toString(): String {

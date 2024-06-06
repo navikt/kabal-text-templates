@@ -101,7 +101,8 @@ class TextService(
 
         if (textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
                 textId = textId
-            ) != null) {
+            ) != null
+        ) {
             throw ClientErrorException("Utkast finnes allerede.")
         }
 
@@ -448,6 +449,23 @@ class TextService(
         )
     }
 
+    fun searchHiddenTextVersions(
+        textType: String?,
+        utfallIdList: List<String>,
+        enhetIdList: List<String>,
+        templateSectionIdList: List<String>,
+        ytelseHjemmelIdList: List<String>,
+    ): List<TextVersion> {
+        return searchTextService.searchTexts(
+            texts = getAllHiddenTextVersions(),
+            textType = textType,
+            utfallIdList = utfallIdList,
+            enhetIdList = enhetIdList,
+            templateSectionIdList = templateSectionIdList,
+            ytelseHjemmelIdList = ytelseHjemmelIdList,
+        )
+    }
+
     /**
      * Get all current texts, both drafts and published.
      */
@@ -470,6 +488,27 @@ class TextService(
         }
 
         logger.debug("combining all published texts and all drafts took {} millis. Found {} texts", millis, texts.size)
+        return texts
+    }
+
+    /**
+     * Get all hidden texts
+     */
+    private fun getAllHiddenTextVersions(): List<TextVersion> {
+        var texts: List<TextVersion>
+
+        val millis = measureTimeMillis {
+            val hiddenTextVersions = textVersionRepository.findHiddenTextVersions()
+
+            texts = hiddenTextVersions.groupBy { it.text }
+                .map { (_, textVersions) ->
+                    textVersions.maxByOrNull { textVersion ->
+                        textVersion.created
+                    }!!
+                }
+        }
+
+        logger.debug("getting hidden texts versions took {} millis. Found {} texts versions", millis, texts.size)
         return texts
     }
 

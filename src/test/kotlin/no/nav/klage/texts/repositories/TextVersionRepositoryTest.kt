@@ -80,6 +80,25 @@ class TextVersionRepositoryTest {
         assertThat(foundPublishedTextVersions.size).isEqualTo(2)
     }
 
+    @Test
+    fun `find hidden texts works`() {
+        val text = getText()
+        val text2 = getText()
+        val publishedTextVersion1 = getPublishedTextVersion(text)
+        publishedTextVersion1.published = false
+
+        val publishedTextVersion2 = getPublishedTextVersion(text2)
+
+        textVersionRepository.save(publishedTextVersion1)
+        textVersionRepository.save(publishedTextVersion2)
+
+        testEntityManager.flush()
+        testEntityManager.clear()
+
+        val foundHiddenTexts = textVersionRepository.findHiddenTextVersions()
+        assertThat(foundHiddenTexts).containsExactlyInAnyOrder(publishedTextVersion1)
+    }
+
     private fun getUnpublishedTextVersion(
         text: Text,
     ): TextVersion {
@@ -124,7 +143,7 @@ class TextVersionRepositoryTest {
             richTextUntranslated = null,
             plainTextNN = null,
             plainTextNB = null,
-            publishedDateTime = null,
+            publishedDateTime = now,
             publishedBy = "ident",
             published = true,
             text = text,
