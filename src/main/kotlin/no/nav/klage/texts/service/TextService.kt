@@ -432,7 +432,7 @@ class TextService(
         )
     }
 
-    fun searchTextVersion(
+    fun searchTextVersions(
         textType: String?,
         utfallIdList: List<String>,
         enhetIdList: List<String>,

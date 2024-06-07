@@ -6,6 +6,7 @@ data class SearchTextQueryParams(
     val enhetIdList: List<String>?,
     val templateSectionIdList: List<String>?,
     val ytelseHjemmelIdList: List<String>?,
+    val trash: Boolean?,
 )
 
 data class SearchMaltekstseksjonQueryParams(
