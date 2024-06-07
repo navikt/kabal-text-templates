@@ -20,6 +20,11 @@ interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
     ): TextVersion?
 
     @EntityGraph("TextVersion.full")
+    fun findByPublishedDateTimeIsNotNullAndTextId(
+        textId: UUID
+    ): List<TextVersion>
+
+    @EntityGraph("TextVersion.full")
     fun findByPublishedDateTimeIsNullAndTextId(
         textId: UUID
     ): TextVersion?

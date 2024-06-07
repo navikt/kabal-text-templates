@@ -97,8 +97,6 @@ class TextService(
         versionInput: VersionInput?,
         saksbehandlerIdent: String,
     ): TextVersion {
-        validateIfTextIsUnpublishedOrMissingDraft(textId)
-
         if (textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
                 textId = textId
             ) != null
@@ -109,9 +107,11 @@ class TextService(
         val existingVersion = if (versionInput != null) {
             textVersionRepository.getReferenceById(versionInput.versionId)
         } else {
-            textVersionRepository.findByPublishedIsTrueAndTextId(
+            val candidates = textVersionRepository.findByPublishedDateTimeIsNotNullAndTextId(
                 textId = textId
-            ) ?: throw ClientErrorException("det må finnes en publisert versjon før et nytt utkast kan lages")
+            )
+            candidates.sortedBy { it.publishedDateTime }.lastOrNull()
+                ?: throw ClientErrorException("det må finnes en tidligere publisert versjon før et nytt utkast kan lages")
         }
 
         return textVersionRepository.save(
