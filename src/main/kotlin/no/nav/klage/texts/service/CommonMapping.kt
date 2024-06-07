@@ -1,4 +1,4 @@
-package no.nav.klage.texts.api
+package no.nav.klage.texts.service
 
 import com.fasterxml.jackson.module.kotlin.jsonMapper
 import no.nav.klage.texts.api.views.*

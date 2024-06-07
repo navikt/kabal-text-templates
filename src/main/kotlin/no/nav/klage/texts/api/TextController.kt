@@ -6,6 +6,8 @@ import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.service.TextService
+import no.nav.klage.texts.service.mapToMaltekstView
+import no.nav.klage.texts.service.mapToTextView
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
@@ -120,13 +122,10 @@ class TextController(
             logger = logger,
         )
 
-        return mapToTextView(
-            textVersion = textService.createNewDraft(
-                textId = textId,
-                versionInput = input,
-                saksbehandlerIdent = tokenUtil.getIdent(),
-            ),
-            connectedMaltekstseksjonIdList = textService.getConnectedMaltekstseksjoner(textId)
+        return textService.createNewDraft(
+            textId = textId,
+            versionInput = input,
+            saksbehandlerIdent = tokenUtil.getIdent(),
         )
     }
 
@@ -441,13 +440,13 @@ class TextController(
         logger.debug("searchTexts called with params {}", searchTextQueryParams)
 
         val textVersions = if (searchTextQueryParams.trash == true) {
-                textService.searchHiddenTextVersions(
-                    textType = searchTextQueryParams.textType,
-                    utfallIdList = searchTextQueryParams.utfallIdList ?: emptyList(),
-                    enhetIdList = searchTextQueryParams.enhetIdList ?: emptyList(),
-                    templateSectionIdList = searchTextQueryParams.templateSectionIdList ?: emptyList(),
-                    ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
-                ).sortedByDescending { it.created }
+            textService.searchHiddenTextVersions(
+                textType = searchTextQueryParams.textType,
+                utfallIdList = searchTextQueryParams.utfallIdList ?: emptyList(),
+                enhetIdList = searchTextQueryParams.enhetIdList ?: emptyList(),
+                templateSectionIdList = searchTextQueryParams.templateSectionIdList ?: emptyList(),
+                ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
+            ).sortedByDescending { it.created }
         } else {
             textService.searchTextVersions(
                 textType = searchTextQueryParams.textType,

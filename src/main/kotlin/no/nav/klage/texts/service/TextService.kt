@@ -2,6 +2,7 @@ package no.nav.klage.texts.service
 
 import no.nav.klage.texts.api.views.Language
 import no.nav.klage.texts.api.views.TextInput
+import no.nav.klage.texts.api.views.TextView
 import no.nav.klage.texts.api.views.VersionInput
 import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
@@ -96,7 +97,7 @@ class TextService(
         textId: UUID,
         versionInput: VersionInput?,
         saksbehandlerIdent: String,
-    ): TextVersion {
+    ): TextView {
         if (textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
                 textId = textId
             ) != null
@@ -114,8 +115,11 @@ class TextService(
                 ?: throw ClientErrorException("det må finnes en tidligere publisert versjon før et nytt utkast kan lages")
         }
 
-        return textVersionRepository.save(
-            existingVersion.createDraft(saksbehandlerIdent = saksbehandlerIdent)
+        return mapToTextView(
+            textVersion = textVersionRepository.save(
+                existingVersion.createDraft(saksbehandlerIdent = saksbehandlerIdent)
+            ),
+            connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId)
         )
     }
 

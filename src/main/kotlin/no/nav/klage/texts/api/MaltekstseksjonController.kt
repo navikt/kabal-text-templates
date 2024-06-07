@@ -6,6 +6,8 @@ import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.service.TextService
+import no.nav.klage.texts.service.mapToMaltekstView
+import no.nav.klage.texts.service.mapToTextView
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger

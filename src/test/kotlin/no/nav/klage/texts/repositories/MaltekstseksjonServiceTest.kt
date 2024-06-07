@@ -1,13 +1,13 @@
 package no.nav.klage.texts.repositories
 
 import io.mockk.mockk
-import no.nav.klage.texts.api.mapToMaltekstView
 import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.Maltekstseksjon
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.service.PublishService
+import no.nav.klage.texts.service.mapToMaltekstView
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
