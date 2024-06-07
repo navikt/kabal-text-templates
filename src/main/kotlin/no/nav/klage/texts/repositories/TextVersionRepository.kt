@@ -33,7 +33,6 @@ interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
         SELECT tv
         FROM TextVersion tv
         WHERE tv.publishedDateTime is not null
-          AND tv.published = false
           AND tv.text NOT IN (
             SELECT tv2.text
             FROM TextVersion tv2
