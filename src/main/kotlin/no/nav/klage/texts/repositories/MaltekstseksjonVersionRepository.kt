@@ -73,4 +73,20 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
     @EntityGraph("MaltekstseksjonVersion.full")
     override fun findAllById(ids: Iterable<UUID>): List<MaltekstseksjonVersion>
 
+    @EntityGraph("MaltekstseksjonVersion.full")
+    @Query(
+        """
+        SELECT mv
+        FROM MaltekstseksjonVersion mv
+        WHERE mv.publishedDateTime is not null
+          AND mv.maltekstseksjon NOT IN (
+            SELECT mv2.maltekstseksjon
+            FROM MaltekstseksjonVersion mv2
+            WHERE ((mv2.publishedDateTime is null) OR (mv2.published = true))
+            GROUP BY mv2.maltekstseksjon
+          )
+        """
+    )
+    fun findHiddenMaltekstseksjonVersions(): List<MaltekstseksjonVersion>
+
 }

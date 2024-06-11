@@ -1,6 +1,7 @@
 package no.nav.klage.texts.service
 
 import no.nav.klage.texts.api.views.MaltekstseksjonInput
+import no.nav.klage.texts.api.views.MaltekstseksjonView
 import no.nav.klage.texts.api.views.VersionInput
 import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.Maltekstseksjon
@@ -35,11 +36,13 @@ class MaltekstseksjonService(
         private val secureLogger = getSecureLogger()
     }
 
-    fun publishMaltekstseksjonVersion(maltekstseksjonId: UUID, saksbehandlerIdent: String): MaltekstseksjonVersion {
+    fun publishMaltekstseksjonVersion(maltekstseksjonId: UUID, saksbehandlerIdent: String): MaltekstseksjonView {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
-        return publishService.publishMaltekstseksjonVersion(
-            maltekstseksjonId = maltekstseksjonId,
-            saksbehandlerIdent = saksbehandlerIdent,
+        return mapToMaltekstseksjonView(
+            maltekstseksjonVersion = publishService.publishMaltekstseksjonVersion(
+                maltekstseksjonId = maltekstseksjonId,
+                saksbehandlerIdent = saksbehandlerIdent,
+            ),
         )
     }
 
@@ -54,9 +57,13 @@ class MaltekstseksjonService(
         )
     }
 
-    fun getMaltekstseksjonVersions(maltekstseksjonId: UUID): List<MaltekstseksjonVersion> {
+    fun getMaltekstseksjonVersions(maltekstseksjonId: UUID): List<MaltekstseksjonView> {
         return maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId)
-            .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }
+            .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }.map {
+            mapToMaltekstseksjonView(
+                maltekstseksjonVersion = it,
+            )
+        }
     }
 
     fun createNewMaltekstseksjon(
@@ -309,7 +316,46 @@ class MaltekstseksjonService(
         enhetIdList: List<String>,
         templateSectionIdList: List<String>,
         ytelseHjemmelIdList: List<String>,
+        trash: Boolean?,
     ): List<MaltekstseksjonVersion> {
+        val maltekstseksjonVersions = if (trash == true) {
+            getAllHiddenMaltekstsekjsonVersions()
+        } else {
+            getAllCurrentMaltekstseksjonVersions()
+        }
+
+        return searchMaltekstseksjonService.searchMaltekstseksjoner(
+            maltekstseksjonVersions = maltekstseksjonVersions,
+            textIdList = textIdList,
+            utfallIdList = utfallIdList,
+            enhetIdList = enhetIdList,
+            templateSectionIdList = templateSectionIdList,
+            ytelseHjemmelIdList = ytelseHjemmelIdList,
+        )
+    }
+
+    /**
+     * Get all hidden maltekstseksjonVersions
+     */
+    private fun getAllHiddenMaltekstsekjsonVersions(): List<MaltekstseksjonVersion> {
+        var maltekstseksjonVersions: List<MaltekstseksjonVersion>
+
+        val millis = measureTimeMillis {
+            val hiddenMaltekstseksjonVersions = maltekstseksjonVersionRepository.findHiddenMaltekstseksjonVersions()
+
+            maltekstseksjonVersions = hiddenMaltekstseksjonVersions.groupBy { it.maltekstseksjon }
+                .map { (_, maltekstseksjonVersions) ->
+                    maltekstseksjonVersions.maxByOrNull { maltekstseksjonVersion ->
+                        maltekstseksjonVersion.created
+                    }!!
+                }
+        }
+
+        logger.debug("getting hidden maltekstseksjon versions took {} millis. Found {} maltekstseksjon versions", millis, maltekstseksjonVersions.size)
+        return maltekstseksjonVersions
+    }
+
+    private fun getAllCurrentMaltekstseksjonVersions(): List<MaltekstseksjonVersion> {
         var maltekstseksjonVersions: List<MaltekstseksjonVersion>
 
         val millis = measureTimeMillis {
@@ -333,15 +379,7 @@ class MaltekstseksjonService(
             millis,
             maltekstseksjonVersions.size
         )
-
-        return searchMaltekstseksjonService.searchMaltekstseksjoner(
-            maltekstseksjonVersions = maltekstseksjonVersions,
-            textIdList = textIdList,
-            utfallIdList = utfallIdList,
-            enhetIdList = enhetIdList,
-            templateSectionIdList = templateSectionIdList,
-            ytelseHjemmelIdList = ytelseHjemmelIdList,
-        )
+        return maltekstseksjonVersions
     }
 
     fun getAllMaltekstseksjonVersions(): List<MaltekstseksjonVersion> = maltekstseksjonVersionRepository.findAll()

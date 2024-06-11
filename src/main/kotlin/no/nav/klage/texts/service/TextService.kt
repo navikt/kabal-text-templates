@@ -227,7 +227,7 @@ class TextService(
                     maltekstseksjonVersions = maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId)
                         .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }
                         .map {
-                            mapToMaltekstView(
+                            mapToMaltekstseksjonView(
                                 maltekstseksjonVersion = it,
                             )
                         }.sortedByDescending { it.created }
@@ -268,7 +268,7 @@ class TextService(
                         maltekstseksjonId = maltekstseksjonId,
                         maltekstseksjonVersions = maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId = maltekstseksjonId)
                             .map {
-                                mapToMaltekstView(
+                                mapToMaltekstseksjonView(
                                     maltekstseksjonVersion = it,
                                 )
                             }.sortedByDescending { it.created }

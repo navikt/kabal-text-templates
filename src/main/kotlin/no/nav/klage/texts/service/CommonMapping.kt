@@ -6,7 +6,7 @@ import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
 import java.util.*
 
-fun mapToMaltekstView(maltekstseksjonVersion: MaltekstseksjonVersion): MaltekstseksjonView =
+fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion): MaltekstseksjonView =
     MaltekstseksjonView(
         id = maltekstseksjonVersion.maltekstseksjon.id,
         title = maltekstseksjonVersion.title,

@@ -7,7 +7,7 @@ import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.service.PublishService
-import no.nav.klage.texts.service.mapToMaltekstView
+import no.nav.klage.texts.service.mapToMaltekstseksjonView
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -115,7 +115,7 @@ class MaltekstseksjonServiceTest {
             saksbehandlerIdent = "abc"
         )
 
-        mapToMaltekstView(myDraft)
+        mapToMaltekstseksjonView(myDraft)
     }
 
 }
