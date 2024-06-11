@@ -4,9 +4,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
-import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.service.TextService
-import no.nav.klage.texts.service.mapToMaltekstView
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
@@ -21,7 +19,6 @@ import java.util.*
 @ProtectedWithClaims(issuer = ISSUER_AAD)
 class TextController(
     private val textService: TextService,
-    private val maltekstseksjonService: MaltekstseksjonService,
     private val tokenUtil: TokenUtil,
 ) {
 
@@ -336,28 +333,9 @@ class TextController(
             logger = logger,
         )
 
-        val affectedMaltekstseksjonIdList =
-            textService.getCurrentTextVersion(textId = textId).text.maltekstseksjonVersions
-                .map { it.maltekstseksjon.id }
-                .toSet()
-
-        textService.deleteTextDraftVersion(
+        return textService.deleteTextDraftVersion(
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
-        )
-
-        return DeletedText(
-            maltekstseksjonVersions = affectedMaltekstseksjonIdList.map { maltekstseksjonId ->
-                DeletedText.MaltekstseksjonVersionWithId(
-                    maltekstseksjonId = maltekstseksjonId,
-                    maltekstseksjonVersions = maltekstseksjonService.getMaltekstseksjonVersions(maltekstseksjonId = maltekstseksjonId)
-                        .map {
-                            mapToMaltekstView(
-                                maltekstseksjonVersion = it,
-                            )
-                        }.sortedByDescending { it.created }
-                )
-            }
         )
     }
 

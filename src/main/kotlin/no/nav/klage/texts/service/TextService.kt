@@ -137,6 +137,11 @@ class TextService(
     ): DeletedText {
         val text = textRepository.getReferenceById(textId)
 
+        val affectedMaltekstseksjonIdList =
+            getCurrentTextVersion(textId = textId).text.maltekstseksjonVersions
+                .map { it.maltekstseksjon.id }
+                .toSet()
+
         val affectedMaltekstseksjonVersionsGroupedByMaltekstseksjonId = text.maltekstseksjonVersions.filter { mv ->
             (mv.publishedDateTime == null || mv.published)
         }.groupBy { it.maltekstseksjon.id }
@@ -209,21 +214,17 @@ class TextService(
             throw ClientErrorException("fant ingen tekst å avpublisere")
         }
 
-        val affectedMaltekstseksjoner = publishedMaltekstseksjonVersionsToReturn +
-                maltekstseksjonVersionDraftsToReturn +
-                publishedAndDraftMaltekstseksjonVersionsToReturn.flatten() +
-                notAffectedMaltekstseksjonVersions
-
-//        val affectedMaltekstseksjonIdList =
-//            getCurrentTextVersion(textId = textId).text.maltekstseksjonVersions
-//                .map { it.maltekstseksjon.id }
-//                .toSet()
+        //could this list have been used instead?
+//        val affectedMaltekstseksjoner = publishedMaltekstseksjonVersionsToReturn +
+//                maltekstseksjonVersionDraftsToReturn +
+//                publishedAndDraftMaltekstseksjonVersionsToReturn.flatten() +
+//                notAffectedMaltekstseksjonVersions
 
         return DeletedText(
-            maltekstseksjonVersions = affectedMaltekstseksjoner.map { maltekstseksjon ->
+            maltekstseksjonVersions = affectedMaltekstseksjonIdList.map { maltekstseksjonId ->
                 DeletedText.MaltekstseksjonVersionWithId(
-                    maltekstseksjonId = maltekstseksjon.id,
-                    maltekstseksjonVersions = maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjon.id)
+                    maltekstseksjonId = maltekstseksjonId,
+                    maltekstseksjonVersions = maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId)
                         .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }
                         .map {
                             mapToMaltekstView(
@@ -235,7 +236,12 @@ class TextService(
         )
     }
 
-    fun deleteTextDraftVersion(textId: UUID, saksbehandlerIdent: String) {
+    fun deleteTextDraftVersion(textId: UUID, saksbehandlerIdent: String): DeletedText {
+        val affectedMaltekstseksjonIdList =
+            getCurrentTextVersion(textId = textId).text.maltekstseksjonVersions
+                .map { it.maltekstseksjon.id }
+                .toSet()
+
         val existingDraft = textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
             textId = textId
         )
@@ -255,6 +261,20 @@ class TextService(
 
                 textRepository.deleteById(textId)
             }
+
+            return DeletedText(
+                maltekstseksjonVersions = affectedMaltekstseksjonIdList.map { maltekstseksjonId ->
+                    DeletedText.MaltekstseksjonVersionWithId(
+                        maltekstseksjonId = maltekstseksjonId,
+                        maltekstseksjonVersions = maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId = maltekstseksjonId)
+                            .map {
+                                mapToMaltekstView(
+                                    maltekstseksjonVersion = it,
+                                )
+                            }.sortedByDescending { it.created }
+                    )
+                }
+            )
 
         } else {
             throw ClientErrorException("fant ikke utkast")

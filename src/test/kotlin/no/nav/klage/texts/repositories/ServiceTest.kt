@@ -1,6 +1,29 @@
 package no.nav.klage.texts.repositories
 
-/*
+import io.mockk.mockk
+import no.nav.klage.texts.api.views.TextInput
+import no.nav.klage.texts.domain.Editor
+import no.nav.klage.texts.domain.Maltekstseksjon
+import no.nav.klage.texts.domain.MaltekstseksjonVersion
+import no.nav.klage.texts.domain.Text
+import no.nav.klage.texts.service.MaltekstseksjonService
+import no.nav.klage.texts.service.PublishService
+import no.nav.klage.texts.service.TextService
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager
+import org.springframework.test.context.ActiveProfiles
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
+import java.time.LocalDateTime
+import java.util.*
+
+
 @ActiveProfiles("local")
 @DataJpaTest
 @Testcontainers
@@ -135,7 +158,8 @@ class ServiceTest {
 
         assertThat(maltekstseksjonVersions).hasSize(3)
 
-        assertThat(maltekstseksjonVersions.map { it.id }).containsAll(result.maltekstseksjonVersions.flatMap { it.maltekstseksjonVersions } })
+        assertThat(maltekstseksjonVersions.map { it.maltekstseksjon.id }.toSet())
+            .containsAll(result.maltekstseksjonVersions.flatMap { it.maltekstseksjonVersions }.map { it.id }.toSet())
 
         assertThat(maltekstseksjonVersions.find { !it.published && it.publishedDateTime != null }!!.texts).hasSize(2)
         assertThat(maltekstseksjonVersions.find { it.published }!!.texts).hasSize(1)
@@ -240,10 +264,13 @@ class ServiceTest {
 
         currentTextID = textVersion1.id
 
+        val text1 = textRepository.findById(textVersion1.id).get()
+        val text2 = textRepository.findById(textVersion2.id).get()
+
         val maltekstseksjonVersionPublished = MaltekstseksjonVersion(
             title = "title",
             maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(textVersion1.text, textVersion2.text),
+            texts = mutableListOf(text1, text2),
             publishedDateTime = now,
             publishedBy = "noen",
             published = true,
@@ -297,12 +324,15 @@ class ServiceTest {
             saksbehandlerIdent = "abc",
         )
 
-        currentTextID = textVersion.text.id
+        currentTextID = textVersion.id
+
+        val text = textRepository.findById(textVersion.id).get()
+
 
         val maltekstseksjonVersionDraft = MaltekstseksjonVersion(
             title = "title",
             maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(textVersion.text),
+            texts = mutableListOf(text),
             publishedDateTime = null,
             publishedBy = null,
             published = false,
@@ -371,16 +401,19 @@ class ServiceTest {
             saksbehandlerIdent = "abc",
         )
 
-        textService.publishTextVersion(textId = textVersion2.text.id, saksbehandlerIdent = "abc")
+        textService.publishTextVersion(textId = textVersion2.id, saksbehandlerIdent = "abc")
 
-        currentTextID = textVersion1.text.id
+        currentTextID = textVersion1.id
 
         someDateTime = LocalDateTime.now().minusDays(9)
+
+        val text1 = textRepository.findById(textVersion1.id).get()
+        val text2 = textRepository.findById(textVersion2.id).get()
 
         val maltekstseksjonVersionPublished = MaltekstseksjonVersion(
             title = "title",
             maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(textVersion1.text, textVersion2.text),
+            texts = mutableListOf(text1, text2),
             publishedDateTime = someDateTime,
             publishedBy = "noen",
             published = true,
@@ -404,7 +437,7 @@ class ServiceTest {
         val maltekstseksjonVersionDraft = MaltekstseksjonVersion(
             title = "new title",
             maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(textVersion1.text, textVersion2.text),
+            texts = mutableListOf(text1, text2),
             publishedDateTime = null,
             publishedBy = null,
             published = false,
@@ -502,5 +535,3 @@ class ServiceTest {
     }
 
 }
-
- */
