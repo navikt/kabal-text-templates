@@ -114,7 +114,7 @@ class TextService(
         }
 
         val existingVersion = if (versionInput != null) {
-            textVersionRepository.getReferenceById(versionInput.versionId)
+            textVersionRepository.findById(versionInput.versionId).get()
         } else {
             val candidates = textVersionRepository.findByPublishedDateTimeIsNotNullAndTextId(
                 textId = textId

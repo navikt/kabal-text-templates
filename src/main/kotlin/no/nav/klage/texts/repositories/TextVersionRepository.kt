@@ -48,4 +48,7 @@ interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
     )
     fun findHiddenTextVersions(): List<TextVersion>
 
+    @EntityGraph("TextVersion.full")
+    override fun findById(textVersionId: UUID): Optional<TextVersion>
+
 }
