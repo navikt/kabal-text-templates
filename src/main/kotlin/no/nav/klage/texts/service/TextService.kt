@@ -506,8 +506,17 @@ class TextService(
             getAllCurrentTextVersions()
         }
 
-        val connectedMaltekstseksjonIdList = getConnectedMaltekstseksjonerBulk(textVersions)
-        return textVersions.map {
+        val filteredTextVersions = searchTextService.searchTexts(
+            texts = textVersions,
+            textType = textType,
+            utfallIdList = utfallIdList,
+            enhetIdList = enhetIdList,
+            templateSectionIdList = templateSectionIdList,
+            ytelseHjemmelIdList = ytelseHjemmelIdList,
+        )
+
+        val connectedMaltekstseksjonIdList = getConnectedMaltekstseksjonerBulk(filteredTextVersions)
+        return filteredTextVersions.map {
             val connections = connectedMaltekstseksjonIdList[it.text.id]!!
             mapToTextView(
                 textVersion = it,
