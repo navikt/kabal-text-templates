@@ -41,7 +41,7 @@ interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
           AND tv.text NOT IN (
             SELECT tv2.text
             FROM TextVersion tv2
-            WHERE ((tv2.publishedDateTime = null) OR (tv2.published = true))
+            WHERE ((tv2.publishedDateTime is null) OR (tv2.published = true))
             GROUP BY tv2.text
           )
         """
