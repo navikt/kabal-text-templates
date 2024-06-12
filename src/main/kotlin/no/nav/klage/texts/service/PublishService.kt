@@ -109,7 +109,7 @@ class PublishService(
         saksbehandlerIdent: String,
     ): MaltekstseksjonVersion {
         val existingVersion = if (versionInput != null) {
-            maltekstseksjonVersionRepository.getReferenceById(versionInput.versionId)
+            maltekstseksjonVersionRepository.findById(versionInput.versionId).get()
         } else {
             maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
                 maltekstseksjonId = maltekstseksjonId

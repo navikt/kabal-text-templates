@@ -108,8 +108,6 @@ class MaltekstseksjonService(
         versionInput: VersionInput?,
         saksbehandlerIdent: String,
     ): MaltekstseksjonVersion {
-        validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
-
         if (maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
                 maltekstseksjonId = maltekstseksjonId
             ) != null) {

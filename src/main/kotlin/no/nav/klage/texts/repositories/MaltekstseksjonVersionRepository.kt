@@ -89,4 +89,7 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
     )
     fun findHiddenMaltekstseksjonVersions(): List<MaltekstseksjonVersion>
 
+    @EntityGraph("MaltekstseksjonVersion.full")
+    override fun findById(maltekstseksjonVersionId: UUID): Optional<MaltekstseksjonVersion>
+
 }
