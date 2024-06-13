@@ -356,9 +356,6 @@ class MaltekstseksjonService(
         }
     }
 
-    /**
-     * Get all hidden maltekstseksjonVersions
-     */
     private fun getAllHiddenMaltekstsekjsonVersions(): List<MaltekstseksjonVersion> {
         var maltekstseksjonVersions: List<MaltekstseksjonVersion>
 

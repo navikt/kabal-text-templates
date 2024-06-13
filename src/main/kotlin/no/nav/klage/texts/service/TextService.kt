@@ -570,9 +570,6 @@ class TextService(
         return texts
     }
 
-    /**
-     * Get all hidden texts
-     */
     private fun getAllHiddenTextVersions(): List<TextVersion> {
         var texts: List<TextVersion>
 
