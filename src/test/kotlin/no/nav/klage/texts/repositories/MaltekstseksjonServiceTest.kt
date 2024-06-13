@@ -7,7 +7,6 @@ import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.service.PublishService
-import no.nav.klage.texts.service.mapToMaltekstseksjonView
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -52,6 +51,7 @@ class MaltekstseksjonServiceTest {
             maltekstseksjonRepository = maltekstseksjonRepository,
             maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
             textRepository = mockk(),
+            textService = mockk(),
             searchMaltekstseksjonService = mockk(),
             publishService = PublishService(
                 maltekstseksjonVersionRepository,
@@ -109,13 +109,11 @@ class MaltekstseksjonServiceTest {
 
     @Test
     fun `making sure we don't get this again Parameter specified as non-null is null`() {
-        val myDraft = maltekstseksjonService.createNewDraft(
+        maltekstseksjonService.createNewDraft(
             maltekstseksjonId = UUID.fromString("368f1610-7463-4688-b069-c07667a86b33"),
             versionInput = null,
             saksbehandlerIdent = "abc"
         )
-
-        mapToMaltekstseksjonView(myDraft)
     }
 
 }
