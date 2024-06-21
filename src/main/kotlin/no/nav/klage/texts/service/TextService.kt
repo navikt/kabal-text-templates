@@ -1,10 +1,7 @@
 package no.nav.klage.texts.service
 
-import no.nav.klage.texts.api.views.Language
-import no.nav.klage.texts.api.views.TextInput
-import no.nav.klage.texts.api.views.VersionInput
+import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.domain.Editor
-import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.domain.TextVersion
 import no.nav.klage.texts.exceptions.ClientErrorException
@@ -36,25 +33,33 @@ class TextService(
         private val secureLogger = getSecureLogger()
     }
 
-    fun publishTextVersion(textId: UUID, saksbehandlerIdent: String): TextVersion {
+    fun publishTextVersion(textId: UUID, saksbehandlerIdent: String): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
 
-        return publishService.publishTextVersion(
-            textId = textId,
-            saksbehandlerIdent = saksbehandlerIdent,
-            timestamp = LocalDateTime.now(),
+        return mapToTextView(
+            textVersion = publishService.publishTextVersion(
+                textId = textId,
+                saksbehandlerIdent = saksbehandlerIdent,
+                timestamp = LocalDateTime.now(),
+            ),
+            connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId)
         )
     }
 
-    fun getTextVersions(textId: UUID): List<TextVersion> {
+    fun getTextVersions(textId: UUID): List<TextView> {
         return textVersionRepository.findByTextId(textId)
-            .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }
+            .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }.map {
+                mapToTextView(
+                    textVersion = it,
+                    connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId)
+                )
+            }
     }
 
     fun createNewText(
         textInput: TextInput,
         saksbehandlerIdent: String,
-    ): TextVersion {
+    ): TextView {
         val now = LocalDateTime.now()
 
         val text = textRepository.save(
@@ -66,29 +71,33 @@ class TextService(
             )
         )
 
-        return textVersionRepository.save(
-            TextVersion(
-                title = textInput.title,
-                textType = textInput.textType,
-                richTextNN = textInput.richText?.nn?.toString(),
-                richTextNB = textInput.richText?.nb?.toString(),
-                richTextUntranslated = textInput.richText?.untranslated?.toString(),
-                plainTextNN = textInput.plainText?.nn,
-                plainTextNB = textInput.plainText?.nb,
-                enhetIdList = textInput.enhetIdList ?: emptySet(),
-                editors = mutableSetOf(
-                    Editor(
-                        navIdent = saksbehandlerIdent,
-                        changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
-                    )
-                ),
-                text = text,
-                created = now,
-                modified = now,
-                publishedDateTime = null,
-                published = false,
-                publishedBy = null,
-            )
+        return mapToTextView(
+            textVersion =
+            textVersionRepository.save(
+                TextVersion(
+                    title = textInput.title,
+                    textType = textInput.textType,
+                    richTextNN = textInput.richText?.nn?.toString(),
+                    richTextNB = textInput.richText?.nb?.toString(),
+                    richTextUntranslated = textInput.richText?.untranslated?.toString(),
+                    plainTextNN = textInput.plainText?.nn,
+                    plainTextNB = textInput.plainText?.nb,
+                    enhetIdList = textInput.enhetIdList ?: emptySet(),
+                    editors = mutableSetOf(
+                        Editor(
+                            navIdent = saksbehandlerIdent,
+                            changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
+                        )
+                    ),
+                    text = text,
+                    created = now,
+                    modified = now,
+                    publishedDateTime = null,
+                    published = false,
+                    publishedBy = null,
+                )
+            ),
+            connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId = text.id)
         )
     }
 
@@ -96,33 +105,42 @@ class TextService(
         textId: UUID,
         versionInput: VersionInput?,
         saksbehandlerIdent: String,
-    ): TextVersion {
-        validateIfTextIsUnpublishedOrMissingDraft(textId)
-
+    ): TextView {
         if (textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
                 textId = textId
-            ) != null) {
+            ) != null
+        ) {
             throw ClientErrorException("Utkast finnes allerede.")
         }
 
         val existingVersion = if (versionInput != null) {
-            textVersionRepository.getReferenceById(versionInput.versionId)
+            textVersionRepository.findById(versionInput.versionId).get()
         } else {
-            textVersionRepository.findByPublishedIsTrueAndTextId(
+            val candidates = textVersionRepository.findByPublishedDateTimeIsNotNullAndTextId(
                 textId = textId
-            ) ?: throw ClientErrorException("det må finnes en publisert versjon før et nytt utkast kan lages")
+            )
+            candidates.sortedBy { it.publishedDateTime }.lastOrNull()
+                ?: throw ClientErrorException("det må finnes en tidligere publisert versjon før et nytt utkast kan lages")
         }
 
-        return textVersionRepository.save(
-            existingVersion.createDraft(saksbehandlerIdent = saksbehandlerIdent)
+        return mapToTextView(
+            textVersion = textVersionRepository.save(
+                existingVersion.createDraft(saksbehandlerIdent = saksbehandlerIdent)
+            ),
+            connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId)
         )
     }
 
     fun unpublishText(
         textId: UUID,
         saksbehandlerIdent: String,
-    ): List<MaltekstseksjonVersion> {
+    ): DeletedText {
         val text = textRepository.getReferenceById(textId)
+
+        val affectedMaltekstseksjonIdList =
+            getCurrentTextVersion(textId = textId).text.maltekstseksjonVersions
+                .map { it.maltekstseksjon.id }
+                .toSet()
 
         val affectedMaltekstseksjonVersionsGroupedByMaltekstseksjonId = text.maltekstseksjonVersions.filter { mv ->
             (mv.publishedDateTime == null || mv.published)
@@ -196,13 +214,34 @@ class TextService(
             throw ClientErrorException("fant ingen tekst å avpublisere")
         }
 
-        return publishedMaltekstseksjonVersionsToReturn +
-                maltekstseksjonVersionDraftsToReturn +
-                publishedAndDraftMaltekstseksjonVersionsToReturn.flatten() +
-                notAffectedMaltekstseksjonVersions
+        //could this list have been used instead?
+//        val affectedMaltekstseksjoner = publishedMaltekstseksjonVersionsToReturn +
+//                maltekstseksjonVersionDraftsToReturn +
+//                publishedAndDraftMaltekstseksjonVersionsToReturn.flatten() +
+//                notAffectedMaltekstseksjonVersions
+
+        return DeletedText(
+            maltekstseksjonVersions = affectedMaltekstseksjonIdList.map { maltekstseksjonId ->
+                DeletedText.MaltekstseksjonVersionWithId(
+                    maltekstseksjonId = maltekstseksjonId,
+                    maltekstseksjonVersions = maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId)
+                        .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }
+                        .map {
+                            mapToMaltekstseksjonView(
+                                maltekstseksjonVersion = it,
+                            )
+                        }.sortedByDescending { it.created }
+                )
+            }
+        )
     }
 
-    fun deleteTextDraftVersion(textId: UUID, saksbehandlerIdent: String) {
+    fun deleteTextDraftVersion(textId: UUID, saksbehandlerIdent: String): DeletedText {
+        val affectedMaltekstseksjonIdList =
+            getCurrentTextVersion(textId = textId).text.maltekstseksjonVersions
+                .map { it.maltekstseksjon.id }
+                .toSet()
+
         val existingDraft = textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
             textId = textId
         )
@@ -223,6 +262,20 @@ class TextService(
                 textRepository.deleteById(textId)
             }
 
+            return DeletedText(
+                maltekstseksjonVersions = affectedMaltekstseksjonIdList.map { maltekstseksjonId ->
+                    DeletedText.MaltekstseksjonVersionWithId(
+                        maltekstseksjonId = maltekstseksjonId,
+                        maltekstseksjonVersions = maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId = maltekstseksjonId)
+                            .map {
+                                mapToMaltekstseksjonView(
+                                    maltekstseksjonVersion = it,
+                                )
+                            }.sortedByDescending { it.created }
+                    )
+                }
+            )
+
         } else {
             throw ClientErrorException("fant ikke utkast")
         }
@@ -235,21 +288,25 @@ class TextService(
         ) ?: throw ClientErrorException("fant ingen publisert tekst")
     }
 
-    fun getCurrentTextVersion(textId: UUID): TextVersion {
-        validateIfTextIsUnpublishedOrMissingDraft(textId)
+    fun getCurrentTextVersionAsView(textId: UUID): TextView {
+        return mapToTextView(
+            textVersion = getCurrentTextVersion(textId),
+            connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId)
+        )
+    }
 
-        return textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
-            textId = textId
-        ) ?: textVersionRepository.findByPublishedIsTrueAndTextId(
-            textId = textId
-        ) ?: throw ClientErrorException("det fins hverken utkast eller publisert versjon")
+    fun getCurrentTextVersion(textId: UUID): TextVersion {
+        textVersionRepository.findByTextId(textId).let { version ->
+            return version.maxByOrNull { it.modified }
+                ?: throw ClientErrorException("Fant ingen tekstversjoner")
+        }
     }
 
     fun updateTitle(
         input: String,
         textId: UUID,
         saksbehandlerIdent: String,
-    ): TextVersion {
+    ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.title = input
@@ -259,14 +316,17 @@ class TextService(
             changeType = Editor.ChangeType.TEXT_TITLE,
         )
 
-        return textVersion
+        return mapToTextView(
+            textVersion = textVersion,
+            connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId)
+        )
     }
 
     fun updateTextType(
         input: String,
         textId: UUID,
         saksbehandlerIdent: String,
-    ): TextVersion {
+    ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.textType = input
@@ -275,7 +335,10 @@ class TextService(
             navIdent = saksbehandlerIdent,
             changeType = Editor.ChangeType.TEXT_TYPE,
         )
-        return textVersion
+        return mapToTextView(
+            textVersion = textVersion,
+            connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId)
+        )
     }
 
     fun updateRichText(
@@ -283,7 +346,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
         language: Language,
-    ): TextVersion {
+    ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
         val changeType: Editor.ChangeType
@@ -309,7 +372,10 @@ class TextService(
             navIdent = saksbehandlerIdent,
             changeType = changeType,
         )
-        return textVersion
+        return mapToTextView(
+            textVersion = textVersion,
+            connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId)
+        )
     }
 
     fun updatePlainText(
@@ -317,7 +383,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
         language: Language,
-    ): TextVersion {
+    ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
         val changeType: Editor.ChangeType
@@ -339,14 +405,17 @@ class TextService(
             navIdent = saksbehandlerIdent,
             changeType = changeType,
         )
-        return textVersion
+        return mapToTextView(
+            textVersion = textVersion,
+            connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId)
+        )
     }
 
     fun updateUtfall(
         input: Set<String>,
         textId: UUID,
         saksbehandlerIdent: String,
-    ): TextVersion {
+    ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.utfallIdList = input
@@ -355,14 +424,17 @@ class TextService(
             navIdent = saksbehandlerIdent,
             changeType = Editor.ChangeType.TEXT_UTFALL,
         )
-        return textVersion
+        return mapToTextView(
+            textVersion = textVersion,
+            connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId)
+        )
     }
 
     fun updateTemplateSectionList(
         input: Set<String>,
         textId: UUID,
         saksbehandlerIdent: String,
-    ): TextVersion {
+    ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.templateSectionIdList = input
@@ -371,14 +443,17 @@ class TextService(
             navIdent = saksbehandlerIdent,
             changeType = Editor.ChangeType.TEXT_SECTIONS,
         )
-        return textVersion
+        return mapToTextView(
+            textVersion = textVersion,
+            connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId)
+        )
     }
 
     fun updateYtelseHjemmelList(
         input: Set<String>,
         textId: UUID,
         saksbehandlerIdent: String,
-    ): TextVersion {
+    ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.ytelseHjemmelIdList = input
@@ -387,14 +462,17 @@ class TextService(
             navIdent = saksbehandlerIdent,
             changeType = Editor.ChangeType.TEXT_YTELSE_HJEMMEL,
         )
-        return textVersion
+        return mapToTextView(
+            textVersion = textVersion,
+            connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId)
+        )
     }
 
     fun updateEnheter(
         input: Set<String>,
         textId: UUID,
         saksbehandlerIdent: String,
-    ): TextVersion {
+    ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
         textVersion.enhetIdList = input
@@ -403,7 +481,10 @@ class TextService(
             navIdent = saksbehandlerIdent,
             changeType = Editor.ChangeType.TEXT_ENHETER,
         )
-        return textVersion
+        return mapToTextView(
+            textVersion = textVersion,
+            connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId)
+        )
     }
 
     fun searchPublishedTextVersions(
@@ -431,21 +512,37 @@ class TextService(
         )
     }
 
-    fun searchTextVersion(
+    fun searchTextVersions(
         textType: String?,
         utfallIdList: List<String>,
         enhetIdList: List<String>,
         templateSectionIdList: List<String>,
         ytelseHjemmelIdList: List<String>,
-    ): List<TextVersion> {
-        return searchTextService.searchTexts(
-            texts = getAllCurrentTextVersions(),
+        trash: Boolean?,
+    ): List<TextView> {
+        val textVersions = if (trash == true) {
+            getAllHiddenTextVersions()
+        } else {
+            getAllCurrentTextVersions()
+        }
+
+        val filteredTextVersions = searchTextService.searchTexts(
+            texts = textVersions,
             textType = textType,
             utfallIdList = utfallIdList,
             enhetIdList = enhetIdList,
             templateSectionIdList = templateSectionIdList,
             ytelseHjemmelIdList = ytelseHjemmelIdList,
         )
+
+        val connectedMaltekstseksjonIdList = getConnectedMaltekstseksjonerBulk(filteredTextVersions)
+        return filteredTextVersions.map {
+            val connections = connectedMaltekstseksjonIdList[it.text.id]!!
+            mapToTextView(
+                textVersion = it,
+                connectedMaltekstseksjonIdList = connections.first.toList() to connections.second.toList()
+            )
+        }
     }
 
     /**
@@ -470,6 +567,24 @@ class TextService(
         }
 
         logger.debug("combining all published texts and all drafts took {} millis. Found {} texts", millis, texts.size)
+        return texts
+    }
+
+    private fun getAllHiddenTextVersions(): List<TextVersion> {
+        var texts: List<TextVersion>
+
+        val millis = measureTimeMillis {
+            val hiddenTextVersions = textVersionRepository.findHiddenTextVersions()
+
+            texts = hiddenTextVersions.groupBy { it.text }
+                .map { (_, textVersions) ->
+                    textVersions.maxByOrNull { textVersion ->
+                        textVersion.created
+                    }!!
+                }
+        }
+
+        logger.debug("getting hidden texts versions took {} millis. Found {} texts versions", millis, texts.size)
         return texts
     }
 

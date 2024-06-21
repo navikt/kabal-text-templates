@@ -7,6 +7,7 @@ import no.nav.klage.texts.api.views.MaltekstseksjonView
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.repositories.TextRepository
 import no.nav.klage.texts.service.MaltekstseksjonService
+import no.nav.klage.texts.service.mapToMaltekstseksjonView
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
@@ -47,7 +48,7 @@ class MaltekstseksjonVersionsMigrationsController(
         )
 
         return maltekstseksjonService.getAllMaltekstseksjonVersions().map {
-            mapToMaltekstView(it)
+            mapToMaltekstseksjonView(it)
         }
     }
 
@@ -84,7 +85,7 @@ class MaltekstseksjonVersionsMigrationsController(
         }
 
         return maltekstseksjonService.updateAll(updatedMaltekstseksjonVersions).map {
-            mapToMaltekstView(it)
+            mapToMaltekstseksjonView(it)
         }
     }
 }

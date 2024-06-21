@@ -1,7 +1,6 @@
 package no.nav.klage.texts.repositories
 
 import io.mockk.mockk
-import no.nav.klage.texts.api.mapToMaltekstView
 import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.Maltekstseksjon
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
@@ -52,6 +51,7 @@ class MaltekstseksjonServiceTest {
             maltekstseksjonRepository = maltekstseksjonRepository,
             maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
             textRepository = mockk(),
+            textService = mockk(),
             searchMaltekstseksjonService = mockk(),
             publishService = PublishService(
                 maltekstseksjonVersionRepository,
@@ -109,13 +109,11 @@ class MaltekstseksjonServiceTest {
 
     @Test
     fun `making sure we don't get this again Parameter specified as non-null is null`() {
-        val myDraft = maltekstseksjonService.createNewDraft(
+        maltekstseksjonService.createNewDraft(
             maltekstseksjonId = UUID.fromString("368f1610-7463-4688-b069-c07667a86b33"),
             versionInput = null,
             saksbehandlerIdent = "abc"
         )
-
-        mapToMaltekstView(myDraft)
     }
 
 }
