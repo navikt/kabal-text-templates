@@ -13,7 +13,7 @@ repositories {
 
 plugins {
     val kotlinVersion = "2.0.0"
-    id("org.springframework.boot") version "3.3.1"
+    id("org.springframework.boot") version "3.3.2"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
@@ -41,6 +41,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
 
     implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-database-postgresql")
     implementation("com.zaxxer:HikariCP")
     implementation("org.postgresql:postgresql")
 
