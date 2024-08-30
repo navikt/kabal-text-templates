@@ -1,6 +1,7 @@
 package no.nav.klage.texts.repositories
 
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
@@ -8,6 +9,7 @@ import java.util.*
 
 interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersion, UUID> {
 
+    @Cacheable(PUBLISHED_MALTEKSTSEKSJON_VERSIONS)
     @EntityGraph("MaltekstseksjonVersion.full")
     fun findByPublishedIsTrue(): List<MaltekstseksjonVersion>
 

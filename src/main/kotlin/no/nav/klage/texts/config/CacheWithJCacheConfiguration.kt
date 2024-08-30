@@ -23,6 +23,7 @@ class CacheWithJCacheConfiguration(private val environment: Environment) : JCach
         const val CONSUMER_MALTEKSTSEKSJON_TEXTS = "consumerMaltekstseksjonTexts"
         const val CONSUMER_TEXT = "consumerText"
         const val PUBLISHED_TEXT_VERSIONS = "publishedTextVersions"
+        const val PUBLISHED_MALTEKSTSEKSJON_VERSIONS = "publishedMaltekstseksjonVersions"
 
         val cacheKeys =
             listOf(
@@ -31,6 +32,7 @@ class CacheWithJCacheConfiguration(private val environment: Environment) : JCach
                 CONSUMER_MALTEKSTSEKSJON_TEXTS,
                 CONSUMER_TEXT,
                 PUBLISHED_TEXT_VERSIONS,
+                PUBLISHED_MALTEKSTSEKSJON_VERSIONS,
             )
 
         @Suppress("JAVA_CLASS_ON_COMPANION")
