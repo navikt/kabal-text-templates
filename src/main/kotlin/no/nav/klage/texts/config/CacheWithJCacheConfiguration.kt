@@ -22,6 +22,7 @@ class CacheWithJCacheConfiguration(private val environment: Environment) : JCach
         const val CONSUMER_MALTEKSTSEKSJON_SEARCH = "consumerMaltekstseksjonSearch"
         const val CONSUMER_MALTEKSTSEKSJON_TEXTS = "consumerMaltekstseksjonTexts"
         const val CONSUMER_TEXT = "consumerText"
+        const val PUBLISHED_TEXT_VERSIONS = "publishedTextVersions"
 
         val cacheKeys =
             listOf(
@@ -29,6 +30,7 @@ class CacheWithJCacheConfiguration(private val environment: Environment) : JCach
                 CONSUMER_MALTEKSTSEKSJON_SEARCH,
                 CONSUMER_MALTEKSTSEKSJON_TEXTS,
                 CONSUMER_TEXT,
+                PUBLISHED_TEXT_VERSIONS,
             )
 
         @Suppress("JAVA_CLASS_ON_COMPANION")
@@ -49,9 +51,9 @@ class CacheWithJCacheConfiguration(private val environment: Environment) : JCach
 
     private fun standardDuration() =
         if (environment.activeProfiles.contains("prod-gcp")) {
-            Duration(TimeUnit.MINUTES, 2L)
+            Duration(TimeUnit.MINUTES, 10L)
         } else {
-            Duration(TimeUnit.MINUTES, 2L)
+            Duration(TimeUnit.MINUTES, 5L)
         }
 
 }
