@@ -497,7 +497,7 @@ class TextService(
         val textVersions: List<TextVersion>
 
         val millis = measureTimeMillis {
-            textVersions = textVersionRepository.findByPublishedIsTrue()
+            textVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
         }
 
         logger.debug("findByPublishedIsTrue took {} millis. Found {} texts", millis, textVersions.size)

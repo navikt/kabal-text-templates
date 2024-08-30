@@ -309,7 +309,7 @@ class MaltekstseksjonService(
 
         val millis = measureTimeMillis {
             maltekstseksjonVersions =
-                maltekstseksjonVersionRepository.findByPublishedIsTrue()
+                maltekstseksjonVersionRepository.findByPublishedIsTrueForConsumer()
         }
 
         logger.debug(

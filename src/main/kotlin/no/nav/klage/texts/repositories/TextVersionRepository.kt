@@ -1,12 +1,25 @@
 package no.nav.klage.texts.repositories
 
+import no.nav.klage.texts.config.CacheWithJCacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
 import no.nav.klage.texts.domain.TextVersion
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import java.util.*
 
 interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
+
+    @Cacheable(PUBLISHED_TEXT_VERSIONS)
+    @EntityGraph("TextVersion.full")
+    @Query(
+        """
+        SELECT tv
+        FROM TextVersion tv
+        WHERE tv.published = true
+        """
+    )
+    fun findByPublishedIsTrueForConsumer(): List<TextVersion>
 
     @EntityGraph("TextVersion.full")
     fun findByPublishedIsTrue(): List<TextVersion>
