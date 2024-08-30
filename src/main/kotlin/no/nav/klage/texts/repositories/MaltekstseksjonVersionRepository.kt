@@ -12,6 +12,16 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
 
     @Cacheable(PUBLISHED_MALTEKSTSEKSJON_VERSIONS)
     @EntityGraph("MaltekstseksjonVersion.full")
+    @Query(
+        """
+        SELECT mv
+        FROM MaltekstseksjonVersion mv
+        WHERE mv.published = true
+        """
+    )
+    fun findByPublishedIsTrueForConsumer(): List<MaltekstseksjonVersion>
+
+    @EntityGraph("MaltekstseksjonVersion.full")
     fun findByPublishedIsTrue(): List<MaltekstseksjonVersion>
 
     @EntityGraph("MaltekstseksjonVersion.full")

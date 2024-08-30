@@ -12,6 +12,16 @@ interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
 
     @Cacheable(PUBLISHED_TEXT_VERSIONS)
     @EntityGraph("TextVersion.full")
+    @Query(
+        """
+        SELECT tv
+        FROM TextVersion tv
+        WHERE tv.published = true
+        """
+    )
+    fun findByPublishedIsTrueForConsumer(): List<TextVersion>
+
+    @EntityGraph("TextVersion.full")
     fun findByPublishedIsTrue(): List<TextVersion>
 
     @EntityGraph("TextVersion.full")
