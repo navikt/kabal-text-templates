@@ -1,6 +1,7 @@
 package no.nav.klage.texts.service
 
 import no.nav.klage.texts.api.views.*
+import no.nav.klage.texts.config.CacheWithJCacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
 import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.domain.TextVersion
@@ -11,6 +12,7 @@ import no.nav.klage.texts.repositories.TextRepository
 import no.nav.klage.texts.repositories.TextVersionRepository
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -131,6 +133,7 @@ class TextService(
         )
     }
 
+    @CacheEvict(cacheNames = [PUBLISHED_TEXT_VERSIONS])
     fun unpublishText(
         textId: UUID,
         saksbehandlerIdent: String,

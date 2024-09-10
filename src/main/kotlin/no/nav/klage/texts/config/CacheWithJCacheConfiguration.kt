@@ -41,7 +41,7 @@ class CacheWithJCacheConfiguration(private val environment: Environment) : JCach
 
     override fun customize(cacheManager: CacheManager) {
         cacheKeys.forEach { cacheName ->
-            cacheManager.createCache(cacheName, cacheConfiguration(standardDuration()))
+            cacheManager.createCache(cacheName, cacheConfiguration(standardDuration(cacheName)))
         }
     }
 
@@ -51,8 +51,10 @@ class CacheWithJCacheConfiguration(private val environment: Environment) : JCach
             .setStoreByValue(false)
             .setStatisticsEnabled(true)
 
-    private fun standardDuration() =
-        if (environment.activeProfiles.contains("prod-gcp")) {
+    private fun standardDuration(cacheName: String) =
+        if (cacheName in listOf(PUBLISHED_TEXT_VERSIONS, PUBLISHED_MALTEKSTSEKSJON_VERSIONS)) {
+            Duration.ETERNAL
+        } else if (environment.activeProfiles.contains("prod-gcp")) {
             Duration(TimeUnit.MINUTES, 10L)
         } else {
             Duration(TimeUnit.MINUTES, 5L)

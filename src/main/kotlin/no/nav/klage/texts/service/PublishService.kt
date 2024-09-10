@@ -1,6 +1,8 @@
 package no.nav.klage.texts.service
 
 import no.nav.klage.texts.api.views.VersionInput
+import no.nav.klage.texts.config.CacheWithJCacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
+import no.nav.klage.texts.config.CacheWithJCacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
 import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
@@ -9,6 +11,7 @@ import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepository
 import no.nav.klage.texts.repositories.TextVersionRepository
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -27,6 +30,7 @@ class PublishService(
         private val secureLogger = getSecureLogger()
     }
 
+    @CacheEvict(cacheNames = [PUBLISHED_MALTEKSTSEKSJON_VERSIONS])
     fun publishMaltekstseksjonVersionWithTexts(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
@@ -62,6 +66,7 @@ class PublishService(
         return maltekstseksjonVersionDraft to textVersions
     }
 
+    @CacheEvict(cacheNames = [PUBLISHED_MALTEKSTSEKSJON_VERSIONS])
     fun publishMaltekstseksjonVersion(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
@@ -135,6 +140,7 @@ class PublishService(
         }
     }
 
+    @CacheEvict(cacheNames = [PUBLISHED_TEXT_VERSIONS])
     fun publishTextVersion(textId: UUID, saksbehandlerIdent: String, timestamp: LocalDateTime): TextVersion {
         val possiblePreviouslyPublishedVersion = textVersionRepository.findByPublishedIsTrueAndTextId(textId)
         if (possiblePreviouslyPublishedVersion != null) {

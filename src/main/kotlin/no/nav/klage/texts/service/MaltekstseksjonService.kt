@@ -4,6 +4,7 @@ import no.nav.klage.texts.api.views.MaltekstseksjonInput
 import no.nav.klage.texts.api.views.MaltekstseksjonView
 import no.nav.klage.texts.api.views.MaltekstseksjonWithTextsView
 import no.nav.klage.texts.api.views.VersionInput
+import no.nav.klage.texts.config.CacheWithJCacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
 import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.Maltekstseksjon
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
@@ -14,6 +15,7 @@ import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepository
 import no.nav.klage.texts.repositories.TextRepository
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -139,6 +141,7 @@ class MaltekstseksjonService(
         )
     }
 
+    @CacheEvict(cacheNames = [PUBLISHED_MALTEKSTSEKSJON_VERSIONS])
     fun unpublishMaltekstseksjon(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
