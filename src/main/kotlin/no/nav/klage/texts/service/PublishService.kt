@@ -1,8 +1,8 @@
 package no.nav.klage.texts.service
 
 import no.nav.klage.texts.api.views.VersionInput
-import no.nav.klage.texts.config.CacheWithJCacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
-import no.nav.klage.texts.config.CacheWithJCacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
+import no.nav.klage.texts.config.CacheWithRedisCacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
+import no.nav.klage.texts.config.CacheWithRedisCacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
 import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
@@ -36,6 +36,7 @@ class PublishService(
         saksbehandlerIdent: String,
         overrideDraft: MaltekstseksjonVersion? = null
     ): Pair<MaltekstseksjonVersion, List<TextVersion>> {
+        logger.debug("Evicting PUBLISHED_MALTEKSTSEKSJON_VERSIONS cache")
         val possiblePublishedVersion =
             maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(maltekstseksjonId)
 
@@ -72,6 +73,7 @@ class PublishService(
         saksbehandlerIdent: String,
         overrideDraft: MaltekstseksjonVersion? = null
     ): MaltekstseksjonVersion {
+        logger.debug("Evicting PUBLISHED_MALTEKSTSEKSJON_VERSIONS cache")
         val possiblePublishedVersion =
             maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(maltekstseksjonId)
 
@@ -142,6 +144,7 @@ class PublishService(
 
     @CacheEvict(cacheNames = [PUBLISHED_TEXT_VERSIONS])
     fun publishTextVersion(textId: UUID, saksbehandlerIdent: String, timestamp: LocalDateTime): TextVersion {
+        logger.debug("Evicting PUBLISHED_TEXT_VERSIONS cache")
         val possiblePreviouslyPublishedVersion = textVersionRepository.findByPublishedIsTrueAndTextId(textId)
         if (possiblePreviouslyPublishedVersion != null) {
             possiblePreviouslyPublishedVersion.published = false

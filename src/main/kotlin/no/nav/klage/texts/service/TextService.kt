@@ -1,7 +1,7 @@
 package no.nav.klage.texts.service
 
 import no.nav.klage.texts.api.views.*
-import no.nav.klage.texts.config.CacheWithJCacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
+import no.nav.klage.texts.config.CacheWithRedisCacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
 import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.domain.TextVersion
@@ -138,6 +138,7 @@ class TextService(
         textId: UUID,
         saksbehandlerIdent: String,
     ): DeletedText {
+        logger.debug("Evicting PUBLISHED_TEXT_VERSIONS cache")
         val text = textRepository.getReferenceById(textId)
 
         val affectedMaltekstseksjonIdList =

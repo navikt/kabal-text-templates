@@ -32,8 +32,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
 
     implementation("org.springframework.boot:spring-boot-starter-cache")
-    implementation("javax.cache:cache-api")
-    implementation("org.ehcache:ehcache:$ehcacheVersion")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
     implementation("no.nav.security:token-validation-spring:$tokenValidationVersion")
     implementation("no.nav.security:token-client-spring:$tokenValidationVersion")

@@ -1,6 +1,6 @@
 package no.nav.klage.texts.repositories
 
-import no.nav.klage.texts.config.CacheWithJCacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
+import no.nav.klage.texts.config.CacheWithRedisCacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.jpa.repository.EntityGraph

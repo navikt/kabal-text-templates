@@ -2,19 +2,17 @@ package no.nav.klage.texts.config
 
 
 import no.nav.klage.texts.util.getLogger
-import org.springframework.boot.autoconfigure.cache.JCacheManagerCustomizer
+import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
-import java.util.concurrent.TimeUnit
-import javax.cache.CacheManager
-import javax.cache.configuration.MutableConfiguration
-import javax.cache.expiry.CreatedExpiryPolicy
-import javax.cache.expiry.Duration
+import org.springframework.data.redis.cache.RedisCacheConfiguration
+import org.springframework.data.redis.cache.RedisCacheManager
+import java.time.Duration
 
 @EnableCaching
 @Configuration
-class CacheWithJCacheConfiguration(private val environment: Environment) : JCacheManagerCustomizer {
+class CacheWithRedisCacheConfiguration(private val environment: Environment) : RedisCacheManagerBuilderCustomizer {
 
     companion object {
 
@@ -39,25 +37,22 @@ class CacheWithJCacheConfiguration(private val environment: Environment) : JCach
         private val logger = getLogger(javaClass.enclosingClass)
     }
 
-    override fun customize(cacheManager: CacheManager) {
+    override fun customize(builder: RedisCacheManager.RedisCacheManagerBuilder) {
         cacheKeys.forEach { cacheName ->
-            cacheManager.createCache(cacheName, cacheConfiguration(standardDuration(cacheName)))
+            builder.withCacheConfiguration(
+                cacheName,
+                RedisCacheConfiguration.defaultCacheConfig().entryTtl(standardDuration(cacheName))
+            )
         }
     }
 
-    private fun cacheConfiguration(duration: Duration) =
-        MutableConfiguration<Any, Any>()
-            .setExpiryPolicyFactory(CreatedExpiryPolicy.factoryOf(duration))
-            .setStoreByValue(false)
-            .setStatisticsEnabled(true)
-
     private fun standardDuration(cacheName: String) =
         if (cacheName in listOf(PUBLISHED_TEXT_VERSIONS, PUBLISHED_MALTEKSTSEKSJON_VERSIONS)) {
-            Duration.ETERNAL
+            Duration.ofDays(365)
         } else if (environment.activeProfiles.contains("prod-gcp")) {
-            Duration(TimeUnit.MINUTES, 10L)
+            Duration.ofMinutes(10L)
         } else {
-            Duration(TimeUnit.MINUTES, 5L)
+            Duration.ofMinutes(5L)
         }
-
 }
+

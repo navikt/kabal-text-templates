@@ -72,6 +72,9 @@ spec:
       rules:
         - application: kabal-frontend
         - application: kabal-api
+  redis:
+    - instance: texts
+      access: readwrite
   azure:
     application:
       enabled: true

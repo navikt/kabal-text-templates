@@ -4,7 +4,7 @@ import no.nav.klage.texts.api.views.MaltekstseksjonInput
 import no.nav.klage.texts.api.views.MaltekstseksjonView
 import no.nav.klage.texts.api.views.MaltekstseksjonWithTextsView
 import no.nav.klage.texts.api.views.VersionInput
-import no.nav.klage.texts.config.CacheWithJCacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
+import no.nav.klage.texts.config.CacheWithRedisCacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
 import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.Maltekstseksjon
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
@@ -146,6 +146,7 @@ class MaltekstseksjonService(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
     ) {
+        logger.debug("Evicting PUBLISHED_MALTEKSTSEKSJON_VERSIONS cache")
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
         val possiblePublishedTextVersion =
