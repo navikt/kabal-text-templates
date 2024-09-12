@@ -55,4 +55,3 @@ class CacheWithRedisCacheConfiguration(private val environment: Environment) : R
             Duration.ofMinutes(5L)
         }
 }
-
