@@ -35,6 +35,8 @@ spring:
       url: ${REDIS_URI_TEXTS}
       username: ${REDIS_USERNAME_TEXTS}
       password: ${REDIS_PASSWORD_TEXTS}
+      ssl:
+        enabled: true
 
 
 server:
