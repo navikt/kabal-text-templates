@@ -32,7 +32,12 @@ spring:
     type: redis
   data:
     redis:
-      url: redis://${REDIS_USERNAME_TEXTS}:${REDIS_PASSWORD_TEXTS}@redis-klage-texts-nav-dev.h.aivencloud.com:26483
+      host: redis-klage-texts-nav-dev.h.aivencloud.com
+      port: 26483
+      password: ${REDIS_PASSWORD_TEXTS}
+      username: ${REDIS_USERNAME_TEXTS}
+      ssl:
+        enabled: true
 
 server:
   port: 7096
