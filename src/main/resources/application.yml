@@ -36,7 +36,6 @@ spring:
       username: ${REDIS_USERNAME_TEXTS}
       ssl:
         enabled: true
-      client-type: jedis
 
 server:
   port: 7096
