@@ -30,8 +30,11 @@ spring:
       add-mappings: false
   cache:
     type: redis
-
-
+  data:
+    redis:
+      url: ${REDIS_URI_texts}
+      username: ${REDIS_USERNAME_texts}
+      password: ${REDIS_PASSWORD_texts}
 
 server:
   port: 7096
