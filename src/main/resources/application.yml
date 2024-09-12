@@ -32,9 +32,10 @@ spring:
     type: redis
   data:
     redis:
-      url: ${REDIS_URI_texts}
-      username: ${REDIS_USERNAME_texts}
-      password: ${REDIS_PASSWORD_texts}
+      url: ${REDIS_URI_TEXTS}
+      username: ${REDIS_USERNAME_TEXTS}
+      password: ${REDIS_PASSWORD_TEXTS}
+
 
 server:
   port: 7096
