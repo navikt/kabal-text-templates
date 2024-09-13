@@ -1,6 +1,7 @@
 package no.nav.klage.texts.api.views
 
 import com.fasterxml.jackson.databind.JsonNode
+import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
 
@@ -53,7 +54,7 @@ data class ConsumerTextView(
     val utfallIdList: Set<String>,
     val language: Language,
     val publishedDateTime: LocalDateTime,
-)
+) : Serializable
 
 data class SearchableListItem(
     val id: UUID,
