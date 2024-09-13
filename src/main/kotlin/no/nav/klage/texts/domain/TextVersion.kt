@@ -1,6 +1,7 @@
 package no.nav.klage.texts.domain
 
 import jakarta.persistence.*
+import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
 
@@ -77,7 +78,7 @@ class TextVersion(
     var created: LocalDateTime,
     @Column(name = "modified")
     var modified: LocalDateTime,
-) {
+) : Serializable {
 
     fun createDraft(saksbehandlerIdent: String): TextVersion {
         val now = LocalDateTime.now()
