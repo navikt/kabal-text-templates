@@ -38,6 +38,7 @@ class ConsumerController(
         private val secureLogger = getSecureLogger()
     }
 
+    //TODO Also clear these caches when a new text is created?
     @Cacheable("consumerTextSearch")
     @Operation(
         summary = "Search texts",
