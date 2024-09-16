@@ -30,8 +30,8 @@ spring:
       add-mappings: false
   data:
     redis:
-      host: redis-klage-texts-nav-dev.h.aivencloud.com
-      port: 26483
+      host: ${REDIS_HOST_TEXTS}
+      port: ${REDIS_PORT_TEXTS}
       password: ${REDIS_PASSWORD_TEXTS}
       username: ${REDIS_USERNAME_TEXTS}
       ssl:

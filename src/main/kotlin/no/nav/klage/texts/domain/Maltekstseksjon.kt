@@ -4,6 +4,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
 
@@ -18,7 +19,7 @@ class Maltekstseksjon(
     var modified: LocalDateTime,
     @Column(name = "created_by")
     var createdBy: String?,
-) {
+) : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
