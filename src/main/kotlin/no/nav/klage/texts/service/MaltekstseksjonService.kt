@@ -4,7 +4,12 @@ import no.nav.klage.texts.api.views.MaltekstseksjonInput
 import no.nav.klage.texts.api.views.MaltekstseksjonView
 import no.nav.klage.texts.api.views.MaltekstseksjonWithTextsView
 import no.nav.klage.texts.api.views.VersionInput
-import no.nav.klage.texts.config.CacheWithRedisCacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_MALTEKSTSEKSJON_SEARCH
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_MALTEKSTSEKSJON_TEXTS
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_TEXT
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_TEXT_SEARCH
+import no.nav.klage.texts.config.CacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
+import no.nav.klage.texts.config.CacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
 import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.Maltekstseksjon
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
@@ -141,12 +146,21 @@ class MaltekstseksjonService(
         )
     }
 
-    @CacheEvict(cacheNames = [PUBLISHED_MALTEKSTSEKSJON_VERSIONS])
+    @CacheEvict(
+        cacheNames = [
+            PUBLISHED_MALTEKSTSEKSJON_VERSIONS,
+            PUBLISHED_TEXT_VERSIONS,
+            CONSUMER_TEXT_SEARCH,
+            CONSUMER_MALTEKSTSEKSJON_SEARCH,
+            CONSUMER_MALTEKSTSEKSJON_TEXTS,
+            CONSUMER_TEXT,
+        ],
+        allEntries = true
+    )
     fun unpublishMaltekstseksjon(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
     ) {
-        logger.debug("Evicting PUBLISHED_MALTEKSTSEKSJON_VERSIONS cache")
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
         val possiblePublishedTextVersion =

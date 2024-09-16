@@ -1,6 +1,6 @@
 package no.nav.klage.texts.repositories
 
-import no.nav.klage.texts.config.CacheWithRedisCacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
+import no.nav.klage.texts.config.CacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
 import no.nav.klage.texts.domain.TextVersion
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.data.jpa.repository.EntityGraph

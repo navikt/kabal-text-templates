@@ -1,7 +1,12 @@
 package no.nav.klage.texts.service
 
 import no.nav.klage.texts.api.views.*
-import no.nav.klage.texts.config.CacheWithRedisCacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_MALTEKSTSEKSJON_SEARCH
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_MALTEKSTSEKSJON_TEXTS
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_TEXT
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_TEXT_SEARCH
+import no.nav.klage.texts.config.CacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
+import no.nav.klage.texts.config.CacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
 import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.domain.TextVersion
@@ -133,12 +138,21 @@ class TextService(
         )
     }
 
-    @CacheEvict(cacheNames = [PUBLISHED_TEXT_VERSIONS])
+    @CacheEvict(
+        cacheNames = [
+            PUBLISHED_MALTEKSTSEKSJON_VERSIONS,
+            PUBLISHED_TEXT_VERSIONS,
+            CONSUMER_TEXT_SEARCH,
+            CONSUMER_MALTEKSTSEKSJON_SEARCH,
+            CONSUMER_MALTEKSTSEKSJON_TEXTS,
+            CONSUMER_TEXT,
+        ],
+        allEntries = true
+    )
     fun unpublishText(
         textId: UUID,
         saksbehandlerIdent: String,
     ): DeletedText {
-        logger.debug("Evicting PUBLISHED_TEXT_VERSIONS cache")
         val text = textRepository.getReferenceById(textId)
 
         val affectedMaltekstseksjonIdList =
