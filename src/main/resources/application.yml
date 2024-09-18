@@ -28,6 +28,14 @@ spring:
   web:
     resources:
       add-mappings: false
+  data:
+    redis:
+      host: ${REDIS_HOST_TEXTS}
+      port: ${REDIS_PORT_TEXTS}
+      password: ${REDIS_PASSWORD_TEXTS}
+      username: ${REDIS_USERNAME_TEXTS}
+      ssl:
+        enabled: true
 
 server:
   port: 7096
@@ -64,7 +72,9 @@ management:
       correlation:
         fields:
           - ${navCallIdName}
-
+  health:
+    redis:
+      enabled: false
 no.nav.security.jwt:
   issuer:
     aad:

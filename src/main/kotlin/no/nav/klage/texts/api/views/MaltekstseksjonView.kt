@@ -1,5 +1,6 @@
 package no.nav.klage.texts.api.views
 
+import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
 
@@ -29,7 +30,7 @@ data class ConsumerMaltekstseksjonView(
     val enhetIdList: Set<String> = emptySet(),
     val templateSectionIdList: Set<String> = emptySet(),
     val ytelseHjemmelIdList: Set<String> = emptySet(),
-)
+) : Serializable
 
 data class MaltekstseksjonWithTextsView(
     val maltekstseksjon: MaltekstseksjonView,

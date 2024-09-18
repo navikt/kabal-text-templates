@@ -1,6 +1,7 @@
 package no.nav.klage.texts.domain
 
 import jakarta.persistence.*
+import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
 
@@ -16,7 +17,7 @@ class Editor(
     val changeType: ChangeType,
     @Column(name = "created")
     var created: LocalDateTime = LocalDateTime.now(),
-) {
+) : Serializable {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

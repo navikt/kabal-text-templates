@@ -4,6 +4,10 @@ import com.fasterxml.jackson.module.kotlin.jsonMapper
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.*
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_MALTEKSTSEKSJON_SEARCH
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_MALTEKSTSEKSJON_TEXTS
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_TEXT
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_TEXT_SEARCH
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
@@ -38,7 +42,7 @@ class ConsumerController(
         private val secureLogger = getSecureLogger()
     }
 
-    @Cacheable("consumerTextSearch")
+    @Cacheable(CONSUMER_TEXT_SEARCH)
     @Operation(
         summary = "Search texts",
         description = "Search texts"
@@ -74,7 +78,7 @@ class ConsumerController(
         }
     }
 
-    @Cacheable("consumerMaltekstseksjonSearch")
+    @Cacheable(CONSUMER_MALTEKSTSEKSJON_SEARCH)
     @Operation(
         summary = "Search maltekstseksjoner",
         description = "Search maltekstseksjoner"
@@ -106,7 +110,7 @@ class ConsumerController(
         }
     }
 
-    @Cacheable("consumerMaltekstseksjonTexts")
+    @Cacheable(CONSUMER_MALTEKSTSEKSJON_TEXTS)
     @Operation(
         summary = "Get published maltekstseksjon texts",
         description = "Get published maltekstseksjon texts"
@@ -131,7 +135,7 @@ class ConsumerController(
         }
     }
 
-    @Cacheable("consumerText")
+    @Cacheable(CONSUMER_TEXT)
     @Operation(
         summary = "Get published text version",
         description = "Get published text version"

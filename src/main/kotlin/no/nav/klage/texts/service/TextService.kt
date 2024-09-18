@@ -1,6 +1,12 @@
 package no.nav.klage.texts.service
 
 import no.nav.klage.texts.api.views.*
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_MALTEKSTSEKSJON_SEARCH
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_MALTEKSTSEKSJON_TEXTS
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_TEXT
+import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_TEXT_SEARCH
+import no.nav.klage.texts.config.CacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
+import no.nav.klage.texts.config.CacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
 import no.nav.klage.texts.domain.Editor
 import no.nav.klage.texts.domain.Text
 import no.nav.klage.texts.domain.TextVersion
@@ -11,6 +17,7 @@ import no.nav.klage.texts.repositories.TextRepository
 import no.nav.klage.texts.repositories.TextVersionRepository
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
+import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -131,6 +138,17 @@ class TextService(
         )
     }
 
+    @CacheEvict(
+        cacheNames = [
+            PUBLISHED_MALTEKSTSEKSJON_VERSIONS,
+            PUBLISHED_TEXT_VERSIONS,
+            CONSUMER_TEXT_SEARCH,
+            CONSUMER_MALTEKSTSEKSJON_SEARCH,
+            CONSUMER_MALTEKSTSEKSJON_TEXTS,
+            CONSUMER_TEXT,
+        ],
+        allEntries = true
+    )
     fun unpublishText(
         textId: UUID,
         saksbehandlerIdent: String,
