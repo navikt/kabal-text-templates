@@ -70,6 +70,8 @@ class TextVersion(
     var publishedDateTime: LocalDateTime?,
     @Column(name = "published_by")
     var publishedBy: String?,
+    @Column(name = "published_by_name")
+    var publishedByName: String?,
     /** Is it currently published? */
     @Column(name = "published")
     var published: Boolean,
@@ -80,7 +82,7 @@ class TextVersion(
     var modified: LocalDateTime,
 ) : Serializable {
 
-    fun createDraft(saksbehandlerIdent: String): TextVersion {
+    fun createDraft(saksbehandlerIdent: String, saksbehandlerName: String): TextVersion {
         val now = LocalDateTime.now()
         return TextVersion(
             title = title,
@@ -98,11 +100,13 @@ class TextVersion(
             publishedDateTime = null,
             published = false,
             publishedBy = null,
+            publishedByName = null,
             created = now,
             modified = now,
             editors = mutableSetOf(
                 Editor(
                     navIdent = saksbehandlerIdent,
+                    editorName = saksbehandlerName,
                     changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
                 )
             )
@@ -123,7 +127,7 @@ class TextVersion(
     }
 
     override fun toString(): String {
-        return "TextVersion(id=$id, title='$title', textType='$textType', richTextNN=$richTextNN, richTextNB=$richTextNB, richTextUntranslated=$richTextUntranslated, plainTextNN=$plainTextNN, plainTextNB=$plainTextNB, utfallIdList=$utfallIdList, enhetIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, editors=$editors, text=$text, publishedDateTime=$publishedDateTime, publishedBy=$publishedBy, published=$published, created=$created, modified=$modified)"
+        return "TextVersion(id=$id, title='$title', textType='$textType', richTextNN=$richTextNN, richTextNB=$richTextNB, richTextUntranslated=$richTextUntranslated, plainTextNN=$plainTextNN, plainTextNB=$plainTextNB, utfallIdList=$utfallIdList, enhetIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, editors=$editors, text=$text, publishedDateTime=$publishedDateTime, publishedBy=$publishedBy, publishedByName=$publishedByName, published=$published, created=$created, modified=$modified)"
     }
 
 }

@@ -67,6 +67,7 @@ class MaltekstseksjonServiceTest {
                 created = now,
                 modified = now,
                 createdBy = "abc",
+                createdByName = "abc",
             )
         )
 
@@ -76,6 +77,7 @@ class MaltekstseksjonServiceTest {
                 modified = now,
                 maltekstseksjonVersions = mutableListOf(),
                 createdBy = "abc",
+                createdByName = "abc",
             )
         )
 
@@ -85,6 +87,7 @@ class MaltekstseksjonServiceTest {
             texts = mutableListOf(text),
             publishedDateTime = now,
             publishedBy = "noen",
+            publishedByName = "noen",
             published = true,
             utfallIdList = setOf("1"),
             enhetIdList = setOf("1"),
@@ -93,6 +96,7 @@ class MaltekstseksjonServiceTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
+                    editorName = "saksbehandlerNavn",
                     created = now,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
@@ -112,7 +116,8 @@ class MaltekstseksjonServiceTest {
         maltekstseksjonService.createNewDraft(
             maltekstseksjonId = UUID.fromString("368f1610-7463-4688-b069-c07667a86b33"),
             versionInput = null,
-            saksbehandlerIdent = "abc"
+            saksbehandlerIdent = "abc",
+            saksbehandlerName = "abc",
         )
     }
 

@@ -63,6 +63,7 @@ class TextController(
         return textService.publishTextVersion(
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -84,6 +85,7 @@ class TextController(
         return textService.createNewText(
             textInput = input,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -107,6 +109,7 @@ class TextController(
             textId = textId,
             versionInput = input,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -130,6 +133,7 @@ class TextController(
             input = input.title,
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -153,6 +157,7 @@ class TextController(
             input = input.textType,
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -177,6 +182,7 @@ class TextController(
             input = input.richText.toString(),
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
             language = language,
         )
     }
@@ -202,6 +208,7 @@ class TextController(
             input = input.plainText,
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
             language = language,
         )
     }
@@ -226,6 +233,7 @@ class TextController(
             input = input.utfallIdList ?: input.utfall ?: emptySet(),
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -249,6 +257,7 @@ class TextController(
             input = input.enheter ?: input.enhetIdList ?: emptySet(),
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -272,6 +281,7 @@ class TextController(
             input = input.templateSectionIdList ?: input.templateSectionList ?: emptySet(),
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -295,6 +305,7 @@ class TextController(
             input = input.ytelseHjemmelIdList ?: input.ytelseHjemmelList ?: emptySet(),
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -315,6 +326,7 @@ class TextController(
         return textService.unpublishText(
             textId = textId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 

@@ -40,7 +40,7 @@ class TextService(
         private val secureLogger = getSecureLogger()
     }
 
-    fun publishTextVersion(textId: UUID, saksbehandlerIdent: String): TextView {
+    fun publishTextVersion(textId: UUID, saksbehandlerIdent: String, saksbehandlerName: String): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
 
         return mapToTextView(
@@ -48,6 +48,7 @@ class TextService(
                 textId = textId,
                 saksbehandlerIdent = saksbehandlerIdent,
                 timestamp = LocalDateTime.now(),
+                saksbehandlerName = saksbehandlerName,
             ),
             connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId)
         )
@@ -66,6 +67,7 @@ class TextService(
     fun createNewText(
         textInput: TextInput,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): TextView {
         val now = LocalDateTime.now()
 
@@ -75,6 +77,7 @@ class TextService(
                 modified = now,
                 maltekstseksjonVersions = mutableListOf(),
                 createdBy = saksbehandlerIdent,
+                createdByName = saksbehandlerName,
             )
         )
 
@@ -93,6 +96,7 @@ class TextService(
                     editors = mutableSetOf(
                         Editor(
                             navIdent = saksbehandlerIdent,
+                            editorName = saksbehandlerName,
                             changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
                         )
                     ),
@@ -102,6 +106,7 @@ class TextService(
                     publishedDateTime = null,
                     published = false,
                     publishedBy = null,
+                    publishedByName = null,
                 )
             ),
             connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId = text.id)
@@ -112,6 +117,7 @@ class TextService(
         textId: UUID,
         versionInput: VersionInput?,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): TextView {
         if (textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
                 textId = textId
@@ -132,7 +138,10 @@ class TextService(
 
         return mapToTextView(
             textVersion = textVersionRepository.save(
-                existingVersion.createDraft(saksbehandlerIdent = saksbehandlerIdent)
+                existingVersion.createDraft(
+                    saksbehandlerIdent = saksbehandlerIdent,
+                    saksbehandlerName = saksbehandlerName
+                ),
             ),
             connectedMaltekstseksjonIdList = getConnectedMaltekstseksjoner(textId)
         )
@@ -152,6 +161,7 @@ class TextService(
     fun unpublishText(
         textId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): DeletedText {
         val text = textRepository.getReferenceById(textId)
 
@@ -176,13 +186,15 @@ class TextService(
                         maltekstseksjonId = maltekstseksjonId,
                         versionInput = null,
                         saksbehandlerIdent = saksbehandlerIdent,
+                        saksbehandlerName = saksbehandlerName,
                     )
 
                     draft.texts.removeIf { it.id == textId }
 
                     publishService.publishMaltekstseksjonVersion(
                         maltekstseksjonId = maltekstseksjonId,
-                        saksbehandlerIdent = saksbehandlerIdent
+                        saksbehandlerIdent = saksbehandlerIdent,
+                        saksbehandlerName = saksbehandlerName,
                     )
                 }
 
@@ -209,7 +221,10 @@ class TextService(
                     val published = maltekstseksjonVersions.find { it.published }!!
 
                     //Create this draft only to be able to publish changed version with removed text.
-                    var tempDraft = published.createDraft(saksbehandlerIdent)
+                    var tempDraft = published.createDraft(
+                        saksbehandlerIdent = saksbehandlerIdent,
+                        saksbehandlerName = saksbehandlerName
+                    )
                     tempDraft.texts.removeIf { it.id == textId }
 
                     tempDraft = maltekstseksjonVersionRepository.save(tempDraft)
@@ -218,6 +233,7 @@ class TextService(
                         publishService.publishMaltekstseksjonVersion(
                             maltekstseksjonId = maltekstseksjonId,
                             saksbehandlerIdent = saksbehandlerIdent,
+                            saksbehandlerName = saksbehandlerName,
                             overrideDraft = tempDraft,
                         ), draft
                     )
@@ -284,7 +300,9 @@ class TextService(
                 maltekstseksjonVersions = affectedMaltekstseksjonIdList.map { maltekstseksjonId ->
                     DeletedText.MaltekstseksjonVersionWithId(
                         maltekstseksjonId = maltekstseksjonId,
-                        maltekstseksjonVersions = maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId = maltekstseksjonId)
+                        maltekstseksjonVersions = maltekstseksjonVersionRepository.findByMaltekstseksjonId(
+                            maltekstseksjonId = maltekstseksjonId
+                        )
                             .map {
                                 mapToMaltekstseksjonView(
                                     maltekstseksjonVersion = it,
@@ -324,6 +342,7 @@ class TextService(
         input: String,
         textId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
@@ -331,6 +350,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
+            editorName = saksbehandlerName,
             changeType = Editor.ChangeType.TEXT_TITLE,
         )
 
@@ -344,6 +364,7 @@ class TextService(
         input: String,
         textId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
@@ -351,6 +372,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
+            editorName = saksbehandlerName,
             changeType = Editor.ChangeType.TEXT_TYPE,
         )
         return mapToTextView(
@@ -363,6 +385,7 @@ class TextService(
         input: String,
         textId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
         language: Language,
     ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
@@ -388,6 +411,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
+            editorName = saksbehandlerName,
             changeType = changeType,
         )
         return mapToTextView(
@@ -400,6 +424,7 @@ class TextService(
         input: String,
         textId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
         language: Language,
     ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
@@ -421,6 +446,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
+            editorName = saksbehandlerName,
             changeType = changeType,
         )
         return mapToTextView(
@@ -433,6 +459,7 @@ class TextService(
         input: Set<String>,
         textId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
@@ -440,6 +467,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
+            editorName = saksbehandlerName,
             changeType = Editor.ChangeType.TEXT_UTFALL,
         )
         return mapToTextView(
@@ -452,6 +480,7 @@ class TextService(
         input: Set<String>,
         textId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
@@ -459,6 +488,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
+            editorName = saksbehandlerName,
             changeType = Editor.ChangeType.TEXT_SECTIONS,
         )
         return mapToTextView(
@@ -471,6 +501,7 @@ class TextService(
         input: Set<String>,
         textId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
@@ -478,6 +509,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
+            editorName = saksbehandlerName,
             changeType = Editor.ChangeType.TEXT_YTELSE_HJEMMEL,
         )
         return mapToTextView(
@@ -490,6 +522,7 @@ class TextService(
         input: Set<String>,
         textId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): TextView {
         validateIfTextIsUnpublishedOrMissingDraft(textId)
         val textVersion = getCurrentDraft(textId)
@@ -497,6 +530,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
+            editorName = saksbehandlerName,
             changeType = Editor.ChangeType.TEXT_ENHETER,
         )
         return mapToTextView(

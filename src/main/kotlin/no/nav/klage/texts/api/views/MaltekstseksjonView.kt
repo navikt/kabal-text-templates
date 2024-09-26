@@ -16,10 +16,12 @@ data class MaltekstseksjonView(
     val created: LocalDateTime,
     var modified: LocalDateTime,
     val createdBy: String?,
+    val createdByActor: Employee,
 
     val editors: List<MaltekstseksjonEditorView>,
     val publishedDateTime: LocalDateTime?,
     val publishedBy: String?,
+    val publishedByActor: Employee?,
     val published: Boolean,
 )
 

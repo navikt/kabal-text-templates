@@ -78,6 +78,8 @@ class MaltekstseksjonVersion(
     var publishedDateTime: LocalDateTime?,
     @Column(name = "published_by")
     var publishedBy: String?,
+    @Column(name = "published_by_name")
+    var publishedByName: String?,
     /** Is it currently published? */
     @Column(name = "published")
     var published: Boolean,
@@ -88,7 +90,7 @@ class MaltekstseksjonVersion(
     var modified: LocalDateTime,
 ): Serializable {
 
-    fun createDraft(saksbehandlerIdent: String): MaltekstseksjonVersion {
+    fun createDraft(saksbehandlerIdent: String, saksbehandlerName: String): MaltekstseksjonVersion {
         val now = LocalDateTime.now()
         return MaltekstseksjonVersion(
             title = title,
@@ -101,11 +103,13 @@ class MaltekstseksjonVersion(
             publishedDateTime = null,
             published = false,
             publishedBy = null,
+            publishedByName = null,
             created = now,
             modified = now,
             editors = mutableSetOf(
                 Editor(
                     navIdent = saksbehandlerIdent,
+                    editorName = saksbehandlerName,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_VERSION_CREATED
                 )
             )
@@ -125,6 +129,7 @@ class MaltekstseksjonVersion(
         publishedDateTime = null
         published = false
         publishedBy = null
+        publishedByName = null
         created = now
         modified = now
     }
@@ -145,6 +150,7 @@ class MaltekstseksjonVersion(
         if (ytelseHjemmelIdList != other.ytelseHjemmelIdList) return false
         if (editors != other.editors) return false
         if (publishedBy != other.publishedBy) return false
+        if (publishedByName != other.publishedByName) return false
         if (published != other.published) return false
 
         return true
@@ -161,11 +167,12 @@ class MaltekstseksjonVersion(
         result = 31 * result + ytelseHjemmelIdList.hashCode()
         result = 31 * result + editors.hashCode()
         result = 31 * result + (publishedBy?.hashCode() ?: 0)
+        result = 31 * result + (publishedByName?.hashCode() ?: 0)
         result = 31 * result + published.hashCode()
         return result
     }
 
     override fun toString(): String {
-        return "MaltekstseksjonVersion(id=$id, title='$title', maltekstseksjon=$maltekstseksjon, texts=${texts.map { it.id }}, utfallIdList=$utfallIdList, enhetIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, editors=$editors, publishedDateTime=$publishedDateTime, publishedBy=$publishedBy, published=$published, created=$created, modified=$modified)"
+        return "MaltekstseksjonVersion(id=$id, title='$title', maltekstseksjon=$maltekstseksjon, texts=$texts, utfallIdList=$utfallIdList, enhetIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, editors=$editors, publishedDateTime=$publishedDateTime, publishedBy=$publishedBy, publishedByName=$publishedByName, published=$published, created=$created, modified=$modified)"
     }
 }

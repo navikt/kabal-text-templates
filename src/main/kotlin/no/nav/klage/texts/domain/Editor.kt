@@ -12,6 +12,8 @@ class Editor(
     val id: UUID = UUID.randomUUID(),
     @Column(name = "nav_ident")
     val navIdent: String,
+    @Column(name = "editor_name")
+    val editorName: String?,
     @Enumerated(EnumType.STRING)
     @Column(name = "change_type")
     val changeType: ChangeType,

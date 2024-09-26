@@ -21,9 +21,11 @@ class SearchMaltekstseksjonServiceTest {
                 created = now,
                 modified = now,
                 createdBy = "abc",
+                createdByName = "abc",
             ),
             publishedDateTime = null,
             publishedBy = null,
+            publishedByName = null,
             published = false,
             created = now,
             modified = now,
@@ -308,6 +310,7 @@ class SearchMaltekstseksjonServiceTest {
         val now = LocalDateTime.now()
         return Text(
             createdBy = "abc",
+            createdByName = "abc",
             created = now,
             modified = now,
             maltekstseksjonVersions = mutableListOf()

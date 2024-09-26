@@ -21,14 +21,28 @@ fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion): Ma
         editors = maltekstseksjonVersion.editors.map {
             MaltekstseksjonEditorView(
                 navIdent = it.navIdent,
+                actor = Employee(
+                    navIdent = it.navIdent,
+                    navn = it.editorName
+                ),
                 created = it.created,
                 changeType = MaltekstseksjonEditorView.ChangeTypeMaltekstseksjon.valueOf(it.changeType.name),
             )
         }.sortedByDescending { it.created },
         publishedDateTime = maltekstseksjonVersion.publishedDateTime,
         publishedBy = maltekstseksjonVersion.publishedBy,
+        publishedByActor = maltekstseksjonVersion.publishedBy?.let {
+            Employee(
+                navIdent = it,
+                navn = maltekstseksjonVersion.publishedByName,
+            )
+        },
         published = maltekstseksjonVersion.published,
         createdBy = maltekstseksjonVersion.maltekstseksjon.createdBy,
+        createdByActor = Employee(
+            navIdent = maltekstseksjonVersion.maltekstseksjon.createdBy,
+            navn = maltekstseksjonVersion.maltekstseksjon.createdByName,
+        ),
     )
 
 fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair<List<UUID>, List<UUID>>): TextView =
@@ -48,16 +62,32 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         editors = textVersion.editors.map {
             TextEditorView(
                 navIdent = it.navIdent,
+                actor = Employee(
+                    navIdent = it.navIdent,
+                    navn = it.navIdent,
+                ),
                 created = it.created,
                 changeType = TextEditorView.ChangeTypeText.valueOf(it.changeType.name),
             )
         }.sortedByDescending { it.created },
         publishedDateTime = textVersion.publishedDateTime,
         publishedBy = textVersion.publishedBy,
+        publishedByActor = textVersion.publishedBy?.let {
+            Employee(
+                navIdent = it,
+                navn = textVersion.publishedByName,
+            )
+        },
         published = textVersion.published,
         publishedMaltekstseksjonIdList = connectedMaltekstseksjonIdList.first,
         draftMaltekstseksjonIdList = connectedMaltekstseksjonIdList.second,
         createdBy = textVersion.text.createdBy,
+        createdByActor = textVersion.text.createdBy?.let {
+            Employee(
+                navIdent = it,
+                navn = textVersion.text.createdByName,
+            )
+        },
     )
 
 fun mapToSearchableListItem(textVersion: TextVersion): SearchableListItem =

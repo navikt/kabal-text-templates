@@ -5,6 +5,7 @@ import java.util.*
 
 data class TextEditorView(
     val navIdent: String,
+    val actor: Employee,
     val created: LocalDateTime,
     val changeType: ChangeTypeText,
 ) {
@@ -39,6 +40,7 @@ data class TextEditorView(
 
 data class MaltekstseksjonEditorView(
     val navIdent: String,
+    val actor: Employee,
     val created: LocalDateTime,
     val changeType: ChangeTypeMaltekstseksjon,
 ) {
@@ -62,3 +64,8 @@ data class DeletedText(
         val maltekstseksjonVersions: List<MaltekstseksjonView>,
     )
 }
+
+data class Employee(
+    val navIdent: String,
+    val navn: String?,
+)

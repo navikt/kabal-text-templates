@@ -16,6 +16,7 @@ data class TextView(
     val created: LocalDateTime,
     val modified: LocalDateTime,
     val createdBy: String?,
+    val createdByActor: Employee?,
 
     val utfallIdList: Set<String>,
     val enhetIdList: Set<String>,
@@ -25,6 +26,7 @@ data class TextView(
     val editors: List<TextEditorView>,
     val publishedDateTime: LocalDateTime?,
     val publishedBy: String?,
+    val publishedByActor: Employee?,
     val published: Boolean,
 
     val draftMaltekstseksjonIdList: List<UUID>,

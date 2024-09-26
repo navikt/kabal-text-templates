@@ -45,6 +45,7 @@ class MaltekstseksjonVersionRepositoryTest {
                 created = now,
                 modified = now,
                 createdBy = "abc",
+                createdByName = "abc",
             )
         )
 
@@ -54,6 +55,7 @@ class MaltekstseksjonVersionRepositoryTest {
                 modified = now,
                 maltekstseksjonVersions = mutableListOf(),
                 createdBy = "abc",
+                createdByName = "abc",
             )
         )
 
@@ -63,6 +65,7 @@ class MaltekstseksjonVersionRepositoryTest {
             texts = mutableListOf(text),
             publishedDateTime = null,
             publishedBy = null,
+            publishedByName = null,
             published = false,
             utfallIdList = setOf("1"),
             enhetIdList = setOf("1"),
@@ -71,6 +74,7 @@ class MaltekstseksjonVersionRepositoryTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
+                    editorName = "saksbehandlerName",
                     created = now,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
@@ -97,6 +101,7 @@ class MaltekstseksjonVersionRepositoryTest {
                 created = now,
                 modified = now,
                 createdBy = "abc",
+                createdByName = "abc",
             )
         )
 
@@ -106,6 +111,7 @@ class MaltekstseksjonVersionRepositoryTest {
                 modified = now,
                 maltekstseksjonVersions = mutableListOf(),
                 createdBy = "abc",
+                createdByName = "abc",
             )
         )
 
@@ -115,6 +121,7 @@ class MaltekstseksjonVersionRepositoryTest {
             texts = mutableListOf(text),
             publishedDateTime = null,
             publishedBy = null,
+            publishedByName = null,
             published = false,
             utfallIdList = setOf("1"),
             enhetIdList = setOf("1"),
@@ -123,6 +130,7 @@ class MaltekstseksjonVersionRepositoryTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
+                    editorName = "saksbehandlerName",
                     created = now,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
@@ -163,6 +171,7 @@ class MaltekstseksjonVersionRepositoryTest {
                 created = now,
                 modified = now,
                 createdBy = "abc",
+                createdByName = "abc",
             )
         )
 
@@ -172,6 +181,7 @@ class MaltekstseksjonVersionRepositoryTest {
                 modified = now,
                 maltekstseksjonVersions = mutableListOf(),
                 createdBy = "abc",
+                createdByName = "abc",
             )
         )
 
@@ -181,6 +191,7 @@ class MaltekstseksjonVersionRepositoryTest {
             texts = mutableListOf(text),
             publishedDateTime = now,
             publishedBy = "null",
+            publishedByName = "null",
             published = true,
             utfallIdList = setOf("1"),
             enhetIdList = setOf("1"),
@@ -189,6 +200,7 @@ class MaltekstseksjonVersionRepositoryTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
+                    editorName = "saksbehandlerName",
                     created = now,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )

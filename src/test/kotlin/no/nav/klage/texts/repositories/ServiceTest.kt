@@ -104,7 +104,8 @@ class ServiceTest {
 
         textService.unpublishText(
             textId = currentTextID,
-            saksbehandlerIdent = "abc"
+            saksbehandlerIdent = "abc",
+            saksbehandlerName = "abc",
         )
 
         testEntityManager.flush()
@@ -127,7 +128,8 @@ class ServiceTest {
 
         textService.unpublishText(
             textId = currentTextID,
-            saksbehandlerIdent = "abc"
+            saksbehandlerIdent = "abc",
+            saksbehandlerName = "abc",
         )
 
         testEntityManager.flush()
@@ -149,7 +151,8 @@ class ServiceTest {
 
         val result = textService.unpublishText(
             textId = currentTextID,
-            saksbehandlerIdent = "abc"
+            saksbehandlerIdent = "abc",
+            saksbehandlerName = "abc",
         )
 
         testEntityManager.flush()
@@ -181,12 +184,14 @@ class ServiceTest {
             created = now,
             modified = now,
             createdBy = "abc",
+            createdByName = "abc",
             maltekstseksjonVersions = mutableListOf()
         )
         val text2 = Text(
             created = now,
             modified = now,
             createdBy = "abc",
+            createdByName = "abc",
             maltekstseksjonVersions = mutableListOf()
         )
 
@@ -207,7 +212,8 @@ class ServiceTest {
         maltekstseksjonService.updateTexts(
             input = listOf(text2.id.toString(), text1.id.toString()),
             maltekstseksjonId = currentMaltekstseksjonID,
-            saksbehandlerIdent = "bac"
+            saksbehandlerIdent = "bac",
+            saksbehandlerName = "abc",
         )
 
         testEntityManager.flush()
@@ -228,6 +234,7 @@ class ServiceTest {
                 created = now,
                 modified = now,
                 createdBy = "abc",
+                createdByName = "abc",
             )
         )
 
@@ -244,6 +251,7 @@ class ServiceTest {
                 ytelseHjemmelIdList = setOf(),
             ),
             saksbehandlerIdent = "abc",
+            saksbehandlerName = "abc",
         )
 
         val textVersion2 = textService.createNewText(
@@ -259,9 +267,10 @@ class ServiceTest {
                 ytelseHjemmelIdList = setOf(),
             ),
             saksbehandlerIdent = "abc",
+            saksbehandlerName = "abc",
         )
 
-        textService.publishTextVersion(textId = textVersion2.id, saksbehandlerIdent = "abc")
+        textService.publishTextVersion(textId = textVersion2.id, saksbehandlerIdent = "abc", saksbehandlerName = "abc")
 
         currentTextID = textVersion1.id
 
@@ -274,6 +283,7 @@ class ServiceTest {
             texts = mutableListOf(text1, text2),
             publishedDateTime = now,
             publishedBy = "noen",
+            publishedByName = "noen",
             published = true,
             utfallIdList = setOf("1"),
             enhetIdList = setOf("1"),
@@ -282,6 +292,7 @@ class ServiceTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
+                    editorName = "saksbehandlerName",
                     created = now,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
@@ -292,8 +303,13 @@ class ServiceTest {
 
         testEntityManager.persist(maltekstseksjonVersionPublished)
 
-        textService.publishTextVersion(textId = currentTextID, saksbehandlerIdent = "abc")
-        textService.createNewDraft(textId = currentTextID, versionInput = null, saksbehandlerIdent = "abc")
+        textService.publishTextVersion(textId = currentTextID, saksbehandlerIdent = "abc", saksbehandlerName = "abc")
+        textService.createNewDraft(
+            textId = currentTextID,
+            versionInput = null,
+            saksbehandlerIdent = "abc",
+            saksbehandlerName = "abc"
+        )
 
         testEntityManager.flush()
         testEntityManager.clear()
@@ -307,6 +323,7 @@ class ServiceTest {
                 created = now,
                 modified = now,
                 createdBy = "abc",
+                createdByName = "abc",
             )
         )
 
@@ -323,6 +340,7 @@ class ServiceTest {
                 ytelseHjemmelIdList = setOf(),
             ),
             saksbehandlerIdent = "abc",
+            saksbehandlerName = "abc",
         )
 
         currentTextID = textVersion.id
@@ -336,6 +354,7 @@ class ServiceTest {
             texts = mutableListOf(text),
             publishedDateTime = null,
             publishedBy = null,
+            publishedByName = null,
             published = false,
             utfallIdList = setOf("1"),
             enhetIdList = setOf("1"),
@@ -344,6 +363,7 @@ class ServiceTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
+                    editorName = "saksbehandlerName",
                     created = now,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
@@ -354,8 +374,13 @@ class ServiceTest {
 
         testEntityManager.persist(maltekstseksjonVersionDraft)
 
-        textService.publishTextVersion(textId = currentTextID, saksbehandlerIdent = "abc")
-        textService.createNewDraft(textId = currentTextID, versionInput = null, saksbehandlerIdent = "abc")
+        textService.publishTextVersion(textId = currentTextID, saksbehandlerIdent = "abc", saksbehandlerName = "abc")
+        textService.createNewDraft(
+            textId = currentTextID,
+            versionInput = null,
+            saksbehandlerIdent = "abc",
+            saksbehandlerName = "abc",
+        )
 
         testEntityManager.flush()
         testEntityManager.clear()
@@ -369,6 +394,7 @@ class ServiceTest {
                 created = someDateTime,
                 modified = someDateTime,
                 createdBy = "abc",
+                createdByName = "abc",
             )
         )
 
@@ -385,6 +411,7 @@ class ServiceTest {
                 ytelseHjemmelIdList = setOf(),
             ),
             saksbehandlerIdent = "abc",
+            saksbehandlerName = "abc",
         )
 
         val textVersion2 = textService.createNewText(
@@ -400,9 +427,10 @@ class ServiceTest {
                 ytelseHjemmelIdList = setOf(),
             ),
             saksbehandlerIdent = "abc",
+            saksbehandlerName = "abc",
         )
 
-        textService.publishTextVersion(textId = textVersion2.id, saksbehandlerIdent = "abc")
+        textService.publishTextVersion(textId = textVersion2.id, saksbehandlerIdent = "abc", saksbehandlerName = "abc")
 
         currentTextID = textVersion1.id
 
@@ -417,6 +445,7 @@ class ServiceTest {
             texts = mutableListOf(text1, text2),
             publishedDateTime = someDateTime,
             publishedBy = "noen",
+            publishedByName = "noen",
             published = true,
             utfallIdList = setOf("1"),
             enhetIdList = setOf("1"),
@@ -425,6 +454,7 @@ class ServiceTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
+                    editorName = "saksbehandlerName",
                     created = someDateTime,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
@@ -441,6 +471,7 @@ class ServiceTest {
             texts = mutableListOf(text1, text2),
             publishedDateTime = null,
             publishedBy = null,
+            publishedByName = null,
             published = false,
             utfallIdList = setOf("1", "2"),
             enhetIdList = setOf("1"),
@@ -449,6 +480,7 @@ class ServiceTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
+                    editorName = "saksbehandlerName",
                     created = someDateTime,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
@@ -460,8 +492,13 @@ class ServiceTest {
         testEntityManager.persist(maltekstseksjonVersionPublished)
         testEntityManager.persist(maltekstseksjonVersionDraft)
 
-        textService.publishTextVersion(textId = currentTextID, saksbehandlerIdent = "abc")
-        textService.createNewDraft(textId = currentTextID, versionInput = null, saksbehandlerIdent = "abc")
+        textService.publishTextVersion(textId = currentTextID, saksbehandlerIdent = "abc", saksbehandlerName = "abc")
+        textService.createNewDraft(
+            textId = currentTextID,
+            versionInput = null,
+            saksbehandlerIdent = "abc",
+            saksbehandlerName = "abc",
+        )
 
         testEntityManager.flush()
         testEntityManager.clear()
@@ -475,6 +512,7 @@ class ServiceTest {
                 created = someDateTime,
                 modified = someDateTime,
                 createdBy = "abc",
+                createdByName = "abc"
             )
         )
 
@@ -488,6 +526,7 @@ class ServiceTest {
             texts = mutableListOf(),
             publishedDateTime = someDateTime,
             publishedBy = "noen",
+            publishedByName = "noen",
             published = true,
             utfallIdList = setOf("1"),
             enhetIdList = setOf("1"),
@@ -496,6 +535,7 @@ class ServiceTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
+                    editorName = "saksbehandlerName",
                     created = someDateTime,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
@@ -512,6 +552,7 @@ class ServiceTest {
             texts = mutableListOf(),
             publishedDateTime = null,
             publishedBy = null,
+            publishedByName = null,
             published = false,
             utfallIdList = setOf("1", "2"),
             enhetIdList = setOf("1"),
@@ -520,6 +561,7 @@ class ServiceTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
+                    editorName = "saksbehandlerName",
                     created = someDateTime,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )

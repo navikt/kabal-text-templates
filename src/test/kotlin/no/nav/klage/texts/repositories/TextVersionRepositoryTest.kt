@@ -113,6 +113,7 @@ class TextVersionRepositoryTest {
             plainTextNB = null,
             publishedDateTime = null,
             publishedBy = null,
+            publishedByName = null,
             published = false,
             text = text,
             utfallIdList = setOf("1"),
@@ -122,6 +123,7 @@ class TextVersionRepositoryTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
+                    editorName = "saksbehandlerName",
                     created = now,
                     changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
                 )
@@ -145,6 +147,7 @@ class TextVersionRepositoryTest {
             plainTextNB = null,
             publishedDateTime = now,
             publishedBy = "ident",
+            publishedByName = "name",
             published = true,
             text = text,
             utfallIdList = setOf("1"),
@@ -154,6 +157,7 @@ class TextVersionRepositoryTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
+                    editorName = "saksbehandlerName",
                     created = now,
                     changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
                 )
@@ -171,6 +175,7 @@ class TextVersionRepositoryTest {
                 modified = now,
                 maltekstseksjonVersions = mutableListOf(),
                 createdBy = "abc",
+                createdByName = "abc"
             )
         )
         return text

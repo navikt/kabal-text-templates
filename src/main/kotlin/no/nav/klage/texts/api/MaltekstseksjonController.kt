@@ -64,6 +64,7 @@ class MaltekstseksjonController(
         return maltekstseksjonService.publishMaltekstseksjonVersion(
             maltekstseksjonId = maltekstseksjonId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -85,6 +86,7 @@ class MaltekstseksjonController(
         return maltekstseksjonService.publishMaltekstseksjonVersionWithTexts(
             maltekstseksjonId = maltekstseksjonId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -106,6 +108,7 @@ class MaltekstseksjonController(
         return maltekstseksjonService.createNewMaltekstseksjon(
             maltekstseksjonInput = input,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -129,6 +132,7 @@ class MaltekstseksjonController(
             maltekstseksjonId = maltekstseksjonId,
             versionInput = input,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -152,6 +156,7 @@ class MaltekstseksjonController(
             input = input.title,
             maltekstseksjonId = maltekstseksjonId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -175,6 +180,7 @@ class MaltekstseksjonController(
             input = input.textIdList,
             maltekstseksjonId = maltekstseksjonId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -198,6 +204,7 @@ class MaltekstseksjonController(
             input = input.utfallIdList,
             maltekstseksjonId = maltekstseksjonId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -221,6 +228,7 @@ class MaltekstseksjonController(
             input = input.enhetIdList,
             maltekstseksjonId = maltekstseksjonId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -244,6 +252,7 @@ class MaltekstseksjonController(
             input = input.templateSectionIdList,
             maltekstseksjonId = maltekstseksjonId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
@@ -267,6 +276,7 @@ class MaltekstseksjonController(
             input = input.ytelseHjemmelIdList,
             maltekstseksjonId = maltekstseksjonId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 

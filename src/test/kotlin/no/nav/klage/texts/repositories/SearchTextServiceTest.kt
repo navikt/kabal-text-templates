@@ -26,10 +26,12 @@ class SearchTextServiceTest {
                 created = now,
                 modified = now,
                 createdBy = "abc",
+                createdByName = "abc",
                 maltekstseksjonVersions = mutableListOf()
             ),
             publishedDateTime = null,
             publishedBy = null,
+            publishedByName = null,
             published = false,
             created = now,
             modified = now,
