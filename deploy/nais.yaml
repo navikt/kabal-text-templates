@@ -90,3 +90,7 @@ spec:
     - name: {{name}}
       value: {{value}}
   {{/each}}
+  {{#each adRoles}}
+    - name: {{name}}
+      value: {{value}}
+  {{/each}}
