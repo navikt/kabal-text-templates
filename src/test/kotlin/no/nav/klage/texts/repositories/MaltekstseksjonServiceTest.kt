@@ -96,7 +96,7 @@ class MaltekstseksjonServiceTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
-                    editorName = "saksbehandlerNavn",
+                    name = "saksbehandlerNavn",
                     created = now,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )

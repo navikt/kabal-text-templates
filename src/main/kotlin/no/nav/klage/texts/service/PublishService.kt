@@ -161,7 +161,7 @@ class PublishService(
             existingDraft.resetDraftWithValuesFrom(existingVersion)
             existingDraft.editors += Editor(
                 navIdent = saksbehandlerIdent,
-                editorName = saksbehandlerName,
+                name = saksbehandlerName,
                 changeType = Editor.ChangeType.MALTEKSTSEKSJON_VERSION_CREATED,
             )
             existingDraft

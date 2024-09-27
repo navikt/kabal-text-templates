@@ -23,7 +23,7 @@ fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion): Ma
                 navIdent = it.navIdent,
                 actor = Employee(
                     navIdent = it.navIdent,
-                    navn = it.editorName
+                    navn = it.name
                 ),
                 created = it.created,
                 changeType = MaltekstseksjonEditorView.ChangeTypeMaltekstseksjon.valueOf(it.changeType.name),

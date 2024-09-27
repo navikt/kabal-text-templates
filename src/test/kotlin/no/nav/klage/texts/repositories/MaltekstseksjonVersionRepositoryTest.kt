@@ -74,7 +74,7 @@ class MaltekstseksjonVersionRepositoryTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
-                    editorName = "saksbehandlerName",
+                    name = "saksbehandlerName",
                     created = now,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
@@ -130,7 +130,7 @@ class MaltekstseksjonVersionRepositoryTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
-                    editorName = "saksbehandlerName",
+                    name = "saksbehandlerName",
                     created = now,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
@@ -200,7 +200,7 @@ class MaltekstseksjonVersionRepositoryTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
-                    editorName = "saksbehandlerName",
+                    name = "saksbehandlerName",
                     created = now,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )

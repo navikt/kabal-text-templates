@@ -292,7 +292,7 @@ class ServiceTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
-                    editorName = "saksbehandlerName",
+                    name = "saksbehandlerName",
                     created = now,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
@@ -363,7 +363,7 @@ class ServiceTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
-                    editorName = "saksbehandlerName",
+                    name = "saksbehandlerName",
                     created = now,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
@@ -454,7 +454,7 @@ class ServiceTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
-                    editorName = "saksbehandlerName",
+                    name = "saksbehandlerName",
                     created = someDateTime,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
@@ -480,7 +480,7 @@ class ServiceTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
-                    editorName = "saksbehandlerName",
+                    name = "saksbehandlerName",
                     created = someDateTime,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
@@ -535,7 +535,7 @@ class ServiceTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
-                    editorName = "saksbehandlerName",
+                    name = "saksbehandlerName",
                     created = someDateTime,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )
@@ -561,7 +561,7 @@ class ServiceTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
-                    editorName = "saksbehandlerName",
+                    name = "saksbehandlerName",
                     created = someDateTime,
                     changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
                 )

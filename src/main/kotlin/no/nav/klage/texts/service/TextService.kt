@@ -96,7 +96,7 @@ class TextService(
                     editors = mutableSetOf(
                         Editor(
                             navIdent = saksbehandlerIdent,
-                            editorName = saksbehandlerName,
+                            name = saksbehandlerName,
                             changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
                         )
                     ),
@@ -350,7 +350,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
-            editorName = saksbehandlerName,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.TEXT_TITLE,
         )
 
@@ -372,7 +372,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
-            editorName = saksbehandlerName,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.TEXT_TYPE,
         )
         return mapToTextView(
@@ -411,7 +411,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
-            editorName = saksbehandlerName,
+            name = saksbehandlerName,
             changeType = changeType,
         )
         return mapToTextView(
@@ -446,7 +446,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
-            editorName = saksbehandlerName,
+            name = saksbehandlerName,
             changeType = changeType,
         )
         return mapToTextView(
@@ -467,7 +467,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
-            editorName = saksbehandlerName,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.TEXT_UTFALL,
         )
         return mapToTextView(
@@ -488,7 +488,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
-            editorName = saksbehandlerName,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.TEXT_SECTIONS,
         )
         return mapToTextView(
@@ -509,7 +509,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
-            editorName = saksbehandlerName,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.TEXT_YTELSE_HJEMMEL,
         )
         return mapToTextView(
@@ -530,7 +530,7 @@ class TextService(
         textVersion.modified = LocalDateTime.now()
         textVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
-            editorName = saksbehandlerName,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.TEXT_ENHETER,
         )
         return mapToTextView(

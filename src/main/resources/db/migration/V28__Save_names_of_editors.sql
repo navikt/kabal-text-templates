@@ -199,96 +199,96 @@ WHERE published_by = 'V135783';
 ---
 
 ALTER TABLE klage.version_editor
-    ADD COLUMN editor_name TEXT;
+    ADD COLUMN name TEXT;
 
 UPDATE klage.version_editor
-SET editor_name = 'Aavik, Ketil'
+SET name = 'Aavik, Ketil'
 WHERE nav_ident = 'A100182';
 
 UPDATE klage.version_editor
-SET editor_name = 'Breivik, Tove'
+SET name = 'Breivik, Tove'
 WHERE nav_ident = 'B101325';
 
 UPDATE klage.version_editor
-SET editor_name = 'Bjurstedt, Sophie'
+SET name = 'Bjurstedt, Sophie'
 WHERE nav_ident = 'B153222';
 
 UPDATE klage.version_editor
-SET editor_name = 'Bergheim, Christine'
+SET name = 'Bergheim, Christine'
 WHERE nav_ident = 'C142264';
 
 UPDATE klage.version_editor
-SET editor_name = 'Engebretsen, Kristin Beate'
+SET name = 'Engebretsen, Kristin Beate'
 WHERE nav_ident = 'E127480';
 
 UPDATE klage.version_editor
-SET editor_name = 'Eriksson, Daniel'
+SET name = 'Eriksson, Daniel'
 WHERE nav_ident = 'E141394';
 
 UPDATE klage.version_editor
-SET editor_name = 'Nordgård, Marlene'
+SET name = 'Nordgård, Marlene'
 WHERE nav_ident = 'E142628';
 
 UPDATE klage.version_editor
-SET editor_name = 'Evjenth, Eskild'
+SET name = 'Evjenth, Eskild'
 WHERE nav_ident = 'E161617';
 
 UPDATE klage.version_editor
-SET editor_name = 'Gulbrandsen, Steffen Niklas'
+SET name = 'Gulbrandsen, Steffen Niklas'
 WHERE nav_ident = 'G153065';
 
 UPDATE klage.version_editor
-SET editor_name = 'Holm, Tina Terese L'
+SET name = 'Holm, Tina Terese L'
 WHERE nav_ident = 'H125545';
 
 UPDATE klage.version_editor
-SET editor_name = 'Iversen, Trine Erland'
+SET name = 'Iversen, Trine Erland'
 WHERE nav_ident = 'I104325';
 
 UPDATE klage.version_editor
-SET editor_name = 'Lindholm, Jakob'
+SET name = 'Lindholm, Jakob'
 WHERE nav_ident = 'L142009';
 
 UPDATE klage.version_editor
-SET editor_name = 'Landgraf, Tanita Saranya'
+SET name = 'Landgraf, Tanita Saranya'
 WHERE nav_ident = 'L158906';
 
 UPDATE klage.version_editor
-SET editor_name = 'Ramsøy, Christina Nilsson'
+SET name = 'Ramsøy, Christina Nilsson'
 WHERE nav_ident = 'R148453';
 
 UPDATE klage.version_editor
-SET editor_name = 'Resløkken, Mia'
+SET name = 'Resløkken, Mia'
 WHERE nav_ident = 'R158216';
 
 UPDATE klage.version_editor
-SET editor_name = 'Rikheim, Ragna Hove'
+SET name = 'Rikheim, Ragna Hove'
 WHERE nav_ident = 'R169190';
 
 UPDATE klage.version_editor
-SET editor_name = 'Seppola, Marian'
+SET name = 'Seppola, Marian'
 WHERE nav_ident = 'S108187';
 
 UPDATE klage.version_editor
-SET editor_name = 'Storebø, Stian'
+SET name = 'Storebø, Stian'
 WHERE nav_ident = 'S108846';
 
 UPDATE klage.version_editor
-SET editor_name = 'Simonsen, Camilla Folgerø'
+SET name = 'Simonsen, Camilla Folgerø'
 WHERE nav_ident = 'S160846';
 
 UPDATE klage.version_editor
-SET editor_name = 'Skaanes, Lisbeth'
+SET name = 'Skaanes, Lisbeth'
 WHERE nav_ident = 'S163082';
 
 UPDATE klage.version_editor
-SET editor_name = 'SYSTEMBRUKER'
+SET name = 'SYSTEMBRUKER'
 WHERE nav_ident = 'SYSTEMBRUKER';
 
 UPDATE klage.version_editor
-SET editor_name = 'Thorsen, Anne Berith Følstad'
+SET name = 'Thorsen, Anne Berith Følstad'
 WHERE nav_ident = 'T109423';
 
 UPDATE klage.version_editor
-SET editor_name = 'Vigestad, Odin'
+SET name = 'Vigestad, Odin'
 WHERE nav_ident = 'V135783';

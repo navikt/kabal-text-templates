@@ -123,7 +123,7 @@ class TextVersionRepositoryTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
-                    editorName = "saksbehandlerName",
+                    name = "saksbehandlerName",
                     created = now,
                     changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
                 )
@@ -157,7 +157,7 @@ class TextVersionRepositoryTest {
             editors = mutableSetOf(
                 Editor(
                     navIdent = "saksbehandlerIdent",
-                    editorName = "saksbehandlerName",
+                    name = "saksbehandlerName",
                     created = now,
                     changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
                 )

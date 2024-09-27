@@ -106,7 +106,7 @@ class TextVersion(
             editors = mutableSetOf(
                 Editor(
                     navIdent = saksbehandlerIdent,
-                    editorName = saksbehandlerName,
+                    name = saksbehandlerName,
                     changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
                 )
             )

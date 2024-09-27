@@ -120,7 +120,7 @@ class MaltekstseksjonService(
                     editors = mutableSetOf(
                         Editor(
                             navIdent = saksbehandlerIdent,
-                            editorName = saksbehandlerName,
+                            name = saksbehandlerName,
                             changeType = Editor.ChangeType.MALTEKSTSEKSJON_VERSION_CREATED,
                         )
                     ),
@@ -237,7 +237,7 @@ class MaltekstseksjonService(
         maltekstseksjonVersion.modified = LocalDateTime.now()
         maltekstseksjonVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
-            editorName = saksbehandlerName,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
         )
         return mapToMaltekstseksjonView(maltekstseksjonVersion)
@@ -259,7 +259,7 @@ class MaltekstseksjonService(
         maltekstseksjonVersion.modified = LocalDateTime.now()
         maltekstseksjonVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
-            editorName = saksbehandlerName,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_TEXTS,
         )
         return mapToMaltekstseksjonView(maltekstseksjonVersion)
@@ -278,7 +278,7 @@ class MaltekstseksjonService(
         maltekstseksjonVersion.modified = LocalDateTime.now()
         maltekstseksjonVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
-            editorName = saksbehandlerName,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_UTFALL,
         )
         return mapToMaltekstseksjonView(maltekstseksjonVersion)
@@ -297,7 +297,7 @@ class MaltekstseksjonService(
         maltekstseksjonVersion.modified = LocalDateTime.now()
         maltekstseksjonVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
-            editorName = saksbehandlerName,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_ENHETER,
         )
         return mapToMaltekstseksjonView(maltekstseksjonVersion)
@@ -316,7 +316,7 @@ class MaltekstseksjonService(
         maltekstseksjonVersion.modified = LocalDateTime.now()
         maltekstseksjonVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
-            editorName = saksbehandlerName,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_SECTIONS,
         )
         return mapToMaltekstseksjonView(maltekstseksjonVersion)
@@ -335,7 +335,7 @@ class MaltekstseksjonService(
         maltekstseksjonVersion.modified = LocalDateTime.now()
         maltekstseksjonVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
-            editorName = saksbehandlerName,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_YTELSE_HJEMMEL,
         )
         return mapToMaltekstseksjonView(maltekstseksjonVersion)

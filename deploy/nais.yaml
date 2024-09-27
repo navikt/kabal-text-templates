@@ -81,12 +81,20 @@ spec:
       allowAllUsers: true
       tenant: {{tenant}}
       claims:
+        groups:
+        {{#each adRoles}}
+          - id: {{value}}
+        {{/each}}
         extra:
           - NAVident
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: {{springProfile}}
   {{#each envs}}
+    - name: {{name}}
+      value: {{value}}
+  {{/each}}
+  {{#each adRoles}}
     - name: {{name}}
       value: {{value}}
   {{/each}}
