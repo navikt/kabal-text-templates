@@ -1,9 +1,6 @@
 package no.nav.klage.texts.config.problem
 
-import no.nav.klage.texts.exceptions.ClientErrorException
-import no.nav.klage.texts.exceptions.LanguageNotFoundException
-import no.nav.klage.texts.exceptions.MaltekstseksjonNotFoundException
-import no.nav.klage.texts.exceptions.TextNotFoundException
+import no.nav.klage.texts.exceptions.*
 import no.nav.klage.texts.util.getSecureLogger
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
@@ -47,6 +44,10 @@ class ProblemHandlingControllerAdvice : ResponseEntityExceptionHandler() {
         request: NativeWebRequest
     ): ProblemDetail =
         create(HttpStatus.BAD_REQUEST, ex)
+
+    @ExceptionHandler
+    fun handleMissingTilgang(ex: MissingTilgangException, request: NativeWebRequest): ProblemDetail =
+        create(HttpStatus.FORBIDDEN, ex)
 
     private fun create(httpStatus: HttpStatus, ex: Exception): ProblemDetail {
         val errorMessage = ex.message ?: "No error message available"

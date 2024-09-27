@@ -7,3 +7,5 @@ class LanguageNotFoundException(msg: String) : RuntimeException(msg)
 class MaltekstseksjonNotFoundException(msg: String) : RuntimeException(msg)
 
 class ClientErrorException(msg: String) : RuntimeException(msg)
+
+class MissingTilgangException(msg: String) : RuntimeException(msg)
