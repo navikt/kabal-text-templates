@@ -23,13 +23,22 @@ class AdminController(
         private val logger = getLogger(javaClass.enclosingClass)
     }
 
-    @GetMapping("/admin/evictcache")
+    @GetMapping("/admin/evictcaches")
     @ResponseStatus(HttpStatus.OK)
-    fun evictCache() {
+    fun evictCaches() {
         krevAdminTilgang()
         logger.debug("Evicting all caches")
         adminService.evictAllCaches()
         logger.debug("Evicted all caches")
+    }
+
+    @GetMapping("/admin/refillcaches")
+    @ResponseStatus(HttpStatus.OK)
+    fun refillCaches() {
+        krevAdminTilgang()
+        logger.debug("Refilling caches")
+        adminService.refillCaches()
+        logger.debug("Refilled caches")
     }
 
     private fun krevAdminTilgang() {

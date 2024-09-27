@@ -78,7 +78,6 @@ spec:
   azure:
     application:
       enabled: true
-      allowAllUsers: true
       tenant: {{tenant}}
       claims:
         groups:

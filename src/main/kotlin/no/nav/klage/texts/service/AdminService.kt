@@ -6,11 +6,16 @@ import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_TEXT
 import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_TEXT_SEARCH
 import no.nav.klage.texts.config.CacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
 import no.nav.klage.texts.config.CacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
+import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepository
+import no.nav.klage.texts.repositories.TextVersionRepository
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
 
 @Service
-class AdminService {
+class AdminService(
+    private val maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository,
+    private val textVersionRepository: TextVersionRepository,
+) {
     @CacheEvict(
         cacheNames = [
             CONSUMER_TEXT_SEARCH,
@@ -24,5 +29,10 @@ class AdminService {
     )
     fun evictAllCaches() {
 
+    }
+
+    fun refillCaches() {
+        maltekstseksjonVersionRepository.findByPublishedIsTrueForConsumer()
+        textVersionRepository.findByPublishedIsTrueForConsumer()
     }
 }
