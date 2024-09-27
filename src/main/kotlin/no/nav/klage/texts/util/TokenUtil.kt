@@ -28,18 +28,9 @@ class TokenUtil(
             ?: throw RuntimeException("Name not found in token")
 
     fun isAdmin(): Boolean {
-        logger.debug("Checking if admin is available")
-        val validationContext = tokenValidationContextHolder.getTokenValidationContext()
-        secureLogger.debug("Validation context: $validationContext")
-        val jwtToken = validationContext.getJwtToken(SecurityConfiguration.ISSUER_AAD)
-        secureLogger.debug("jwt token: ${jwtToken.toString()}")
-        val jwtTokenClaims = jwtToken?.jwtTokenClaims
-        secureLogger.debug("jwt claims: ${jwtTokenClaims.toString()}")
-        val groups = jwtTokenClaims?.get("groups")
-        secureLogger.debug("groups: $groups")
-        val groupsAsList = jwtTokenClaims?.getAsList("groups")
-        secureLogger.debug("groupsAsList: $groupsAsList")
+        val roleIds = tokenValidationContextHolder.getTokenValidationContext().getJwtToken(SecurityConfiguration.ISSUER_AAD)
+            ?.jwtTokenClaims?.getAsList("groups")
 
-        return groupsAsList?.contains(kabalAdminRoleId) ?: false
+        return roleIds?.contains(kabalAdminRoleId) ?: false
     }
 }
