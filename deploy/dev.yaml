@@ -16,6 +16,8 @@ spring:
 adRoles:
   - name: KABAL_ADMIN_ROLE_ID
     value: 14d756b4-d014-419a-a5bc-b8f9e31ce248
+  - name: KABAL_SAKSBEHANDLING_ROLE_ID
+    value: 07add1e7-7195-4c37-828d-fdf23ec6bef1
 
 envs:
   - name: JAVA_TOOL_OPTIONS
