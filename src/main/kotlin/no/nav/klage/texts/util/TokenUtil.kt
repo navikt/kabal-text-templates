@@ -32,9 +32,9 @@ class TokenUtil(
         val validationContext = tokenValidationContextHolder.getTokenValidationContext()
         secureLogger.debug("Validation context: $validationContext")
         val jwtToken = validationContext.getJwtToken(SecurityConfiguration.ISSUER_AAD)
-        secureLogger.debug("jwt token: $jwtToken")
+        secureLogger.debug("jwt token: ${jwtToken.toString()}")
         val jwtTokenClaims = jwtToken?.jwtTokenClaims
-        secureLogger.debug("jwt claims: $jwtTokenClaims")
+        secureLogger.debug("jwt claims: ${jwtTokenClaims.toString()}")
         val groups = jwtTokenClaims?.get("groups")
         secureLogger.debug("groups: $groups")
         val groupsAsList = jwtTokenClaims?.getAsList("groups")
