@@ -6,6 +6,10 @@ db_ha: true
 db_type: POSTGRES_15
 tenant: nav.no
 
+adRoles:
+  - name: KABAL_ADMIN_ROLE_ID
+    value: 90805436-8a2b-430a-a699-73b29205f25d
+
 envs:
   - name: JAVA_OPTS
     value: "-Xms256m -Xmx4096m"
