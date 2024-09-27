@@ -29,10 +29,17 @@ class TokenUtil(
 
     fun isAdmin(): Boolean {
         logger.debug("Checking if admin is available")
-        val roleIds = tokenValidationContextHolder.getTokenValidationContext().getJwtToken(SecurityConfiguration.ISSUER_AAD)
-            ?.jwtTokenClaims?.getAsList("groups")
-        logger.debug("Found roles: $roleIds")
+        val validationContext = tokenValidationContextHolder.getTokenValidationContext()
+        secureLogger.debug("Validation context: $validationContext")
+        val jwtToken = validationContext.getJwtToken(SecurityConfiguration.ISSUER_AAD)
+        secureLogger.debug("jwt token: $jwtToken")
+        val jwtTokenClaims = jwtToken?.jwtTokenClaims
+        secureLogger.debug("jwt claims: $jwtTokenClaims")
+        val groups = jwtTokenClaims?.get("groups")
+        secureLogger.debug("groups: $groups")
+        val groupsAsList = jwtTokenClaims?.getAsList("groups")
+        secureLogger.debug("groupsAsList: $groupsAsList")
 
-        return roleIds?.contains(kabalAdminRoleId) ?: false
+        return groupsAsList?.contains(kabalAdminRoleId) ?: false
     }
 }
