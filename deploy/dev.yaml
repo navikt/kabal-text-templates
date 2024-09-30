@@ -14,8 +14,22 @@ spring:
       maximum-pool-size: 5
 
 adRoles:
+  - name: KABAL_OPPGAVESTYRING_ALLE_ENHETER_ROLE_ID
+    value: 7ad08bfe-68d4-4c84-bddd-82d8894fb36e
+  - name: KABAL_MALTEKSTREDIGERING_ROLE_ID
+    value: 0097d4ff-787d-4180-953a-8d60b7927f32
+  - name: KABAL_SAKSBEHANDLING_ROLE_ID
+    value: 07add1e7-7195-4c37-828d-fdf23ec6bef1
+  - name: KABAL_FAGTEKSTREDIGERING_ROLE_ID
+    value: 94d34f17-e325-4ed6-9667-d23041a3f40c
+  - name: KABAL_INNSYN_EGEN_ENHET_ROLE_ID
+    value: 016fb83f-4e7c-47ec-ae8a-e3efa72a43e7
   - name: KABAL_ADMIN_ROLE_ID
     value: 14d756b4-d014-419a-a5bc-b8f9e31ce248
+  - name: KABAL_ROL_ROLE_ID
+    value: 615a97fc-f49c-48d1-8265-28bd9f435ce4
+  - name: KABAL_KROL_ROLE_ID
+    value: c3cbba77-ce3b-4d47-b136-79c1ce4ad4c0
 
 envs:
   - name: JAVA_TOOL_OPTIONS
