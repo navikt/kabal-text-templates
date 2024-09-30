@@ -44,24 +44,31 @@ class MaltekstseksjonService(
         private val secureLogger = getSecureLogger()
     }
 
-    fun publishMaltekstseksjonVersion(maltekstseksjonId: UUID, saksbehandlerIdent: String): MaltekstseksjonView {
+    fun publishMaltekstseksjonVersion(
+        maltekstseksjonId: UUID,
+        saksbehandlerIdent: String,
+        saksbehandlerName: String
+    ): MaltekstseksjonView {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
         return mapToMaltekstseksjonView(
             maltekstseksjonVersion = publishService.publishMaltekstseksjonVersion(
                 maltekstseksjonId = maltekstseksjonId,
                 saksbehandlerIdent = saksbehandlerIdent,
+                saksbehandlerName = saksbehandlerName,
             ),
         )
     }
 
     fun publishMaltekstseksjonVersionWithTexts(
         maltekstseksjonId: UUID,
-        saksbehandlerIdent: String
+        saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): MaltekstseksjonWithTextsView {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
         val (maltekstseksjonVersion, textVersions) = publishService.publishMaltekstseksjonVersionWithTexts(
             maltekstseksjonId = maltekstseksjonId,
             saksbehandlerIdent = saksbehandlerIdent,
+            saksbehandlerName = saksbehandlerName,
         )
 
         return MaltekstseksjonWithTextsView(
@@ -89,6 +96,7 @@ class MaltekstseksjonService(
     fun createNewMaltekstseksjon(
         maltekstseksjonInput: MaltekstseksjonInput,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): MaltekstseksjonView {
         val now = LocalDateTime.now()
 
@@ -97,6 +105,7 @@ class MaltekstseksjonService(
                 created = now,
                 modified = now,
                 createdBy = saksbehandlerIdent,
+                createdByName = saksbehandlerName,
             )
         )
 
@@ -111,6 +120,7 @@ class MaltekstseksjonService(
                     editors = mutableSetOf(
                         Editor(
                             navIdent = saksbehandlerIdent,
+                            name = saksbehandlerName,
                             changeType = Editor.ChangeType.MALTEKSTSEKSJON_VERSION_CREATED,
                         )
                     ),
@@ -120,6 +130,7 @@ class MaltekstseksjonService(
                     publishedDateTime = null,
                     published = false,
                     publishedBy = null,
+                    publishedByName = null,
                 )
             )
         )
@@ -129,6 +140,7 @@ class MaltekstseksjonService(
         maltekstseksjonId: UUID,
         versionInput: VersionInput?,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): MaltekstseksjonView {
         if (maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
                 maltekstseksjonId = maltekstseksjonId
@@ -142,6 +154,7 @@ class MaltekstseksjonService(
                 maltekstseksjonId = maltekstseksjonId,
                 versionInput = versionInput,
                 saksbehandlerIdent = saksbehandlerIdent,
+                saksbehandlerName = saksbehandlerName,
             )
         )
     }
@@ -215,6 +228,7 @@ class MaltekstseksjonService(
         input: String,
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): MaltekstseksjonView {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
@@ -223,6 +237,7 @@ class MaltekstseksjonService(
         maltekstseksjonVersion.modified = LocalDateTime.now()
         maltekstseksjonVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
         )
         return mapToMaltekstseksjonView(maltekstseksjonVersion)
@@ -232,6 +247,7 @@ class MaltekstseksjonService(
         input: List<String>,
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): MaltekstseksjonView {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
@@ -243,6 +259,7 @@ class MaltekstseksjonService(
         maltekstseksjonVersion.modified = LocalDateTime.now()
         maltekstseksjonVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_TEXTS,
         )
         return mapToMaltekstseksjonView(maltekstseksjonVersion)
@@ -252,6 +269,7 @@ class MaltekstseksjonService(
         input: Set<String>,
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): MaltekstseksjonView {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
@@ -260,6 +278,7 @@ class MaltekstseksjonService(
         maltekstseksjonVersion.modified = LocalDateTime.now()
         maltekstseksjonVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_UTFALL,
         )
         return mapToMaltekstseksjonView(maltekstseksjonVersion)
@@ -269,6 +288,7 @@ class MaltekstseksjonService(
         input: Set<String>,
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): MaltekstseksjonView {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
@@ -277,6 +297,7 @@ class MaltekstseksjonService(
         maltekstseksjonVersion.modified = LocalDateTime.now()
         maltekstseksjonVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_ENHETER,
         )
         return mapToMaltekstseksjonView(maltekstseksjonVersion)
@@ -286,6 +307,7 @@ class MaltekstseksjonService(
         input: Set<String>,
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): MaltekstseksjonView {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
@@ -294,6 +316,7 @@ class MaltekstseksjonService(
         maltekstseksjonVersion.modified = LocalDateTime.now()
         maltekstseksjonVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_SECTIONS,
         )
         return mapToMaltekstseksjonView(maltekstseksjonVersion)
@@ -303,6 +326,7 @@ class MaltekstseksjonService(
         input: Set<String>,
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): MaltekstseksjonView {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
@@ -311,6 +335,7 @@ class MaltekstseksjonService(
         maltekstseksjonVersion.modified = LocalDateTime.now()
         maltekstseksjonVersion.editors += Editor(
             navIdent = saksbehandlerIdent,
+            name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_YTELSE_HJEMMEL,
         )
         return mapToMaltekstseksjonView(maltekstseksjonVersion)

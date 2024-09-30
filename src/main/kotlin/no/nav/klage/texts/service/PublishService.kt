@@ -48,6 +48,7 @@ class PublishService(
     fun publishMaltekstseksjonVersionWithTexts(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
         overrideDraft: MaltekstseksjonVersion? = null
     ): Pair<MaltekstseksjonVersion, List<TextVersion>> {
         val possiblePublishedVersion =
@@ -68,13 +69,19 @@ class PublishService(
         maltekstseksjonVersionDraft.publishedDateTime = now
         maltekstseksjonVersionDraft.published = true
         maltekstseksjonVersionDraft.publishedBy = saksbehandlerIdent
+        maltekstseksjonVersionDraft.publishedByName = saksbehandlerName
 
         val textVersions = maltekstseksjonVersionDraft.texts.filter {
             textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
                 textId = it.id
             ) != null
         }.map {
-            publishTextVersion(textId = it.id, saksbehandlerIdent = saksbehandlerIdent, timestamp = now)
+            publishTextVersion(
+                textId = it.id,
+                saksbehandlerIdent = saksbehandlerIdent,
+                saksbehandlerName = saksbehandlerName,
+                timestamp = now
+            )
         }
 
         return maltekstseksjonVersionDraft to textVersions
@@ -91,6 +98,7 @@ class PublishService(
     fun publishMaltekstseksjonVersion(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
         overrideDraft: MaltekstseksjonVersion? = null
     ): MaltekstseksjonVersion {
         val possiblePublishedVersion =
@@ -110,6 +118,7 @@ class PublishService(
         maltekstseksjonVersionDraft.publishedDateTime = LocalDateTime.now()
         maltekstseksjonVersionDraft.published = true
         maltekstseksjonVersionDraft.publishedBy = saksbehandlerIdent
+        maltekstseksjonVersionDraft.publishedByName = saksbehandlerName
 
         return maltekstseksjonVersionDraft
     }
@@ -133,6 +142,7 @@ class PublishService(
         maltekstseksjonId: UUID,
         versionInput: VersionInput?,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ): MaltekstseksjonVersion {
         val existingVersion = if (versionInput != null) {
             maltekstseksjonVersionRepository.findById(versionInput.versionId).get()
@@ -151,12 +161,16 @@ class PublishService(
             existingDraft.resetDraftWithValuesFrom(existingVersion)
             existingDraft.editors += Editor(
                 navIdent = saksbehandlerIdent,
+                name = saksbehandlerName,
                 changeType = Editor.ChangeType.MALTEKSTSEKSJON_VERSION_CREATED,
             )
             existingDraft
         } else {
             maltekstseksjonVersionRepository.save(
-                existingVersion.createDraft(saksbehandlerIdent = saksbehandlerIdent)
+                existingVersion.createDraft(
+                    saksbehandlerIdent = saksbehandlerIdent,
+                    saksbehandlerName = saksbehandlerName
+                )
             )
         }
     }
@@ -170,7 +184,12 @@ class PublishService(
         ],
         allEntries = true
     )
-    fun publishTextVersion(textId: UUID, saksbehandlerIdent: String, timestamp: LocalDateTime): TextVersion {
+    fun publishTextVersion(
+        textId: UUID,
+        saksbehandlerIdent: String,
+        saksbehandlerName: String,
+        timestamp: LocalDateTime
+    ): TextVersion {
         val possiblePreviouslyPublishedVersion = textVersionRepository.findByPublishedIsTrueAndTextId(textId)
         if (possiblePreviouslyPublishedVersion != null) {
             possiblePreviouslyPublishedVersion.published = false
@@ -184,6 +203,7 @@ class PublishService(
         textVersionDraft.publishedDateTime = timestamp
         textVersionDraft.published = true
         textVersionDraft.publishedBy = saksbehandlerIdent
+        textVersionDraft.publishedByName = saksbehandlerName
 
         return textVersionDraft
     }

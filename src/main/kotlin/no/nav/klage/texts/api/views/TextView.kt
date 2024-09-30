@@ -16,15 +16,19 @@ data class TextView(
     val created: LocalDateTime,
     val modified: LocalDateTime,
     val createdBy: String?,
+    val createdByActor: Employee?,
 
     val utfallIdList: Set<String>,
     val enhetIdList: Set<String>,
     val templateSectionIdList: Set<String>,
     val ytelseHjemmelIdList: Set<String>,
 
+    //Deprecated, use edits
     val editors: List<TextEditorView>,
+    val edits: List<TextEditView>,
     val publishedDateTime: LocalDateTime?,
     val publishedBy: String?,
+    val publishedByActor: Employee?,
     val published: Boolean,
 
     val draftMaltekstseksjonIdList: List<UUID>,
