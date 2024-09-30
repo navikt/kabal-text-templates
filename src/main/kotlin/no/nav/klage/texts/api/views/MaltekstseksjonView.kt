@@ -18,7 +18,9 @@ data class MaltekstseksjonView(
     val createdBy: String?,
     val createdByActor: Employee,
 
+    //Deprecated, use edits
     val editors: List<MaltekstseksjonEditorView>,
+    val edits: List<MaltekstseksjonEditView>,
     val publishedDateTime: LocalDateTime?,
     val publishedBy: String?,
     val publishedByActor: Employee?,

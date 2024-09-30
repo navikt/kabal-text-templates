@@ -21,12 +21,18 @@ fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion): Ma
         editors = maltekstseksjonVersion.editors.map {
             MaltekstseksjonEditorView(
                 navIdent = it.navIdent,
+                created = it.created,
+                changeType = MaltekstseksjonEditorView.ChangeTypeMaltekstseksjon.valueOf(it.changeType.name),
+            )
+        }.sortedByDescending { it.created },
+        edits = maltekstseksjonVersion.editors.map {
+            MaltekstseksjonEditView(
                 actor = Employee(
                     navIdent = it.navIdent,
                     navn = it.name
                 ),
                 created = it.created,
-                changeType = MaltekstseksjonEditorView.ChangeTypeMaltekstseksjon.valueOf(it.changeType.name),
+                changeType = MaltekstseksjonEditView.ChangeTypeMaltekstseksjon.valueOf(it.changeType.name),
             )
         }.sortedByDescending { it.created },
         publishedDateTime = maltekstseksjonVersion.publishedDateTime,
@@ -62,12 +68,18 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         editors = textVersion.editors.map {
             TextEditorView(
                 navIdent = it.navIdent,
-                actor = Employee(
-                    navIdent = it.navIdent,
-                    navn = it.navIdent,
-                ),
                 created = it.created,
                 changeType = TextEditorView.ChangeTypeText.valueOf(it.changeType.name),
+            )
+        }.sortedByDescending { it.created },
+        edits = textVersion.editors.map {
+            TextEditView(
+                actor = Employee(
+                    navIdent = it.navIdent,
+                    navn = it.name,
+                ),
+                created = it.created,
+                changeType = TextEditView.ChangeTypeText.valueOf(it.changeType.name),
             )
         }.sortedByDescending { it.created },
         publishedDateTime = textVersion.publishedDateTime,
@@ -88,16 +100,6 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
                 navn = textVersion.text.createdByName,
             )
         },
-    )
-
-fun mapToSearchableListItem(textVersion: TextVersion): SearchableListItem =
-    SearchableListItem(
-        id = textVersion.text.id,
-        title = textVersion.title,
-        textType = textVersion.textType,
-        richText = fillRichText(textVersion),
-        plainText = fillPlainText(textVersion),
-        modified = textVersion.editors.maxByOrNull { it.created }?.created ?: textVersion.created,
     )
 
 private fun fillRichText(textVersion: TextVersion): TextView.RichText? =
