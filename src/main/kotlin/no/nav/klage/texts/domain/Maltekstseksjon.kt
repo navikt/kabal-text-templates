@@ -20,7 +20,7 @@ class Maltekstseksjon(
     @Column(name = "created_by")
     var createdBy: String,
     @Column(name = "created_by_name")
-    var createdByName: String?,
+    var createdByName: String,
 ) : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

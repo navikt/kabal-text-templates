@@ -15,7 +15,7 @@ data class MaltekstseksjonView(
     val ytelseHjemmelIdList: Set<String> = emptySet(),
     val created: LocalDateTime,
     var modified: LocalDateTime,
-    val createdBy: String?,
+    val createdBy: String,
     val createdByActor: Employee,
 
     //Deprecated, use edits

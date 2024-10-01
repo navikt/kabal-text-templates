@@ -15,8 +15,8 @@ data class TextView(
     val plainText: PlainText?,
     val created: LocalDateTime,
     val modified: LocalDateTime,
-    val createdBy: String?,
-    val createdByActor: Employee?,
+    val createdBy: String,
+    val createdByActor: Employee,
 
     val utfallIdList: Set<String>,
     val enhetIdList: Set<String>,
