@@ -15,9 +15,9 @@ class Text(
     @Column(name = "modified")
     var modified: LocalDateTime,
     @Column(name = "created_by")
-    var createdBy: String?,
+    var createdBy: String,
     @Column(name = "created_by_name")
-    var createdByName: String?,
+    var createdByName: String,
 
     @ManyToMany(mappedBy = "texts")
     val maltekstseksjonVersions: MutableList<MaltekstseksjonVersion>

@@ -37,12 +37,12 @@ fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion): Ma
         }.sortedByDescending { it.created },
         publishedDateTime = maltekstseksjonVersion.publishedDateTime,
         publishedBy = maltekstseksjonVersion.publishedBy,
-        publishedByActor = maltekstseksjonVersion.publishedBy?.let {
+        publishedByActor = if (maltekstseksjonVersion.publishedBy != null && maltekstseksjonVersion.publishedByName != null) {
             Employee(
-                navIdent = it,
-                navn = maltekstseksjonVersion.publishedByName,
+                navIdent = maltekstseksjonVersion.publishedBy!!,
+                navn = maltekstseksjonVersion.publishedByName!!,
             )
-        },
+        } else null,
         published = maltekstseksjonVersion.published,
         createdBy = maltekstseksjonVersion.maltekstseksjon.createdBy,
         createdByActor = Employee(
@@ -84,22 +84,20 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         }.sortedByDescending { it.created },
         publishedDateTime = textVersion.publishedDateTime,
         publishedBy = textVersion.publishedBy,
-        publishedByActor = textVersion.publishedBy?.let {
+        publishedByActor = if (textVersion.publishedBy != null && textVersion.publishedByName != null) {
             Employee(
-                navIdent = it,
-                navn = textVersion.publishedByName,
+                navIdent = textVersion.publishedBy!!,
+                navn = textVersion.publishedByName!!,
             )
-        },
+        } else null,
         published = textVersion.published,
         publishedMaltekstseksjonIdList = connectedMaltekstseksjonIdList.first,
         draftMaltekstseksjonIdList = connectedMaltekstseksjonIdList.second,
         createdBy = textVersion.text.createdBy,
-        createdByActor = textVersion.text.createdBy?.let {
-            Employee(
-                navIdent = it,
-                navn = textVersion.text.createdByName,
-            )
-        },
+        createdByActor = Employee(
+            navIdent = textVersion.text.createdBy,
+            navn = textVersion.text.createdByName,
+        ),
     )
 
 private fun fillRichText(textVersion: TextVersion): TextView.RichText? =

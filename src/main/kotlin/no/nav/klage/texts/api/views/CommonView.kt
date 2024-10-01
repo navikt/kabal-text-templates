@@ -30,18 +30,6 @@ data class TextEditView(
     val created: LocalDateTime,
     val changeType: ChangeTypeText,
 ) {
-    enum class ChangeTypeMaltekstseksjon {
-        MALTEKSTSEKSJON,
-        MALTEKSTSEKSJON_TITLE,
-        MALTEKSTSEKSJON_TEXTS,
-        MALTEKSTSEKSJON_VERSION_CREATED,
-        MALTEKSTSEKSJON_UTFALL,
-        MALTEKSTSEKSJON_ENHETER,
-        MALTEKSTSEKSJON_SECTIONS,
-        MALTEKSTSEKSJON_YTELSE_HJEMMEL,
-        UNKNOWN,
-    }
-
     enum class ChangeTypeText {
         RICH_TEXT_NB,
         RICH_TEXT_NN,
@@ -104,5 +92,5 @@ data class DeletedText(
 
 data class Employee(
     val navIdent: String,
-    val navn: String?,
+    val navn: String,
 )
