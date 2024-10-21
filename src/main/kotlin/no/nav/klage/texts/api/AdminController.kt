@@ -41,6 +41,15 @@ class AdminController(
         logger.debug("Refilled caches")
     }
 
+    @GetMapping("/admin/fixnav")
+    @ResponseStatus(HttpStatus.OK)
+    fun fixNav() {
+        krevAdminTilgang()
+        logger.debug("Updating all titles and texts with correct way of wring 'Nav'")
+        adminService.fixNavSpelling()
+        logger.debug("Update of 'Nav' done")
+    }
+
     private fun krevAdminTilgang() {
         if (!tokenUtil.isAdmin()) {
             throw MissingTilgangException("Not an admin")
