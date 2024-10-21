@@ -61,7 +61,7 @@ class AdminService(
         val nayFrom = "NAV Arbeid og ytelser"
         val nayTo = "Nav arbeid og ytelser"
 
-        textVersionRepository.findByPublishedIsTrue().forEach {
+        textVersionRepository.findAll().forEach {
             //NAV Klageinstans til Nav klageinstans
 
             it.title = it.title.replace(navKlageinstansFrom, navKlageinstansTo)
@@ -99,7 +99,7 @@ class AdminService(
             it.richTextUntranslated = it.richTextUntranslated?.replace(navFrom, navTo)
         }
 
-        maltekstseksjonVersionRepository.findByPublishedIsTrue().forEach {
+        maltekstseksjonVersionRepository.findAll().forEach {
             //NAV Klageinstans til Nav klageinstans
             it.title = it.title.replace(navKlageinstansFrom, navKlageinstansTo)
 
