@@ -37,6 +37,17 @@ class AdminService(
         textVersionRepository.findByPublishedIsTrueForConsumer()
     }
 
+    @CacheEvict(
+        cacheNames = [
+            CONSUMER_TEXT_SEARCH,
+            CONSUMER_MALTEKSTSEKSJON_SEARCH,
+            CONSUMER_MALTEKSTSEKSJON_TEXTS,
+            CONSUMER_TEXT,
+            PUBLISHED_TEXT_VERSIONS,
+            PUBLISHED_MALTEKSTSEKSJON_VERSIONS,
+        ],
+        allEntries = true
+    )
     @Transactional
     fun fixNavSpelling() {
         //Replace NAV with Nav in all titles and texts
