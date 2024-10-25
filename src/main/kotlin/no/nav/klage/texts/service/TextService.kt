@@ -575,7 +575,7 @@ class TextService(
         val textVersions = if (trash == true) {
             getAllHiddenTextVersions()
         } else {
-            getAllCurrentTextVersions()
+            getAllCurrentTextVersions() + getAllHiddenTextVersions()
         }
 
         val filteredTextVersions = searchTextService.searchTexts(
