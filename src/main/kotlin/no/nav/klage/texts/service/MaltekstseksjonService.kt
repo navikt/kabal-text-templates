@@ -382,7 +382,7 @@ class MaltekstseksjonService(
         val maltekstseksjonVersions = if (trash == true) {
             getAllHiddenMaltekstsekjsonVersions()
         } else {
-            getAllCurrentMaltekstseksjonVersions()
+            getAllCurrentMaltekstseksjonVersions() + getAllHiddenMaltekstsekjsonVersions()
         }
 
         return searchMaltekstseksjonService.searchMaltekstseksjoner(
