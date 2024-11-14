@@ -49,6 +49,7 @@ fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion): Ma
             navIdent = maltekstseksjonVersion.maltekstseksjon.createdBy,
             navn = maltekstseksjonVersion.maltekstseksjon.createdByName,
         ),
+        textsModified = maltekstseksjonVersion.modified.plusHours(1), //TODO: Implement this properly
     )
 
 fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair<List<UUID>, List<UUID>>): TextView =
