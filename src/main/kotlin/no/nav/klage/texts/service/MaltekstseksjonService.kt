@@ -18,6 +18,7 @@ import no.nav.klage.texts.exceptions.MaltekstseksjonNotFoundException
 import no.nav.klage.texts.repositories.MaltekstseksjonRepository
 import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepository
 import no.nav.klage.texts.repositories.TextRepository
+import no.nav.klage.texts.repositories.TextVersionRepository
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.getSecureLogger
 import org.springframework.cache.annotation.CacheEvict
@@ -33,6 +34,7 @@ class MaltekstseksjonService(
     private val maltekstseksjonRepository: MaltekstseksjonRepository,
     private val maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository,
     private val textRepository: TextRepository,
+    private val textVersionRepository: TextVersionRepository,
     private val textService: TextService,
     private val searchMaltekstseksjonService: SearchMaltekstseksjonService,
     private val publishService: PublishService,
@@ -56,6 +58,7 @@ class MaltekstseksjonService(
                 saksbehandlerIdent = saksbehandlerIdent,
                 saksbehandlerName = saksbehandlerName,
             ),
+            textsModified =
         )
     }
 
@@ -385,6 +388,9 @@ class MaltekstseksjonService(
             getAllCurrentMaltekstseksjonVersions() + getAllHiddenMaltekstsekjsonVersions()
         }
 
+        //find all texts from cache
+        val allPublishedTextVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
+
         return searchMaltekstseksjonService.searchMaltekstseksjoner(
             maltekstseksjonVersions = maltekstseksjonVersions,
             textIdList = textIdList,
@@ -392,9 +398,19 @@ class MaltekstseksjonService(
             enhetIdList = enhetIdList,
             templateSectionIdList = templateSectionIdList,
             ytelseHjemmelIdList = ytelseHjemmelIdList,
-        ).map {
+        ).map { maltekstseksjonVersion ->
+            val newestTextVersionModification = maltekstseksjonVersion.texts.maxBy { text ->
+                val textVersion = allPublishedTextVersions.find { textVersion -> textVersion.text.id == text.id }
+                textVersion?.modified ?: LocalDateTime.MIN
+            }.modified
+
             mapToMaltekstseksjonView(
-                maltekstseksjonVersion = it,
+                maltekstseksjonVersion = maltekstseksjonVersion,
+                textsModified = if (newestTextVersionModification > maltekstseksjonVersion.modified) {
+                    newestTextVersionModification
+                } else {
+                    maltekstseksjonVersion.modified
+                }
             )
         }
     }

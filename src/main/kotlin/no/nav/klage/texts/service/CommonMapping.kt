@@ -4,9 +4,10 @@ import com.fasterxml.jackson.module.kotlin.jsonMapper
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
+import java.time.LocalDateTime
 import java.util.*
 
-fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion): MaltekstseksjonView =
+fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion, textsModified: LocalDateTime?): MaltekstseksjonView =
     MaltekstseksjonView(
         id = maltekstseksjonVersion.maltekstseksjon.id,
         title = maltekstseksjonVersion.title,
@@ -49,7 +50,7 @@ fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion): Ma
             navIdent = maltekstseksjonVersion.maltekstseksjon.createdBy,
             navn = maltekstseksjonVersion.maltekstseksjon.createdByName,
         ),
-        textsModified = maltekstseksjonVersion.modified.plusHours(1), //TODO: Implement this properly
+        textsModified = textsModified,
     )
 
 fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair<List<UUID>, List<UUID>>): TextView =
