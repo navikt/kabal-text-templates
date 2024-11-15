@@ -7,7 +7,7 @@ import no.nav.klage.texts.domain.TextVersion
 import java.time.LocalDateTime
 import java.util.*
 
-fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion, textsModified: LocalDateTime?): MaltekstseksjonView =
+fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion, modifiedOrTextsModified: LocalDateTime?): MaltekstseksjonView =
     MaltekstseksjonView(
         id = maltekstseksjonVersion.maltekstseksjon.id,
         title = maltekstseksjonVersion.title,
@@ -50,7 +50,7 @@ fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion, tex
             navIdent = maltekstseksjonVersion.maltekstseksjon.createdBy,
             navn = maltekstseksjonVersion.maltekstseksjon.createdByName,
         ),
-        textsModified = textsModified,
+        modifiedOrTextsModified = modifiedOrTextsModified,
     )
 
 fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair<List<UUID>, List<UUID>>): TextView =

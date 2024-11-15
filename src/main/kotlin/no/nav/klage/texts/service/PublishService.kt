@@ -70,6 +70,7 @@ class PublishService(
         maltekstseksjonVersionDraft.published = true
         maltekstseksjonVersionDraft.publishedBy = saksbehandlerIdent
         maltekstseksjonVersionDraft.publishedByName = saksbehandlerName
+        maltekstseksjonVersionDraft.modified = now
 
         val textVersions = maltekstseksjonVersionDraft.texts.filter {
             textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
@@ -115,10 +116,13 @@ class PublishService(
 
         validateTextsAreNotEmptyOrOnlyDrafts(maltekstseksjonVersionDraft)
 
-        maltekstseksjonVersionDraft.publishedDateTime = LocalDateTime.now()
+        val now = LocalDateTime.now()
+
+        maltekstseksjonVersionDraft.publishedDateTime = now
         maltekstseksjonVersionDraft.published = true
         maltekstseksjonVersionDraft.publishedBy = saksbehandlerIdent
         maltekstseksjonVersionDraft.publishedByName = saksbehandlerName
+        maltekstseksjonVersionDraft.modified = now
 
         return maltekstseksjonVersionDraft
     }

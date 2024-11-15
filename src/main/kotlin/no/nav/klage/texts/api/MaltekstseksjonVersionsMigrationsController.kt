@@ -48,7 +48,10 @@ class MaltekstseksjonVersionsMigrationsController(
         )
 
         return maltekstseksjonService.getAllMaltekstseksjonVersions().map {
-            mapToMaltekstseksjonView(it)
+            mapToMaltekstseksjonView(
+                maltekstseksjonVersion = it,
+                modifiedOrTextsModified = null,
+            )
         }
     }
 
@@ -85,7 +88,10 @@ class MaltekstseksjonVersionsMigrationsController(
         }
 
         return maltekstseksjonService.updateAll(updatedMaltekstseksjonVersions).map {
-            mapToMaltekstseksjonView(it)
+            mapToMaltekstseksjonView(
+                maltekstseksjonVersion = it,
+                modifiedOrTextsModified = null,
+            )
         }
     }
 }

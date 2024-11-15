@@ -82,6 +82,7 @@ class ServiceTest {
                 maltekstseksjonVersionRepository,
                 textVersionRepository
             ),
+            textVersionRepository = textVersionRepository
         )
     }
 

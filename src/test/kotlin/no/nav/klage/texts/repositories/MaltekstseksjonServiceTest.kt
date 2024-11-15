@@ -57,6 +57,7 @@ class MaltekstseksjonServiceTest {
                 maltekstseksjonVersionRepository,
                 textVersionRepository = textVersionRepository
             ),
+            textVersionRepository = textVersionRepository
         )
 
         val now = LocalDateTime.now()

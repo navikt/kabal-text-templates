@@ -52,13 +52,14 @@ class MaltekstseksjonService(
         saksbehandlerName: String
     ): MaltekstseksjonView {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
+        val publishedMaltekstseksjonVersion = publishService.publishMaltekstseksjonVersion(
+            maltekstseksjonId = maltekstseksjonId,
+            saksbehandlerIdent = saksbehandlerIdent,
+            saksbehandlerName = saksbehandlerName,
+        )
         return mapToMaltekstseksjonView(
-            maltekstseksjonVersion = publishService.publishMaltekstseksjonVersion(
-                maltekstseksjonId = maltekstseksjonId,
-                saksbehandlerIdent = saksbehandlerIdent,
-                saksbehandlerName = saksbehandlerName,
-            ),
-            textsModified =
+            maltekstseksjonVersion = publishedMaltekstseksjonVersion,
+            modifiedOrTextsModified = publishedMaltekstseksjonVersion.modified
         )
     }
 
@@ -77,6 +78,7 @@ class MaltekstseksjonService(
         return MaltekstseksjonWithTextsView(
             maltekstseksjon = mapToMaltekstseksjonView(
                 maltekstseksjonVersion = maltekstseksjonVersion,
+                modifiedOrTextsModified = maltekstseksjonVersion.modified,
             ),
             publishedTexts = textVersions.map { textVersion ->
                 mapToTextView(
@@ -92,6 +94,7 @@ class MaltekstseksjonService(
             .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }.map {
                 mapToMaltekstseksjonView(
                     maltekstseksjonVersion = it,
+                    modifiedOrTextsModified = null,
                 )
             }
     }
@@ -112,30 +115,33 @@ class MaltekstseksjonService(
             )
         )
 
-        return mapToMaltekstseksjonView(
-            maltekstseksjonVersionRepository.save(
-                MaltekstseksjonVersion(
-                    title = maltekstseksjonInput.title,
-                    utfallIdList = maltekstseksjonInput.utfallIdList,
-                    enhetIdList = maltekstseksjonInput.enhetIdList,
-                    templateSectionIdList = maltekstseksjonInput.templateSectionIdList,
-                    ytelseHjemmelIdList = maltekstseksjonInput.ytelseHjemmelIdList,
-                    editors = mutableSetOf(
-                        Editor(
-                            navIdent = saksbehandlerIdent,
-                            name = saksbehandlerName,
-                            changeType = Editor.ChangeType.MALTEKSTSEKSJON_VERSION_CREATED,
-                        )
-                    ),
-                    maltekstseksjon = maltekstseksjon,
-                    created = now,
-                    modified = now,
-                    publishedDateTime = null,
-                    published = false,
-                    publishedBy = null,
-                    publishedByName = null,
-                )
+        val maltekstseksjonVersion = maltekstseksjonVersionRepository.save(
+            MaltekstseksjonVersion(
+                title = maltekstseksjonInput.title,
+                utfallIdList = maltekstseksjonInput.utfallIdList,
+                enhetIdList = maltekstseksjonInput.enhetIdList,
+                templateSectionIdList = maltekstseksjonInput.templateSectionIdList,
+                ytelseHjemmelIdList = maltekstseksjonInput.ytelseHjemmelIdList,
+                editors = mutableSetOf(
+                    Editor(
+                        navIdent = saksbehandlerIdent,
+                        name = saksbehandlerName,
+                        changeType = Editor.ChangeType.MALTEKSTSEKSJON_VERSION_CREATED,
+                    )
+                ),
+                maltekstseksjon = maltekstseksjon,
+                created = now,
+                modified = now,
+                publishedDateTime = null,
+                published = false,
+                publishedBy = null,
+                publishedByName = null,
             )
+        )
+
+        return mapToMaltekstseksjonView(
+            maltekstseksjonVersion = maltekstseksjonVersion,
+            modifiedOrTextsModified = maltekstseksjonVersion.modified,
         )
     }
 
@@ -152,13 +158,16 @@ class MaltekstseksjonService(
             throw ClientErrorException("Utkast finnes allerede.")
         }
 
+        val draftMaltekstseksjonVersion = publishService.createNewDraft(
+            maltekstseksjonId = maltekstseksjonId,
+            versionInput = versionInput,
+            saksbehandlerIdent = saksbehandlerIdent,
+            saksbehandlerName = saksbehandlerName,
+        )
+
         return mapToMaltekstseksjonView(
-            publishService.createNewDraft(
-                maltekstseksjonId = maltekstseksjonId,
-                versionInput = versionInput,
-                saksbehandlerIdent = saksbehandlerIdent,
-                saksbehandlerName = saksbehandlerName,
-            )
+            maltekstseksjonVersion = draftMaltekstseksjonVersion,
+            modifiedOrTextsModified = draftMaltekstseksjonVersion.modified,
         )
     }
 
@@ -218,12 +227,15 @@ class MaltekstseksjonService(
     fun getCurrentMaltekstseksjonVersion(maltekstseksjonId: UUID): MaltekstseksjonView {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
+        val maltekstseksjonVersion = maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
+            maltekstseksjonId = maltekstseksjonId
+        ) ?: maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
+            maltekstseksjonId = maltekstseksjonId
+        ) ?: throw ClientErrorException("det fins hverken utkast eller publisert versjon")
+
         return mapToMaltekstseksjonView(
-            maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
-                maltekstseksjonId = maltekstseksjonId
-            ) ?: maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(
-                maltekstseksjonId = maltekstseksjonId
-            ) ?: throw ClientErrorException("det fins hverken utkast eller publisert versjon")
+            maltekstseksjonVersion = maltekstseksjonVersion,
+            modifiedOrTextsModified = null,
         )
     }
 
@@ -243,7 +255,10 @@ class MaltekstseksjonService(
             name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
         )
-        return mapToMaltekstseksjonView(maltekstseksjonVersion)
+        return mapToMaltekstseksjonView(
+            maltekstseksjonVersion = maltekstseksjonVersion,
+            modifiedOrTextsModified = maltekstseksjonVersion.modified
+        )
     }
 
     fun updateTexts(
@@ -265,7 +280,10 @@ class MaltekstseksjonService(
             name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_TEXTS,
         )
-        return mapToMaltekstseksjonView(maltekstseksjonVersion)
+        return mapToMaltekstseksjonView(
+            maltekstseksjonVersion = maltekstseksjonVersion,
+            modifiedOrTextsModified = maltekstseksjonVersion.modified
+        )
     }
 
     fun updateUtfall(
@@ -284,7 +302,10 @@ class MaltekstseksjonService(
             name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_UTFALL,
         )
-        return mapToMaltekstseksjonView(maltekstseksjonVersion)
+        return mapToMaltekstseksjonView(
+            maltekstseksjonVersion = maltekstseksjonVersion,
+            modifiedOrTextsModified = maltekstseksjonVersion.modified
+        )
     }
 
     fun updateEnheter(
@@ -303,7 +324,10 @@ class MaltekstseksjonService(
             name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_ENHETER,
         )
-        return mapToMaltekstseksjonView(maltekstseksjonVersion)
+        return mapToMaltekstseksjonView(
+            maltekstseksjonVersion = maltekstseksjonVersion,
+            modifiedOrTextsModified = maltekstseksjonVersion.modified
+        )
     }
 
     fun updateTemplateSectionList(
@@ -322,7 +346,10 @@ class MaltekstseksjonService(
             name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_SECTIONS,
         )
-        return mapToMaltekstseksjonView(maltekstseksjonVersion)
+        return mapToMaltekstseksjonView(
+            maltekstseksjonVersion = maltekstseksjonVersion,
+            modifiedOrTextsModified = maltekstseksjonVersion.modified
+        )
     }
 
     fun updateYtelseHjemmelList(
@@ -341,7 +368,10 @@ class MaltekstseksjonService(
             name = saksbehandlerName,
             changeType = Editor.ChangeType.MALTEKSTSEKSJON_YTELSE_HJEMMEL,
         )
-        return mapToMaltekstseksjonView(maltekstseksjonVersion)
+        return mapToMaltekstseksjonView(
+            maltekstseksjonVersion = maltekstseksjonVersion,
+            modifiedOrTextsModified = maltekstseksjonVersion.modified
+        )
     }
 
     fun searchPublishedMaltekstseksjoner(
@@ -406,7 +436,7 @@ class MaltekstseksjonService(
 
             mapToMaltekstseksjonView(
                 maltekstseksjonVersion = maltekstseksjonVersion,
-                textsModified = if (newestTextVersionModification > maltekstseksjonVersion.modified) {
+                modifiedOrTextsModified = if (newestTextVersionModification > maltekstseksjonVersion.modified) {
                     newestTextVersionModification
                 } else {
                     maltekstseksjonVersion.modified

@@ -263,6 +263,7 @@ class TextService(
                         .map {
                             mapToMaltekstseksjonView(
                                 maltekstseksjonVersion = it,
+                                modifiedOrTextsModified = possiblePublishedTextVersion.modified
                             )
                         }.sortedByDescending { it.created }
                 )
@@ -306,6 +307,7 @@ class TextService(
                             .map {
                                 mapToMaltekstseksjonView(
                                     maltekstseksjonVersion = it,
+                                    modifiedOrTextsModified = it.modified
                                 )
                             }.sortedByDescending { it.created }
                     )
