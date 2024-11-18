@@ -137,6 +137,30 @@ class MaltekstseksjonController(
     }
 
     @Operation(
+        summary = "Create duplicate of maltekstseksjon as draft",
+        description = "Create duplicate of maltekstseksjon as draft, possibly based on existing version"
+    )
+    @PostMapping("/{maltekstseksjonId}/duplicate")
+    fun createDuplicate(
+        @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
+        @RequestBody input: VersionInput?
+    ): MaltekstseksjonView {
+        logMethodDetails(
+            methodName = ::createDuplicate.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = maltekstseksjonId,
+            logger = logger,
+        )
+
+        return maltekstseksjonService.createDuplicate(
+            maltekstseksjonId = maltekstseksjonId,
+            versionInput = input,
+            saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
+        )
+    }
+
+    @Operation(
         summary = "Update title",
         description = "Update title"
     )

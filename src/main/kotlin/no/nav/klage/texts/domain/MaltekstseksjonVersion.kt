@@ -90,7 +90,7 @@ class MaltekstseksjonVersion(
     var modified: LocalDateTime,
 ): Serializable {
 
-    fun createDraft(saksbehandlerIdent: String, saksbehandlerName: String): MaltekstseksjonVersion {
+    fun createDraft(saksbehandlerIdent: String, saksbehandlerName: String, newMaltekstseksjonParent: Maltekstseksjon? = null): MaltekstseksjonVersion {
         val now = LocalDateTime.now()
         return MaltekstseksjonVersion(
             title = title,
@@ -99,7 +99,7 @@ class MaltekstseksjonVersion(
             enhetIdList = enhetIdList,
             templateSectionIdList = templateSectionIdList,
             ytelseHjemmelIdList = ytelseHjemmelIdList,
-            maltekstseksjon = maltekstseksjon,
+            maltekstseksjon = newMaltekstseksjonParent ?: maltekstseksjon,
             publishedDateTime = null,
             published = false,
             publishedBy = null,

@@ -157,11 +157,10 @@ class TextService(
             textVersionRepository.findById(versionInput.versionId).get()
         } else {
             //Get latest version
-            val candidates = textVersionRepository.findByTextId(
+            textVersionRepository.findByTextId(
                 textId = textId
-            )
-            candidates.maxByOrNull { it.created }
-                ?: throw ClientErrorException("Fant ingen textVersion å kopiere fra for å lage et duplikat")
+            ).maxByOrNull { it.created }
+                ?: throw ClientErrorException("Det må finnes en versjon før en kopi kan lages")
         }
 
         val now = LocalDateTime.now()
@@ -180,7 +179,7 @@ class TextService(
                 existingVersion.createDraft(
                     saksbehandlerIdent = saksbehandlerIdent,
                     saksbehandlerName = saksbehandlerName,
-                    newTextParent = text
+                    newTextParent = text,
                 ),
             ),
             connectedMaltekstseksjonIdList = emptyList<UUID>() to emptyList()

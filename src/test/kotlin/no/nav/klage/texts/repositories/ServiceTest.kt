@@ -67,8 +67,9 @@ class ServiceTest {
             maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
             searchTextService = mockk(),
             publishService = PublishService(
-                maltekstseksjonVersionRepository,
-                textVersionRepository
+                maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
+                maltekstseksjonRepository = maltekstseksjonRepository,
+                textVersionRepository = textVersionRepository
             ),
         )
 
@@ -79,8 +80,9 @@ class ServiceTest {
             textService = textService,
             searchMaltekstseksjonService = mockk(),
             publishService = PublishService(
-                maltekstseksjonVersionRepository,
-                textVersionRepository
+                maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
+                maltekstseksjonRepository = maltekstseksjonRepository,
+                textVersionRepository = textVersionRepository
             ),
             textVersionRepository = textVersionRepository
         )

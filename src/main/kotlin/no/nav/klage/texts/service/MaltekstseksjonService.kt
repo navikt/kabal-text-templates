@@ -171,6 +171,25 @@ class MaltekstseksjonService(
         )
     }
 
+    fun createDuplicate(
+        maltekstseksjonId: UUID,
+        versionInput: VersionInput?,
+        saksbehandlerIdent: String,
+        saksbehandlerName: String,
+    ): MaltekstseksjonView {
+        val duplicateMaltekstseksjonVersion = publishService.createDuplicate(
+            maltekstseksjonId = maltekstseksjonId,
+            versionInput = versionInput,
+            saksbehandlerIdent = saksbehandlerIdent,
+            saksbehandlerName = saksbehandlerName,
+        )
+
+        return mapToMaltekstseksjonView(
+            maltekstseksjonVersion = duplicateMaltekstseksjonVersion,
+            modifiedOrTextsModified = duplicateMaltekstseksjonVersion.modified,
+        )
+    }
+
     @CacheEvict(
         cacheNames = [
             PUBLISHED_MALTEKSTSEKSJON_VERSIONS,
