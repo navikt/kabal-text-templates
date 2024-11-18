@@ -8,11 +8,9 @@ import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_TEXT_SEAR
 import no.nav.klage.texts.config.CacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
 import no.nav.klage.texts.config.CacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
 import no.nav.klage.texts.domain.Editor
-import no.nav.klage.texts.domain.Maltekstseksjon
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
 import no.nav.klage.texts.exceptions.ClientErrorException
-import no.nav.klage.texts.repositories.MaltekstseksjonRepository
 import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepository
 import no.nav.klage.texts.repositories.TextVersionRepository
 import no.nav.klage.texts.util.getLogger
@@ -27,7 +25,6 @@ import java.util.*
 @Service
 class PublishService(
     private val maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository,
-    private val maltekstseksjonRepository: MaltekstseksjonRepository,
     private val textVersionRepository: TextVersionRepository,
 ) {
 
@@ -180,39 +177,6 @@ class PublishService(
                 )
             )
         }
-    }
-
-    fun createDuplicate(
-        maltekstseksjonId: UUID,
-        versionInput: VersionInput?,
-        saksbehandlerIdent: String,
-        saksbehandlerName: String,
-    ): MaltekstseksjonVersion {
-        val existingVersion = if (versionInput != null) {
-            maltekstseksjonVersionRepository.findById(versionInput.versionId).get()
-        } else {
-            maltekstseksjonVersionRepository.findByMaltekstseksjonId(
-                maltekstseksjonId = maltekstseksjonId
-            ).maxByOrNull { it.created } ?: throw ClientErrorException("Det må finnes en versjon før en kopi kan lages")
-        }
-
-        val now = LocalDateTime.now()
-        val maltekstseksjon = maltekstseksjonRepository.save(
-            Maltekstseksjon(
-                created = now,
-                modified = now,
-                createdBy = saksbehandlerIdent,
-                createdByName = saksbehandlerName,
-            )
-        )
-
-        return maltekstseksjonVersionRepository.save(
-            existingVersion.createDraft(
-                saksbehandlerIdent = saksbehandlerIdent,
-                saksbehandlerName = saksbehandlerName,
-                newMaltekstseksjonParent = maltekstseksjon,
-            )
-        )
     }
 
     @CacheEvict(

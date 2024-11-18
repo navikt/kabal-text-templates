@@ -177,16 +177,34 @@ class MaltekstseksjonService(
         saksbehandlerIdent: String,
         saksbehandlerName: String,
     ): MaltekstseksjonView {
-        val duplicateMaltekstseksjonVersion = publishService.createDuplicate(
-            maltekstseksjonId = maltekstseksjonId,
-            versionInput = versionInput,
-            saksbehandlerIdent = saksbehandlerIdent,
-            saksbehandlerName = saksbehandlerName,
+        val existingVersion = if (versionInput != null) {
+            maltekstseksjonVersionRepository.findById(versionInput.versionId).get()
+        } else {
+            maltekstseksjonVersionRepository.findByMaltekstseksjonId(
+                maltekstseksjonId = maltekstseksjonId
+            ).maxByOrNull { it.created } ?: throw ClientErrorException("Det må finnes en versjon før en kopi kan lages")
+        }
+
+        val now = LocalDateTime.now()
+        val maltekstseksjon = maltekstseksjonRepository.save(
+            Maltekstseksjon(
+                created = now,
+                modified = now,
+                createdBy = saksbehandlerIdent,
+                createdByName = saksbehandlerName,
+            )
         )
 
+        val maltekstseksjonVersion = maltekstseksjonVersionRepository.save(
+            existingVersion.createDraft(
+                saksbehandlerIdent = saksbehandlerIdent,
+                saksbehandlerName = saksbehandlerName,
+                newMaltekstseksjonParent = maltekstseksjon,
+            )
+        )
         return mapToMaltekstseksjonView(
-            maltekstseksjonVersion = duplicateMaltekstseksjonVersion,
-            modifiedOrTextsModified = duplicateMaltekstseksjonVersion.modified,
+            maltekstseksjonVersion,
+            modifiedOrTextsModified = maltekstseksjonVersion.modified,
         )
     }
 
