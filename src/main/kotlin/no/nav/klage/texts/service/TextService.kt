@@ -147,6 +147,46 @@ class TextService(
         )
     }
 
+    fun createDuplicate(
+        textId: UUID,
+        versionInput: VersionInput?,
+        saksbehandlerIdent: String,
+        saksbehandlerName: String,
+    ): TextView {
+        val existingVersion = if (versionInput != null) {
+            textVersionRepository.findById(versionInput.versionId).get()
+        } else {
+            //Get latest version
+            val candidates = textVersionRepository.findByTextId(
+                textId = textId
+            )
+            candidates.maxByOrNull { it.created }
+                ?: throw ClientErrorException("Fant ingen textVersion å kopiere fra for å lage et duplikat")
+        }
+
+        val now = LocalDateTime.now()
+        val text = textRepository.save(
+            Text(
+                created = now,
+                modified = now,
+                maltekstseksjonVersions = mutableListOf(),
+                createdBy = saksbehandlerIdent,
+                createdByName = saksbehandlerName,
+            )
+        )
+
+        return mapToTextView(
+            textVersion = textVersionRepository.save(
+                existingVersion.createDraft(
+                    saksbehandlerIdent = saksbehandlerIdent,
+                    saksbehandlerName = saksbehandlerName,
+                    newTextParent = text
+                ),
+            ),
+            connectedMaltekstseksjonIdList = emptyList<UUID>() to emptyList()
+        )
+    }
+
     @CacheEvict(
         cacheNames = [
             PUBLISHED_MALTEKSTSEKSJON_VERSIONS,

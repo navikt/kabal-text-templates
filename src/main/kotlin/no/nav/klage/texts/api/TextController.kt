@@ -114,6 +114,30 @@ class TextController(
     }
 
     @Operation(
+        summary = "Create duplicate of text as draft",
+        description = "Create text draft, possibly based on existing version"
+    )
+    @PostMapping("/{textId}/duplicate")
+    fun createDuplicate(
+        @PathVariable("textId") textId: UUID,
+        @RequestBody input: VersionInput?
+    ): TextView {
+        logMethodDetails(
+            methodName = ::createDuplicate.name,
+            innloggetIdent = tokenUtil.getIdent(),
+            id = textId,
+            logger = logger,
+        )
+
+        return textService.createDuplicate(
+            textId = textId,
+            versionInput = input,
+            saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
+        )
+    }
+
+    @Operation(
         summary = "Update title",
         description = "Update title"
     )
