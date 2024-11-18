@@ -115,7 +115,7 @@ class TextController(
 
     @Operation(
         summary = "Create duplicate of text as draft",
-        description = "Create text draft, possibly based on existing version"
+        description = "Create duplicate of text as draft, possibly based on existing version"
     )
     @PostMapping("/{textId}/duplicate")
     fun createDuplicate(
