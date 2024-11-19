@@ -456,7 +456,7 @@ class MaltekstseksjonService(
         }
 
         //find all texts from cache
-//        val allPublishedTextVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
+        val allPublishedTextVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
 
         return searchMaltekstseksjonService.searchMaltekstseksjoner(
             maltekstseksjonVersions = maltekstseksjonVersions,
@@ -466,12 +466,11 @@ class MaltekstseksjonService(
             templateSectionIdList = templateSectionIdList,
             ytelseHjemmelIdList = ytelseHjemmelIdList,
         ).map { maltekstseksjonVersion ->
-//            val newestTextVersionModification = maltekstseksjonVersion.texts.maxBy { text ->
-//                val textVersion = allPublishedTextVersions.find { textVersion -> textVersion.text.id == text.id }
-//                textVersion?.modified ?: LocalDateTime.MIN
-//            }.modified
-
-            val newestTextVersionModification = LocalDateTime.now()
+            val newestTextVersionModification = maltekstseksjonVersion.texts.maxByOrNull { text ->
+                logger.debug("Finding all text versions for text {}", text.id)
+                val textVersions = allPublishedTextVersions.filter { textVersion -> textVersion.text.id == text.id }
+                textVersions.maxByOrNull { it.modified }?.modified ?: LocalDateTime.MIN
+            }?.modified ?: LocalDateTime.MIN
 
             mapToMaltekstseksjonView(
                 maltekstseksjonVersion = maltekstseksjonVersion,
