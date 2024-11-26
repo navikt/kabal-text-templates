@@ -456,7 +456,7 @@ class MaltekstseksjonService(
         }
 
         //find all published texts from cache
-        val allPublishedTextVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
+//        val allPublishedTextVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
 
         return filterMaltekstseksjonService.filterMaltekstseksjoner(
             maltekstseksjonVersions = maltekstseksjonVersions,
@@ -470,7 +470,7 @@ class MaltekstseksjonService(
 
             maltekstseksjonVersion.texts.forEach { text ->
                 logger.debug("Finding all text versions for text {}", text.id)
-                val textVersions = allPublishedTextVersions.filter { textVersion -> textVersion.text.id == text.id }
+                val textVersions = textVersionRepository.findByTextId(text.id) //allPublishedTextVersions.filter { textVersion -> textVersion.text.id == text.id }
                 newestModification = textVersions.map { it.modified }.plus(newestModification).max()
             }
 
