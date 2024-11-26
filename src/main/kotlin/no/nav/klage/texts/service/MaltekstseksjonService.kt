@@ -90,6 +90,9 @@ class MaltekstseksjonService(
     }
 
     fun getMaltekstseksjonVersions(maltekstseksjonId: UUID): List<MaltekstseksjonView> {
+        //find all published texts from cache
+        val allPublishedTextVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
+
         return maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId)
             .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }
             .map { maltekstseksjonVersion ->
@@ -97,7 +100,7 @@ class MaltekstseksjonService(
 
                 maltekstseksjonVersion.texts.forEach { text ->
                     logger.debug("Finding all published text versions for text {}", text.id)
-                    val publishedTextVersions = textVersionRepository.findByPublishedDateTimeIsNotNullAndTextId(text.id)
+                    val publishedTextVersions = allPublishedTextVersions.filter { textVersion -> textVersion.text.id == text.id }
                     newestModification = publishedTextVersions.map { it.modified }.plus(newestModification).max()
                 }
 
@@ -283,11 +286,14 @@ class MaltekstseksjonService(
             maltekstseksjonId = maltekstseksjonId
         ) ?: throw ClientErrorException("det fins hverken utkast eller publisert versjon")
 
+        //find all published texts from cache
+        val allPublishedTextVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
+
         var newestModification = LocalDateTime.MIN
 
         maltekstseksjonVersion.texts.forEach { text ->
             logger.debug("Finding all published text versions for text {}", text.id)
-            val publishedTextVersions = textVersionRepository.findByPublishedDateTimeIsNotNullAndTextId(text.id)
+            val publishedTextVersions = allPublishedTextVersions.filter { textVersion -> textVersion.text.id == text.id }
             newestModification = publishedTextVersions.map { it.modified }.plus(newestModification).max()
         }
 
