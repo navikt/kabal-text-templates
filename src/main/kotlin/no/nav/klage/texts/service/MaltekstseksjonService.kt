@@ -36,7 +36,7 @@ class MaltekstseksjonService(
     private val textRepository: TextRepository,
     private val textVersionRepository: TextVersionRepository,
     private val textService: TextService,
-    private val filterMaltekstseksjonService: FilterMaltekstseksjonService,
+    private val searchMaltekstseksjonService: SearchMaltekstseksjonService,
     private val publishService: PublishService,
 ) {
 
@@ -431,7 +431,7 @@ class MaltekstseksjonService(
             maltekstseksjonVersions.size
         )
 
-        return filterMaltekstseksjonService.filterMaltekstseksjoner(
+        return searchMaltekstseksjonService.searchMaltekstseksjoner(
             maltekstseksjonVersions = maltekstseksjonVersions,
             textIdList = textIdList,
             utfallIdList = utfallIdList,
@@ -458,7 +458,7 @@ class MaltekstseksjonService(
         //find all published texts from cache
         val allPublishedTextVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
 
-        return filterMaltekstseksjonService.filterMaltekstseksjoner(
+        return searchMaltekstseksjonService.searchMaltekstseksjoner(
             maltekstseksjonVersions = maltekstseksjonVersions,
             textIdList = textIdList,
             utfallIdList = utfallIdList,

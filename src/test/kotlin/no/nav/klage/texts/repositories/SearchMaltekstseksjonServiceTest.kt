@@ -3,14 +3,14 @@ package no.nav.klage.texts.repositories
 import no.nav.klage.texts.domain.Maltekstseksjon
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.Text
-import no.nav.klage.texts.service.FilterMaltekstseksjonService
+import no.nav.klage.texts.service.SearchMaltekstseksjonService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 
-class FilterMaltekstseksjonServiceTest {
+class SearchMaltekstseksjonServiceTest {
 
-    private val filterMaltekstseksjonService = FilterMaltekstseksjonService()
+    private val searchMaltekstseksjonService = SearchMaltekstseksjonService()
 
     private fun createMaltekstseksjonVersion(): MaltekstseksjonVersion {
         val now = LocalDateTime.now()
@@ -61,7 +61,7 @@ class FilterMaltekstseksjonServiceTest {
 
         val maltekstseksjonVersions = listOf(maltekstseksjon1, maltekstseksjon2, maltekstseksjon3, maltekstseksjon4, maltekstseksjon5)
 
-        var foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        var foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             utfallIdList = listOf("ua"),
             enhetIdList = listOf(),
             templateSectionIdList = listOf(),
@@ -71,7 +71,7 @@ class FilterMaltekstseksjonServiceTest {
         )
         assertThat(foundMaltekstseksjonVersions).containsExactlyInAnyOrder(maltekstseksjon1, maltekstseksjon2, maltekstseksjon3, maltekstseksjon4)
 
-        foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             textIdList = listOf(),
             utfallIdList = listOf(),
             enhetIdList = listOf(),
@@ -81,7 +81,7 @@ class FilterMaltekstseksjonServiceTest {
         )
         assertThat(foundMaltekstseksjonVersions).containsExactlyInAnyOrder(maltekstseksjon1, maltekstseksjon2, maltekstseksjon3, maltekstseksjon4)
 
-        foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             textIdList = listOf(),
             utfallIdList = listOf(),
             enhetIdList = listOf(),
@@ -91,7 +91,7 @@ class FilterMaltekstseksjonServiceTest {
         )
         assertThat(foundMaltekstseksjonVersions).containsExactlyInAnyOrder(maltekstseksjon1, maltekstseksjon2, maltekstseksjon3, maltekstseksjon4, maltekstseksjon5)
 
-        foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             textIdList = listOf(),
             utfallIdList = listOf("ub1", "ub2"),
             enhetIdList = listOf("eb1", "eb2"),
@@ -101,7 +101,7 @@ class FilterMaltekstseksjonServiceTest {
         )
         assertThat(foundMaltekstseksjonVersions).containsExactlyInAnyOrder(maltekstseksjon1, maltekstseksjon2)
 
-        foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             textIdList = listOf(),
             utfallIdList = listOf("ua"),
             enhetIdList = listOf("ea"),
@@ -111,7 +111,7 @@ class FilterMaltekstseksjonServiceTest {
         )
         assertThat(foundMaltekstseksjonVersions).containsExactlyInAnyOrder(maltekstseksjon1, maltekstseksjon2, maltekstseksjon3, maltekstseksjon4)
 
-        foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             textIdList = listOf(),
             utfallIdList = listOf(),
             enhetIdList = listOf(),
@@ -127,7 +127,7 @@ class FilterMaltekstseksjonServiceTest {
         val maltekstseksjon1 = createMaltekstseksjonVersion()
         val maltekstseksjon2 = createMaltekstseksjonVersion()
 
-        val foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        val foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             textIdList = listOf(),
             utfallIdList = listOf("1"),
             enhetIdList = listOf("4250"),
@@ -148,7 +148,7 @@ class FilterMaltekstseksjonServiceTest {
         val maltekstseksjon3 = createMaltekstseksjonVersion()
         val maltekstseksjon4 = createMaltekstseksjonVersion()
 
-        val foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        val foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             textIdList = listOf(),
             utfallIdList = listOf(),
             enhetIdList = listOf(),
@@ -175,7 +175,7 @@ class FilterMaltekstseksjonServiceTest {
 
         val maltekstseksjonVersions = listOf(maltekstseksjon1, maltekstseksjon2)
 
-        var foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        var foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             textIdList = listOf("${texts[0].id}", "${texts[1].id}"),
             utfallIdList = listOf(),
             enhetIdList = listOf(),
@@ -185,7 +185,7 @@ class FilterMaltekstseksjonServiceTest {
         )
         assertThat(foundMaltekstseksjonVersions).containsExactlyInAnyOrder(maltekstseksjon1, maltekstseksjon2)
 
-        foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             textIdList = listOf("${texts[1].id}", "${texts[0].id}"),
             utfallIdList = listOf(),
             enhetIdList = listOf(),
@@ -210,7 +210,7 @@ class FilterMaltekstseksjonServiceTest {
 
         val maltekstseksjonVersions = listOf(maltekstseksjon1, maltekstseksjon2)
 
-        var foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        var foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             textIdList = listOf(),
             utfallIdList = listOf("ua1:ua2"),
             enhetIdList = listOf(),
@@ -220,7 +220,7 @@ class FilterMaltekstseksjonServiceTest {
         )
         assertThat(foundMaltekstseksjonVersions).containsExactlyInAnyOrder(maltekstseksjon1, maltekstseksjon2)
 
-        foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             textIdList = listOf(),
             utfallIdList = listOf("ua2:ua1"),
             enhetIdList = listOf(),
@@ -252,7 +252,7 @@ class FilterMaltekstseksjonServiceTest {
 
         val maltekstseksjonVersions = listOf(maltekstseksjon1, maltekstseksjon2, maltekstseksjon3)
 
-        var foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        var foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             textIdList = listOf(),
             utfallIdList = listOf(),
             enhetIdList = listOf(),
@@ -262,7 +262,7 @@ class FilterMaltekstseksjonServiceTest {
         )
         assertThat(foundMaltekstseksjonVersions).containsExactlyInAnyOrder(maltekstseksjon1, maltekstseksjon2)
 
-        foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             textIdList = listOf(),
             utfallIdList = listOf(),
             enhetIdList = listOf(),
@@ -285,7 +285,7 @@ class FilterMaltekstseksjonServiceTest {
 
         val maltekstseksjonVersions = listOf(maltekstseksjon1, maltekstseksjon2)
 
-        var foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        var foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             textIdList = listOf(),
             utfallIdList = listOf(),
             enhetIdList = listOf(),
@@ -295,7 +295,7 @@ class FilterMaltekstseksjonServiceTest {
         )
         assertThat(foundMaltekstseksjonVersions).containsExactlyInAnyOrder(maltekstseksjon1)
 
-        foundMaltekstseksjonVersions = filterMaltekstseksjonService.filterMaltekstseksjoner(
+        foundMaltekstseksjonVersions = searchMaltekstseksjonService.searchMaltekstseksjoner(
             textIdList = listOf(),
             utfallIdList = listOf("NONE"),
             enhetIdList = listOf(),

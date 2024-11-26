@@ -77,7 +77,7 @@ class ServiceTest {
             maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
             textRepository = textRepository,
             textService = textService,
-            filterMaltekstseksjonService = mockk(),
+            searchMaltekstseksjonService = mockk(),
             publishService = PublishService(
                 maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
                 textVersionRepository = textVersionRepository
