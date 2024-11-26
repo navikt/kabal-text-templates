@@ -208,6 +208,7 @@ class PublishService(
         textVersionDraft.published = true
         textVersionDraft.publishedBy = saksbehandlerIdent
         textVersionDraft.publishedByName = saksbehandlerName
+        textVersionDraft.modified = timestamp
 
         return textVersionDraft
     }
