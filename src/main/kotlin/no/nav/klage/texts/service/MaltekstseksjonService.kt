@@ -36,7 +36,7 @@ class MaltekstseksjonService(
     private val textRepository: TextRepository,
     private val textVersionRepository: TextVersionRepository,
     private val textService: TextService,
-    private val searchMaltekstseksjonService: SearchMaltekstseksjonService,
+    private val filterMaltekstseksjonService: FilterMaltekstseksjonService,
     private val publishService: PublishService,
 ) {
 
@@ -431,7 +431,7 @@ class MaltekstseksjonService(
             maltekstseksjonVersions.size
         )
 
-        return searchMaltekstseksjonService.searchMaltekstseksjoner(
+        return filterMaltekstseksjonService.filterMaltekstseksjoner(
             maltekstseksjonVersions = maltekstseksjonVersions,
             textIdList = textIdList,
             utfallIdList = utfallIdList,
@@ -455,10 +455,10 @@ class MaltekstseksjonService(
             getAllCurrentMaltekstseksjonVersions() + getAllHiddenMaltekstsekjsonVersions()
         }
 
-        //find all texts from cache
+        //find all published texts from cache
         val allPublishedTextVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
 
-        return searchMaltekstseksjonService.searchMaltekstseksjoner(
+        return filterMaltekstseksjonService.filterMaltekstseksjoner(
             maltekstseksjonVersions = maltekstseksjonVersions,
             textIdList = textIdList,
             utfallIdList = utfallIdList,
@@ -466,16 +466,18 @@ class MaltekstseksjonService(
             templateSectionIdList = templateSectionIdList,
             ytelseHjemmelIdList = ytelseHjemmelIdList,
         ).map { maltekstseksjonVersion ->
-            val newestTextVersionModification = maltekstseksjonVersion.texts.maxByOrNull { text ->
+            var newestModification = LocalDateTime.MIN
+
+            maltekstseksjonVersion.texts.forEach { text ->
                 logger.debug("Finding all text versions for text {}", text.id)
                 val textVersions = allPublishedTextVersions.filter { textVersion -> textVersion.text.id == text.id }
-                textVersions.maxByOrNull { it.modified }?.modified ?: LocalDateTime.MIN
-            }?.modified ?: LocalDateTime.MIN
+                newestModification = textVersions.map { it.modified }.plus(newestModification).max()
+            }
 
             mapToMaltekstseksjonView(
                 maltekstseksjonVersion = maltekstseksjonVersion,
-                modifiedOrTextsModified = if (newestTextVersionModification > maltekstseksjonVersion.modified) {
-                    newestTextVersionModification
+                modifiedOrTextsModified = if (newestModification > maltekstseksjonVersion.modified) {
+                    newestModification
                 } else {
                     maltekstseksjonVersion.modified
                 }

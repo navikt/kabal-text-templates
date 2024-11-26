@@ -7,14 +7,14 @@ import no.nav.klage.texts.util.testSets
 import org.springframework.stereotype.Service
 
 @Service
-class SearchMaltekstseksjonService {
+class FilterMaltekstseksjonService {
 
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val logger = getLogger(javaClass.enclosingClass)
     }
 
-    fun searchMaltekstseksjoner(
+    fun filterMaltekstseksjoner(
         maltekstseksjonVersions: List<MaltekstseksjonVersion>,
         textIdList: List<String>,
         utfallIdList: List<String>,
