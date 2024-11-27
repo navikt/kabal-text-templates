@@ -23,8 +23,6 @@ data class TextView(
     val templateSectionIdList: Set<String>,
     val ytelseHjemmelIdList: Set<String>,
 
-    //Deprecated, use edits
-    val editors: List<TextEditorView>,
     val edits: List<TextEditView>,
     val publishedDateTime: LocalDateTime?,
     val publishedBy: String?,

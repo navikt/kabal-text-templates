@@ -238,7 +238,7 @@ class MaltekstseksjonService(
             possiblePublishedMaltekstseksjonVersion.editors += Editor(
                 navIdent = saksbehandlerIdent,
                 name = saksbehandlerName,
-                changeType = Editor.ChangeType.MALTEKSTSEKSJON_UNPUBLISHED,
+                changeType = Editor.ChangeType.MALTEKSTSEKSJON_DEPUBLISHED,
             )
         } else {
             throw ClientErrorException("fant ingen maltekstseksjon å avpublisere")

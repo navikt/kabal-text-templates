@@ -60,7 +60,7 @@ class PublishService(
             possiblePublishedVersion.editors += Editor(
                 navIdent = saksbehandlerIdent,
                 name = saksbehandlerName,
-                changeType = Editor.ChangeType.MALTEKSTSEKSJON_UNPUBLISHED,
+                changeType = Editor.ChangeType.MALTEKSTSEKSJON_DEPUBLISHED,
             )
         }
 
@@ -122,7 +122,7 @@ class PublishService(
             possiblePublishedVersion.editors += Editor(
                 navIdent = saksbehandlerIdent,
                 name = saksbehandlerName,
-                changeType = Editor.ChangeType.MALTEKSTSEKSJON_UNPUBLISHED,
+                changeType = Editor.ChangeType.MALTEKSTSEKSJON_DEPUBLISHED,
             )
         }
 
@@ -222,7 +222,7 @@ class PublishService(
             possiblePreviouslyPublishedVersion.editors += Editor(
                 navIdent = saksbehandlerIdent,
                 name = saksbehandlerName,
-                changeType = Editor.ChangeType.TEXT_UNPUBLISHED,
+                changeType = Editor.ChangeType.TEXT_DEPUBLISHED,
             )
             possiblePreviouslyPublishedVersion.modified = LocalDateTime.now()
         }

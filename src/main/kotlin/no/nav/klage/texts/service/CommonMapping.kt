@@ -19,13 +19,6 @@ fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion, mod
         ytelseHjemmelIdList = maltekstseksjonVersion.ytelseHjemmelIdList,
         created = maltekstseksjonVersion.created,
         modified = maltekstseksjonVersion.modified,
-        editors = maltekstseksjonVersion.editors.map {
-            MaltekstseksjonEditorView(
-                navIdent = it.navIdent,
-                created = it.created,
-                changeType = MaltekstseksjonEditorView.ChangeTypeMaltekstseksjon.valueOf(it.changeType.name),
-            )
-        }.sortedByDescending { it.created },
         edits = maltekstseksjonVersion.editors.map {
             MaltekstseksjonEditView(
                 actor = Employee(
@@ -67,13 +60,6 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         enhetIdList = textVersion.enhetIdList,
         templateSectionIdList = textVersion.templateSectionIdList,
         ytelseHjemmelIdList = textVersion.ytelseHjemmelIdList,
-        editors = textVersion.editors.map {
-            TextEditorView(
-                navIdent = it.navIdent,
-                created = it.created,
-                changeType = TextEditorView.ChangeTypeText.valueOf(it.changeType.name),
-            )
-        }.sortedByDescending { it.created },
         edits = textVersion.editors.map {
             TextEditView(
                 actor = Employee(

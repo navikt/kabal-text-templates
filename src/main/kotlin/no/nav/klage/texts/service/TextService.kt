@@ -286,7 +286,7 @@ class TextService(
             possiblePublishedTextVersion.editors += Editor(
                 navIdent = saksbehandlerIdent,
                 name = saksbehandlerName,
-                changeType = Editor.ChangeType.TEXT_UNPUBLISHED,
+                changeType = Editor.ChangeType.TEXT_DEPUBLISHED,
             )
         } else {
             throw ClientErrorException("fant ingen tekst å avpublisere")
