@@ -225,15 +225,21 @@ class MaltekstseksjonService(
     fun unpublishMaltekstseksjon(
         maltekstseksjonId: UUID,
         saksbehandlerIdent: String,
+        saksbehandlerName: String,
     ) {
         validateIfMaltekstseksjonIsUnpublished(maltekstseksjonId = maltekstseksjonId)
 
-        val possiblePublishedTextVersion =
+        val possiblePublishedMaltekstseksjonVersion =
             maltekstseksjonVersionRepository.findByPublishedIsTrueAndMaltekstseksjonId(maltekstseksjonId)
 
-        if (possiblePublishedTextVersion != null) {
-            possiblePublishedTextVersion.published = false
-            possiblePublishedTextVersion.modified = LocalDateTime.now()
+        if (possiblePublishedMaltekstseksjonVersion != null) {
+            possiblePublishedMaltekstseksjonVersion.published = false
+            possiblePublishedMaltekstseksjonVersion.modified = LocalDateTime.now()
+            possiblePublishedMaltekstseksjonVersion.editors += Editor(
+                navIdent = saksbehandlerIdent,
+                name = saksbehandlerName,
+                changeType = Editor.ChangeType.MALTEKSTSEKSJON_UNPUBLISHED,
+            )
         } else {
             throw ClientErrorException("fant ingen maltekstseksjon å avpublisere")
         }

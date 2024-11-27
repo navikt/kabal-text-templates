@@ -21,6 +21,8 @@ data class TextEditorView(
         TEXT_SECTIONS,
         TEXT_YTELSE_HJEMMEL,
         TEXT_ENHETER,
+        TEXT_PUBLISHED,
+        TEXT_UNPUBLISHED,
         UNKNOWN,
     }
 }
@@ -43,6 +45,8 @@ data class TextEditView(
         TEXT_SECTIONS,
         TEXT_YTELSE_HJEMMEL,
         TEXT_ENHETER,
+        TEXT_PUBLISHED,
+        TEXT_UNPUBLISHED,
         UNKNOWN,
     }
 }
@@ -60,6 +64,8 @@ data class MaltekstseksjonEditorView(
         MALTEKSTSEKSJON_ENHETER,
         MALTEKSTSEKSJON_SECTIONS,
         MALTEKSTSEKSJON_YTELSE_HJEMMEL,
+        MALTEKSTSEKSJON_PUBLISHED,
+        MALTEKSTSEKSJON_UNPUBLISHED,
         UNKNOWN,
     }
 }
@@ -77,6 +83,8 @@ data class MaltekstseksjonEditView(
         MALTEKSTSEKSJON_ENHETER,
         MALTEKSTSEKSJON_SECTIONS,
         MALTEKSTSEKSJON_YTELSE_HJEMMEL,
+        MALTEKSTSEKSJON_PUBLISHED,
+        MALTEKSTSEKSJON_UNPUBLISHED,
         UNKNOWN,
     }
 }

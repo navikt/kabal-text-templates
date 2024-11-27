@@ -322,6 +322,7 @@ class MaltekstseksjonController(
         maltekstseksjonService.unpublishMaltekstseksjon(
             maltekstseksjonId = maltekstseksjonId,
             saksbehandlerIdent = tokenUtil.getIdent(),
+            saksbehandlerName = tokenUtil.getName(),
         )
     }
 
