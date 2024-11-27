@@ -90,27 +90,14 @@ class MaltekstseksjonService(
     }
 
     fun getMaltekstseksjonVersions(maltekstseksjonId: UUID): List<MaltekstseksjonView> {
-        //find all published texts from cache
-        val allPublishedTextVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
-
         return maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId)
             .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }
             .map { maltekstseksjonVersion ->
-                var newestModification = LocalDateTime.MIN
-
-                maltekstseksjonVersion.texts.forEach { text ->
-                    logger.debug("Finding all published text versions for text {}", text.id)
-                    val publishedTextVersions = allPublishedTextVersions.filter { textVersion -> textVersion.text.id == text.id }
-                    newestModification = publishedTextVersions.map { it.modified }.plus(newestModification).max()
-                }
-
                 mapToMaltekstseksjonView(
                     maltekstseksjonVersion = maltekstseksjonVersion,
-                    modifiedOrTextsModified = if (newestModification > maltekstseksjonVersion.modified) {
-                        newestModification
-                    } else {
-                        maltekstseksjonVersion.modified
-                    }
+                    modifiedOrTextsModified = getNewestModificationForMaltekstseksjonVersion(
+                        maltekstseksjonVersion = maltekstseksjonVersion,
+                    )
                 )
             }
     }
@@ -286,6 +273,22 @@ class MaltekstseksjonService(
             maltekstseksjonId = maltekstseksjonId
         ) ?: throw ClientErrorException("det fins hverken utkast eller publisert versjon")
 
+        return mapToMaltekstseksjonView(
+            maltekstseksjonVersion = maltekstseksjonVersion,
+            modifiedOrTextsModified = getNewestModificationForMaltekstseksjonVersion(
+                maltekstseksjonVersion = maltekstseksjonVersion,
+            )
+        )
+    }
+
+    private fun getNewestModificationForMaltekstseksjonVersion(
+        maltekstseksjonVersion: MaltekstseksjonVersion,
+    ): LocalDateTime {
+        //Functional rule: For depublished versions, modified is the only relevant datetime.
+        if (maltekstseksjonVersion.isDepublished()) {
+            return maltekstseksjonVersion.modified
+        }
+
         //find all published texts from cache
         val allPublishedTextVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
 
@@ -293,18 +296,16 @@ class MaltekstseksjonService(
 
         maltekstseksjonVersion.texts.forEach { text ->
             logger.debug("Finding all published text versions for text {}", text.id)
-            val publishedTextVersions = allPublishedTextVersions.filter { textVersion -> textVersion.text.id == text.id }
+            val publishedTextVersions =
+                allPublishedTextVersions.filter { textVersion -> textVersion.text.id == text.id }
             newestModification = publishedTextVersions.map { it.modified }.plus(newestModification).max()
         }
 
-        return mapToMaltekstseksjonView(
-            maltekstseksjonVersion = maltekstseksjonVersion,
-            modifiedOrTextsModified = if (newestModification > maltekstseksjonVersion.modified) {
-                newestModification
-            } else {
-                maltekstseksjonVersion.modified
-            }
-        )
+        return if (newestModification > maltekstseksjonVersion.modified) {
+            newestModification
+        } else {
+            maltekstseksjonVersion.modified
+        }
     }
 
     fun updateTitle(
@@ -486,9 +487,6 @@ class MaltekstseksjonService(
             getAllCurrentMaltekstseksjonVersions() + getAllHiddenMaltekstsekjsonVersions()
         }
 
-        //find all published texts from cache
-        val allPublishedTextVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
-
         return searchMaltekstseksjonService.searchMaltekstseksjoner(
             maltekstseksjonVersions = maltekstseksjonVersions,
             textIdList = textIdList,
@@ -497,21 +495,11 @@ class MaltekstseksjonService(
             templateSectionIdList = templateSectionIdList,
             ytelseHjemmelIdList = ytelseHjemmelIdList,
         ).map { maltekstseksjonVersion ->
-            var newestModification = LocalDateTime.MIN
-
-            maltekstseksjonVersion.texts.forEach { text ->
-                logger.debug("Finding all published text versions for text {}", text.id)
-                val publishedTextVersions = allPublishedTextVersions.filter { textVersion -> textVersion.text.id == text.id }
-                newestModification = publishedTextVersions.map { it.modified }.plus(newestModification).max()
-            }
-
             mapToMaltekstseksjonView(
                 maltekstseksjonVersion = maltekstseksjonVersion,
-                modifiedOrTextsModified = if (newestModification > maltekstseksjonVersion.modified) {
-                    newestModification
-                } else {
-                    maltekstseksjonVersion.modified
-                }
+                modifiedOrTextsModified = getNewestModificationForMaltekstseksjonVersion(
+                    maltekstseksjonVersion = maltekstseksjonVersion,
+                )
             )
         }
     }
