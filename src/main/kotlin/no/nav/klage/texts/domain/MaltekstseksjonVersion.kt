@@ -90,6 +90,10 @@ class MaltekstseksjonVersion(
     var modified: LocalDateTime,
 ): Serializable {
 
+    fun isDepublished(): Boolean {
+        return !published && publishedDateTime != null
+    }
+
     fun createDraft(saksbehandlerIdent: String, saksbehandlerName: String, newMaltekstseksjonParent: Maltekstseksjon? = null): MaltekstseksjonVersion {
         val now = LocalDateTime.now()
         return MaltekstseksjonVersion(
