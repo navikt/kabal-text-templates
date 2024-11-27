@@ -283,6 +283,11 @@ class TextService(
         if (possiblePublishedTextVersion != null) {
             possiblePublishedTextVersion.published = false
             possiblePublishedTextVersion.modified = LocalDateTime.now()
+            possiblePublishedTextVersion.editors += Editor(
+                navIdent = saksbehandlerIdent,
+                name = saksbehandlerName,
+                changeType = Editor.ChangeType.TEXT_DEPUBLISHED,
+            )
         } else {
             throw ClientErrorException("fant ingen tekst å avpublisere")
         }
