@@ -378,10 +378,9 @@ class TextService(
     }
 
     fun getCurrentTextVersion(textId: UUID): TextVersion {
-        textVersionRepository.findByTextId(textId).let { version ->
-            return version.maxByOrNull { it.modified }
-                ?: throw ClientErrorException("Fant ingen tekstversjoner")
-        }
+        return textVersionRepository.findByTextId(textId)
+            .maxByOrNull { it.publishedDateTime ?: LocalDateTime.now() }
+            ?: throw ClientErrorException("Fant ingen tekstversjoner")
     }
 
     fun updateTitle(
