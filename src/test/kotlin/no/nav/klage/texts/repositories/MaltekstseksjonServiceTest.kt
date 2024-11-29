@@ -54,9 +54,10 @@ class MaltekstseksjonServiceTest {
             textService = mockk(),
             searchMaltekstseksjonService = mockk(),
             publishService = PublishService(
-                maltekstseksjonVersionRepository,
+                maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
                 textVersionRepository = textVersionRepository
             ),
+            textVersionRepository = textVersionRepository
         )
 
         val now = LocalDateTime.now()

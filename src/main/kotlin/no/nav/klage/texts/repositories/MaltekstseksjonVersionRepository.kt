@@ -64,7 +64,7 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
     @Query(
         """
             select mvl.maltekstseksjon.id from Text t inner join t.maltekstseksjonVersions mvl
-                where mvl.publishedDateTime = null
+                where mvl.publishedDateTime IS NULL
                 and t.id = :textId
         """
     )
@@ -74,7 +74,7 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
     @Query(
         """
             select mvl.maltekstseksjon.id, t.id from Text t inner join t.maltekstseksjonVersions mvl
-                where mvl.publishedDateTime = null
+                where mvl.publishedDateTime IS NULL                
                 and t.id in (:textIdList)
         """
     )

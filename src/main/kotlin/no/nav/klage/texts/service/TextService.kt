@@ -147,6 +147,45 @@ class TextService(
         )
     }
 
+    fun createDuplicate(
+        textId: UUID,
+        versionInput: VersionInput?,
+        saksbehandlerIdent: String,
+        saksbehandlerName: String,
+    ): TextView {
+        val existingVersion = if (versionInput != null) {
+            textVersionRepository.findById(versionInput.versionId).get()
+        } else {
+            //Get latest version
+            textVersionRepository.findByTextId(
+                textId = textId
+            ).maxByOrNull { it.created }
+                ?: throw ClientErrorException("Det må finnes en versjon før en kopi kan lages")
+        }
+
+        val now = LocalDateTime.now()
+        val text = textRepository.save(
+            Text(
+                created = now,
+                modified = now,
+                maltekstseksjonVersions = mutableListOf(),
+                createdBy = saksbehandlerIdent,
+                createdByName = saksbehandlerName,
+            )
+        )
+
+        return mapToTextView(
+            textVersion = textVersionRepository.save(
+                existingVersion.createDraft(
+                    saksbehandlerIdent = saksbehandlerIdent,
+                    saksbehandlerName = saksbehandlerName,
+                    newTextParent = text,
+                ),
+            ),
+            connectedMaltekstseksjonIdList = emptyList<UUID>() to emptyList()
+        )
+    }
+
     @CacheEvict(
         cacheNames = [
             PUBLISHED_MALTEKSTSEKSJON_VERSIONS,
@@ -244,6 +283,11 @@ class TextService(
         if (possiblePublishedTextVersion != null) {
             possiblePublishedTextVersion.published = false
             possiblePublishedTextVersion.modified = LocalDateTime.now()
+            possiblePublishedTextVersion.editors += Editor(
+                navIdent = saksbehandlerIdent,
+                name = saksbehandlerName,
+                changeType = Editor.ChangeType.TEXT_DEPUBLISHED,
+            )
         } else {
             throw ClientErrorException("fant ingen tekst å avpublisere")
         }
@@ -263,6 +307,7 @@ class TextService(
                         .map {
                             mapToMaltekstseksjonView(
                                 maltekstseksjonVersion = it,
+                                modifiedOrTextsModified = possiblePublishedTextVersion.modified
                             )
                         }.sortedByDescending { it.created }
                 )
@@ -306,6 +351,7 @@ class TextService(
                             .map {
                                 mapToMaltekstseksjonView(
                                     maltekstseksjonVersion = it,
+                                    modifiedOrTextsModified = it.modified
                                 )
                             }.sortedByDescending { it.created }
                     )

@@ -4,9 +4,10 @@ import com.fasterxml.jackson.module.kotlin.jsonMapper
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
+import java.time.LocalDateTime
 import java.util.*
 
-fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion): MaltekstseksjonView =
+fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion, modifiedOrTextsModified: LocalDateTime?): MaltekstseksjonView =
     MaltekstseksjonView(
         id = maltekstseksjonVersion.maltekstseksjon.id,
         title = maltekstseksjonVersion.title,
@@ -18,13 +19,6 @@ fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion): Ma
         ytelseHjemmelIdList = maltekstseksjonVersion.ytelseHjemmelIdList,
         created = maltekstseksjonVersion.created,
         modified = maltekstseksjonVersion.modified,
-        editors = maltekstseksjonVersion.editors.map {
-            MaltekstseksjonEditorView(
-                navIdent = it.navIdent,
-                created = it.created,
-                changeType = MaltekstseksjonEditorView.ChangeTypeMaltekstseksjon.valueOf(it.changeType.name),
-            )
-        }.sortedByDescending { it.created },
         edits = maltekstseksjonVersion.editors.map {
             MaltekstseksjonEditView(
                 actor = Employee(
@@ -49,6 +43,7 @@ fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion): Ma
             navIdent = maltekstseksjonVersion.maltekstseksjon.createdBy,
             navn = maltekstseksjonVersion.maltekstseksjon.createdByName,
         ),
+        modifiedOrTextsModified = modifiedOrTextsModified,
     )
 
 fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair<List<UUID>, List<UUID>>): TextView =
@@ -65,13 +60,6 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         enhetIdList = textVersion.enhetIdList,
         templateSectionIdList = textVersion.templateSectionIdList,
         ytelseHjemmelIdList = textVersion.ytelseHjemmelIdList,
-        editors = textVersion.editors.map {
-            TextEditorView(
-                navIdent = it.navIdent,
-                created = it.created,
-                changeType = TextEditorView.ChangeTypeText.valueOf(it.changeType.name),
-            )
-        }.sortedByDescending { it.created },
         edits = textVersion.editors.map {
             TextEditView(
                 actor = Employee(

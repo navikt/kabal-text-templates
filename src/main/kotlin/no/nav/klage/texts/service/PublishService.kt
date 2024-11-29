@@ -56,6 +56,12 @@ class PublishService(
 
         if (possiblePublishedVersion != null) {
             possiblePublishedVersion.published = false
+            possiblePublishedVersion.modified = LocalDateTime.now()
+            possiblePublishedVersion.editors += Editor(
+                navIdent = saksbehandlerIdent,
+                name = saksbehandlerName,
+                changeType = Editor.ChangeType.MALTEKSTSEKSJON_DEPUBLISHED,
+            )
         }
 
         val maltekstseksjonVersionDraft = overrideDraft
@@ -70,6 +76,12 @@ class PublishService(
         maltekstseksjonVersionDraft.published = true
         maltekstseksjonVersionDraft.publishedBy = saksbehandlerIdent
         maltekstseksjonVersionDraft.publishedByName = saksbehandlerName
+        maltekstseksjonVersionDraft.modified = now
+        maltekstseksjonVersionDraft.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            name = saksbehandlerName,
+            changeType = Editor.ChangeType.MALTEKSTSEKSJON_PUBLISHED,
+        )
 
         val textVersions = maltekstseksjonVersionDraft.texts.filter {
             textVersionRepository.findByPublishedDateTimeIsNullAndTextId(
@@ -106,6 +118,12 @@ class PublishService(
 
         if (possiblePublishedVersion != null) {
             possiblePublishedVersion.published = false
+            possiblePublishedVersion.modified = LocalDateTime.now()
+            possiblePublishedVersion.editors += Editor(
+                navIdent = saksbehandlerIdent,
+                name = saksbehandlerName,
+                changeType = Editor.ChangeType.MALTEKSTSEKSJON_DEPUBLISHED,
+            )
         }
 
         val maltekstseksjonVersionDraft = overrideDraft
@@ -115,10 +133,18 @@ class PublishService(
 
         validateTextsAreNotEmptyOrOnlyDrafts(maltekstseksjonVersionDraft)
 
-        maltekstseksjonVersionDraft.publishedDateTime = LocalDateTime.now()
+        val now = LocalDateTime.now()
+
+        maltekstseksjonVersionDraft.publishedDateTime = now
         maltekstseksjonVersionDraft.published = true
         maltekstseksjonVersionDraft.publishedBy = saksbehandlerIdent
         maltekstseksjonVersionDraft.publishedByName = saksbehandlerName
+        maltekstseksjonVersionDraft.modified = now
+        maltekstseksjonVersionDraft.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            name = saksbehandlerName,
+            changeType = Editor.ChangeType.MALTEKSTSEKSJON_PUBLISHED,
+        )
 
         return maltekstseksjonVersionDraft
     }
@@ -193,6 +219,12 @@ class PublishService(
         val possiblePreviouslyPublishedVersion = textVersionRepository.findByPublishedIsTrueAndTextId(textId)
         if (possiblePreviouslyPublishedVersion != null) {
             possiblePreviouslyPublishedVersion.published = false
+            possiblePreviouslyPublishedVersion.editors += Editor(
+                navIdent = saksbehandlerIdent,
+                name = saksbehandlerName,
+                changeType = Editor.ChangeType.TEXT_DEPUBLISHED,
+            )
+            possiblePreviouslyPublishedVersion.modified = LocalDateTime.now()
         }
 
         val textVersionDraft =
@@ -204,6 +236,12 @@ class PublishService(
         textVersionDraft.published = true
         textVersionDraft.publishedBy = saksbehandlerIdent
         textVersionDraft.publishedByName = saksbehandlerName
+        textVersionDraft.modified = timestamp
+        textVersionDraft.editors += Editor(
+            navIdent = saksbehandlerIdent,
+            name = saksbehandlerName,
+            changeType = Editor.ChangeType.TEXT_PUBLISHED,
+        )
 
         return textVersionDraft
     }

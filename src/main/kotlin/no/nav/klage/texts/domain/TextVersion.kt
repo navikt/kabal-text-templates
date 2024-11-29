@@ -82,7 +82,7 @@ class TextVersion(
     var modified: LocalDateTime,
 ) : Serializable {
 
-    fun createDraft(saksbehandlerIdent: String, saksbehandlerName: String): TextVersion {
+    fun createDraft(saksbehandlerIdent: String, saksbehandlerName: String, newTextParent: Text? = null): TextVersion {
         val now = LocalDateTime.now()
         return TextVersion(
             title = title,
@@ -92,7 +92,7 @@ class TextVersion(
             richTextUntranslated = richTextUntranslated,
             plainTextNN = plainTextNN,
             plainTextNB = plainTextNB,
-            text = text,
+            text = newTextParent ?: text,
             enhetIdList = enhetIdList,
             utfallIdList = utfallIdList,
             templateSectionIdList = templateSectionIdList,
