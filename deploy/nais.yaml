@@ -72,7 +72,7 @@ spec:
       rules:
         - application: kabal-frontend
         - application: kabal-api
-  redis:
+  valkey:
     - instance: texts
       access: readwrite
   azure:
