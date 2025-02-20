@@ -9,6 +9,16 @@ import java.util.*
 @Table(name = "text_version", schema = "klage")
 @NamedEntityGraphs(
     NamedEntityGraph(
+        name = "TextVersion.consumer",
+        attributeNodes = [
+            NamedAttributeNode("utfallIdList"),
+            NamedAttributeNode("enhetIdList"),
+            NamedAttributeNode("templateSectionIdList"),
+            NamedAttributeNode("ytelseHjemmelIdList"),
+            NamedAttributeNode("text"),
+        ]
+    ),
+    NamedEntityGraph(
         name = "TextVersion.full",
         attributeNodes = [
             NamedAttributeNode("utfallIdList"),

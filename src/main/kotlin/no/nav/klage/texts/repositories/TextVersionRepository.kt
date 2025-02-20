@@ -11,7 +11,7 @@ import java.util.*
 interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
 
     @Cacheable(PUBLISHED_TEXT_VERSIONS)
-    @EntityGraph("TextVersion.full")
+    @EntityGraph("TextVersion.consumer")
     @Query(
         """
         SELECT tv
