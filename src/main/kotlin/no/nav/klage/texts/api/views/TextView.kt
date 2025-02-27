@@ -35,18 +35,14 @@ data class TextView(
 data class TextViewForLists(
     val id: UUID,
 
-    val versionId: UUID,
     val title: String,
     val textType: String,
     val richText: RichText?,
     val plainText: PlainText?,
     val created: LocalDateTime,
     val modified: LocalDateTime,
-    val createdBy: String,
-    val createdByActor: Employee,
 
     val publishedDateTime: LocalDateTime?,
-    val publishedByActor: Employee?,
     val published: Boolean,
 
     val draftMaltekstseksjonIdList: List<UUID>,

@@ -90,7 +90,6 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
 fun mapToTextViewForLists(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair<List<UUID>, List<UUID>>): TextViewForLists =
     TextViewForLists(
         id = textVersion.text.id,
-        versionId = textVersion.id,
         title = textVersion.title,
         textType = textVersion.textType,
         richText = fillRichText(textVersion),
@@ -98,20 +97,9 @@ fun mapToTextViewForLists(textVersion: TextVersion, connectedMaltekstseksjonIdLi
         created = textVersion.created,
         modified = textVersion.modified,
         publishedDateTime = textVersion.publishedDateTime,
-        publishedByActor = if (textVersion.publishedBy != null && textVersion.publishedByName != null) {
-            Employee(
-                navIdent = textVersion.publishedBy!!,
-                navn = textVersion.publishedByName!!,
-            )
-        } else null,
         published = textVersion.published,
         publishedMaltekstseksjonIdList = connectedMaltekstseksjonIdList.first,
         draftMaltekstseksjonIdList = connectedMaltekstseksjonIdList.second,
-        createdBy = textVersion.text.createdBy,
-        createdByActor = Employee(
-            navIdent = textVersion.text.createdBy,
-            navn = textVersion.text.createdByName,
-        ),
     )
 
 private fun fillRichText(textVersion: TextVersion): RichText? =
