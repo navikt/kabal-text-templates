@@ -25,7 +25,6 @@ data class TextView(
 
     val edits: List<TextEditView>,
     val publishedDateTime: LocalDateTime?,
-    val publishedBy: String?,
     val publishedByActor: Employee?,
     val published: Boolean,
 
@@ -33,7 +32,6 @@ data class TextView(
     val publishedMaltekstseksjonIdList: List<UUID>
 )
 
-//Could be fewer properties?
 data class TextViewForLists(
     val id: UUID,
 
@@ -47,13 +45,7 @@ data class TextViewForLists(
     val createdBy: String,
     val createdByActor: Employee,
 
-    val utfallIdList: Set<String>,
-    val enhetIdList: Set<String>,
-    val templateSectionIdList: Set<String>,
-    val ytelseHjemmelIdList: Set<String>,
-
     val publishedDateTime: LocalDateTime?,
-    val publishedBy: String?,
     val publishedByActor: Employee?,
     val published: Boolean,
 

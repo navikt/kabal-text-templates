@@ -71,7 +71,6 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
             )
         }.sortedByDescending { it.created },
         publishedDateTime = textVersion.publishedDateTime,
-        publishedBy = textVersion.publishedBy,
         publishedByActor = if (textVersion.publishedBy != null && textVersion.publishedByName != null) {
             Employee(
                 navIdent = textVersion.publishedBy!!,
@@ -98,12 +97,7 @@ fun mapToTextViewForLists(textVersion: TextVersion, connectedMaltekstseksjonIdLi
         plainText = fillPlainText(textVersion),
         created = textVersion.created,
         modified = textVersion.modified,
-        utfallIdList = textVersion.utfallIdList,
-        enhetIdList = textVersion.enhetIdList,
-        templateSectionIdList = textVersion.templateSectionIdList,
-        ytelseHjemmelIdList = textVersion.ytelseHjemmelIdList,
         publishedDateTime = textVersion.publishedDateTime,
-        publishedBy = textVersion.publishedBy,
         publishedByActor = if (textVersion.publishedBy != null && textVersion.publishedByName != null) {
             Employee(
                 navIdent = textVersion.publishedBy!!,
