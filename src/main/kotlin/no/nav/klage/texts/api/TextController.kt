@@ -382,7 +382,7 @@ class TextController(
     @GetMapping
     fun searchTexts(
         searchTextQueryParams: SearchTextQueryParams
-    ): List<TextView> {
+    ): List<TextViewForLists> {
         logMethodDetails(
             methodName = ::searchTexts.name,
             innloggetIdent = tokenUtil.getIdent(),

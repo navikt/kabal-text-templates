@@ -11,7 +11,7 @@ import java.util.*
 interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
 
     @Cacheable(PUBLISHED_TEXT_VERSIONS)
-    @EntityGraph("TextVersion.consumer")
+    @EntityGraph("TextVersion.fullWithoutEditors")
     @Query(
         """
         SELECT tv
@@ -21,10 +21,10 @@ interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
     )
     fun findByPublishedIsTrueForConsumer(): List<TextVersion>
 
-    @EntityGraph("TextVersion.full")
+    @EntityGraph("TextVersion.fullWithoutEditors")
     fun findByPublishedIsTrue(): List<TextVersion>
 
-    @EntityGraph("TextVersion.full")
+    @EntityGraph("TextVersion.fullWithoutEditors")
     fun findByPublishedDateTimeIsNull(): List<TextVersion>
 
     @EntityGraph("TextVersion.full")
