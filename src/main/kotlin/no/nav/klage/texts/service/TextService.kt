@@ -616,7 +616,7 @@ class TextService(
         templateSectionIdList: List<String>,
         ytelseHjemmelIdList: List<String>,
         trash: Boolean?,
-    ): List<TextView> {
+    ): List<TextViewForLists> {
         val textVersions = if (trash == true) {
             getAllHiddenTextVersions()
         } else {
@@ -635,7 +635,7 @@ class TextService(
         val connectedMaltekstseksjonIdList = getConnectedMaltekstseksjonerBulk(filteredTextVersions)
         return filteredTextVersions.map {
             val connections = connectedMaltekstseksjonIdList[it.text.id]!!
-            mapToTextView(
+            mapToTextViewForLists(
                 textVersion = it,
                 connectedMaltekstseksjonIdList = connections.first.toList() to connections.second.toList()
             )

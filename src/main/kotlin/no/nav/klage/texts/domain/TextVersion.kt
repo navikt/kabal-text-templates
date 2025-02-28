@@ -9,7 +9,7 @@ import java.util.*
 @Table(name = "text_version", schema = "klage")
 @NamedEntityGraphs(
     NamedEntityGraph(
-        name = "TextVersion.consumer",
+        name = "TextVersion.fullWithoutEditors",
         attributeNodes = [
             NamedAttributeNode("utfallIdList"),
             NamedAttributeNode("enhetIdList"),

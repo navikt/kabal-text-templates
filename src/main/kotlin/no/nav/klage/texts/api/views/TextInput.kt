@@ -13,8 +13,8 @@ data class TextInput(
     val title: String,
     val textType: String,
 
-    val richText: TextView.RichText?,
-    val plainText: TextView.PlainText?,
+    val richText: RichText?,
+    val plainText: PlainText?,
 
     val version: Int?,
     val enhetIdList: Set<String>?,

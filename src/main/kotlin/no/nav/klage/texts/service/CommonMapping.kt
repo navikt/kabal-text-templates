@@ -71,7 +71,6 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
             )
         }.sortedByDescending { it.created },
         publishedDateTime = textVersion.publishedDateTime,
-        publishedBy = textVersion.publishedBy,
         publishedByActor = if (textVersion.publishedBy != null && textVersion.publishedByName != null) {
             Employee(
                 navIdent = textVersion.publishedBy!!,
@@ -88,9 +87,24 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         ),
     )
 
-private fun fillRichText(textVersion: TextVersion): TextView.RichText? =
+fun mapToTextViewForLists(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair<List<UUID>, List<UUID>>): TextViewForLists =
+    TextViewForLists(
+        id = textVersion.text.id,
+        title = textVersion.title,
+        textType = textVersion.textType,
+        richText = fillRichText(textVersion),
+        plainText = fillPlainText(textVersion),
+        created = textVersion.created,
+        modified = textVersion.modified,
+        publishedDateTime = textVersion.publishedDateTime,
+        published = textVersion.published,
+        publishedMaltekstseksjonIdList = connectedMaltekstseksjonIdList.first,
+        draftMaltekstseksjonIdList = connectedMaltekstseksjonIdList.second,
+    )
+
+private fun fillRichText(textVersion: TextVersion): RichText? =
     if (textVersion.richTextNN != null || textVersion.richTextNB != null || textVersion.richTextUntranslated != null) {
-        TextView.RichText(
+        RichText(
             nn = if (textVersion.richTextNN != null) jsonMapper().readTree(textVersion.richTextNN) else null,
             nb = if (textVersion.richTextNB != null) jsonMapper().readTree(textVersion.richTextNB) else null,
             untranslated = if (textVersion.richTextUntranslated != null) jsonMapper().readTree(textVersion.richTextUntranslated) else null,
@@ -99,9 +113,9 @@ private fun fillRichText(textVersion: TextVersion): TextView.RichText? =
         null
     }
 
-private fun fillPlainText(textVersion: TextVersion): TextView.PlainText? =
+private fun fillPlainText(textVersion: TextVersion): PlainText? =
     if (textVersion.plainTextNN != null || textVersion.plainTextNB != null) {
-        TextView.PlainText(
+        PlainText(
             nn = textVersion.plainTextNN,
             nb = textVersion.plainTextNB,
         )
