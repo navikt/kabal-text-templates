@@ -1,0 +1,1 @@
+CREATE INDEX text_version_text_ix ON klage.text_version (text_id);
