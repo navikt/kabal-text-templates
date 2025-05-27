@@ -16,7 +16,6 @@ import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
-import no.nav.klage.texts.util.getSecureLogger
 import no.nav.klage.texts.util.logMethodDetails
 import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.cache.annotation.Cacheable
@@ -39,7 +38,6 @@ class ConsumerController(
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val logger = getLogger(javaClass.enclosingClass)
-        private val secureLogger = getSecureLogger()
     }
 
     @Cacheable(CONSUMER_TEXT_SEARCH)
