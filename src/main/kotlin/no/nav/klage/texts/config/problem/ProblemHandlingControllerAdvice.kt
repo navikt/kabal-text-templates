@@ -1,12 +1,11 @@
 package no.nav.klage.texts.config.problem
 
 import no.nav.klage.texts.exceptions.*
-import no.nav.klage.texts.util.getSecureLogger
+import no.nav.klage.texts.util.getLogger
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 
 @RestControllerAdvice
@@ -14,39 +13,35 @@ class ProblemHandlingControllerAdvice : ResponseEntityExceptionHandler() {
 
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
-        private val secureLogger = getSecureLogger()
+        private val ourLogger = getLogger(javaClass.enclosingClass)
     }
 
     @ExceptionHandler
     fun handleTextNotFound(
         ex: TextNotFoundException,
-        request: NativeWebRequest
     ): ProblemDetail =
         create(HttpStatus.NOT_FOUND, ex)
 
     @ExceptionHandler
     fun handleLanguageNotFound(
         ex: LanguageNotFoundException,
-        request: NativeWebRequest
     ): ProblemDetail =
         create(HttpStatus.NOT_FOUND, ex)
 
     @ExceptionHandler
     fun handleMaltekstseksjonNotFound(
         ex: MaltekstseksjonNotFoundException,
-        request: NativeWebRequest
     ): ProblemDetail =
         create(HttpStatus.NOT_FOUND, ex)
 
     @ExceptionHandler
     fun handleClientError(
         ex: ClientErrorException,
-        request: NativeWebRequest
     ): ProblemDetail =
         create(HttpStatus.BAD_REQUEST, ex)
 
     @ExceptionHandler
-    fun handleMissingTilgang(ex: MissingTilgangException, request: NativeWebRequest): ProblemDetail =
+    fun handleMissingTilgang(ex: MissingTilgangException): ProblemDetail =
         create(HttpStatus.FORBIDDEN, ex)
 
     private fun create(httpStatus: HttpStatus, ex: Exception): ProblemDetail {
@@ -66,11 +61,11 @@ class ProblemHandlingControllerAdvice : ResponseEntityExceptionHandler() {
     private fun logError(httpStatus: HttpStatus, errorMessage: String, exception: Exception) {
         when {
             httpStatus.is5xxServerError -> {
-                secureLogger.error("Exception thrown to client: ${httpStatus.reasonPhrase}, $errorMessage", exception)
+                ourLogger.error("Exception thrown to client: ${httpStatus.reasonPhrase}, $errorMessage", exception)
             }
 
             else -> {
-                secureLogger.warn("Exception thrown to client: ${httpStatus.reasonPhrase}, $errorMessage", exception)
+                ourLogger.warn("Exception thrown to client: ${httpStatus.reasonPhrase}, $errorMessage", exception)
             }
         }
     }

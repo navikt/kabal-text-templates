@@ -14,7 +14,6 @@ import no.nav.klage.texts.exceptions.ClientErrorException
 import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepository
 import no.nav.klage.texts.repositories.TextVersionRepository
 import no.nav.klage.texts.util.getLogger
-import no.nav.klage.texts.util.getSecureLogger
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -31,7 +30,6 @@ class PublishService(
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val logger = getLogger(javaClass.enclosingClass)
-        private val secureLogger = getSecureLogger()
     }
 
     @CacheEvict(
