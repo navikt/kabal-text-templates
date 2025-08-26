@@ -45,7 +45,7 @@ interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
     @EntityGraph("TextVersion.full")
     fun findByTextId(textId: UUID): List<TextVersion>
 
-    @EntityGraph("TextVersion.full")
+    @EntityGraph("TextVersion.fullWithoutEditors")
     @Query(
         """
         SELECT tv
