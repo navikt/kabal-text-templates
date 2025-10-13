@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class AdminService(
     private val maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository,
-    private val maltekstseksjonVersionRepositoryStreamingFacade: TextVersionRepositoryStreamingFacade,
+    private val maltekstseksjonVersionRepositoryStreamingFacade: MaltekstseksjonVersionRepositoryStreamingFacade,
     private val textVersionRepository: TextVersionRepository,
     private val textVersionRepositoryStreamingFacade: TextVersionRepositoryStreamingFacade,
 ) {
