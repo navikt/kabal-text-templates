@@ -1,16 +1,18 @@
 package no.nav.klage.texts.repositories
 
-import no.nav.klage.texts.config.CacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
+import jakarta.persistence.QueryHint
 import no.nav.klage.texts.domain.TextVersion
-import org.springframework.cache.annotation.Cacheable
+import org.hibernate.jpa.HibernateHints.HINT_FETCH_SIZE
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.jpa.repository.QueryHints
 import java.util.*
+import java.util.stream.Stream
 
 interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
 
-    @Cacheable(PUBLISHED_TEXT_VERSIONS)
+    @QueryHints(QueryHint(name = HINT_FETCH_SIZE, value = "100"))
     @EntityGraph("TextVersion.fullWithoutEditors")
     @Query(
         """
@@ -19,13 +21,15 @@ interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
         WHERE tv.published = true
         """
     )
-    fun findByPublishedIsTrueForConsumer(): List<TextVersion>
+    fun findByPublishedIsTrueForConsumer(): Stream<TextVersion>
 
+    @QueryHints(QueryHint(name = HINT_FETCH_SIZE, value = "100"))
     @EntityGraph("TextVersion.fullWithoutEditors")
-    fun findByPublishedIsTrue(): List<TextVersion>
+    fun findByPublishedIsTrue(): Stream<TextVersion>
 
+    @QueryHints(QueryHint(name = HINT_FETCH_SIZE, value = "100"))
     @EntityGraph("TextVersion.fullWithoutEditors")
-    fun findByPublishedDateTimeIsNull(): List<TextVersion>
+    fun findByPublishedDateTimeIsNull(): Stream<TextVersion>
 
     @EntityGraph("TextVersion.full")
     fun findByPublishedIsTrueAndTextId(

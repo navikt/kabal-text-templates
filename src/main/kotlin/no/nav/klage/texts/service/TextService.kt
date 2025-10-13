@@ -15,6 +15,7 @@ import no.nav.klage.texts.exceptions.TextNotFoundException
 import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepository
 import no.nav.klage.texts.repositories.TextRepository
 import no.nav.klage.texts.repositories.TextVersionRepository
+import no.nav.klage.texts.repositories.TextVersionRepositoryStreamingFacade
 import no.nav.klage.texts.util.getLogger
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
@@ -31,6 +32,7 @@ class TextService(
     private val searchTextService: SearchTextService,
     private val maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository,
     private val publishService: PublishService,
+    private val textVersionRepositoryStreamingFacade: TextVersionRepositoryStreamingFacade,
 ) {
 
     companion object {
@@ -589,16 +591,8 @@ class TextService(
         templateSectionIdList: List<String>,
         ytelseHjemmelIdList: List<String>,
     ): List<TextVersion> {
-        val textVersions: List<TextVersion>
-
-        val millis = measureTimeMillis {
-            textVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
-        }
-
-        logger.debug("findByPublishedIsTrue took {} millis. Found {} texts", millis, textVersions.size)
-
         return searchTextService.searchTexts(
-            texts = textVersions,
+            texts = textVersionRepositoryStreamingFacade.findByPublishedIsTrueForConsumer(),
             textType = textType,
             utfallIdList = utfallIdList,
             enhetIdList = enhetIdList,
@@ -648,9 +642,9 @@ class TextService(
 
         val millis = measureTimeMillis {
             //get all drafts
-            val drafts = textVersionRepository.findByPublishedDateTimeIsNull()
+            val drafts = textVersionRepositoryStreamingFacade.findByPublishedDateTimeIsNull()
             //get published
-            val published = textVersionRepository.findByPublishedIsTrue()
+            val published = textVersionRepositoryStreamingFacade.findByPublishedIsTrue()
 
             val draftsTextList = drafts.map { it.text }
 

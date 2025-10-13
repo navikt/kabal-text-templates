@@ -1,16 +1,18 @@
 package no.nav.klage.texts.repositories
 
-import no.nav.klage.texts.config.CacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
+import jakarta.persistence.QueryHint
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
-import org.springframework.cache.annotation.Cacheable
+import org.hibernate.jpa.HibernateHints.HINT_FETCH_SIZE
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
+import org.springframework.data.jpa.repository.QueryHints
 import java.util.*
+import java.util.stream.Stream
 
 interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersion, UUID> {
 
-    @Cacheable(PUBLISHED_MALTEKSTSEKSJON_VERSIONS)
+    @QueryHints(QueryHint(name = HINT_FETCH_SIZE, value = "50"))
     @EntityGraph("MaltekstseksjonVersion.full")
     @Query(
         """
@@ -19,13 +21,15 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
         WHERE mv.published = true
         """
     )
-    fun findByPublishedIsTrueForConsumer(): List<MaltekstseksjonVersion>
+    fun findByPublishedIsTrueForConsumer(): Stream<MaltekstseksjonVersion>
 
+    @QueryHints(QueryHint(name = HINT_FETCH_SIZE, value = "50"))
     @EntityGraph("MaltekstseksjonVersion.full")
-    fun findByPublishedIsTrue(): List<MaltekstseksjonVersion>
+    fun findByPublishedIsTrue(): Stream<MaltekstseksjonVersion>
 
+    @QueryHints(QueryHint(name = HINT_FETCH_SIZE, value = "50"))
     @EntityGraph("MaltekstseksjonVersion.full")
-    fun findByPublishedDateTimeIsNull(): List<MaltekstseksjonVersion>
+    fun findByPublishedDateTimeIsNull(): Stream<MaltekstseksjonVersion>
 
     @EntityGraph("MaltekstseksjonVersion.full")
     fun findByPublishedIsTrueAndMaltekstseksjonId(
