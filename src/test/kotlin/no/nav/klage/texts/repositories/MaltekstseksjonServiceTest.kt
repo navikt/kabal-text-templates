@@ -57,7 +57,8 @@ class MaltekstseksjonServiceTest {
                 maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
                 textVersionRepository = textVersionRepository
             ),
-            textVersionRepository = textVersionRepository
+            textVersionRepositoryStreamingFacade = mockk(),
+            maltekstseksjonVersionRepositoryStreamingFacade = mockk(),
         )
 
         val now = LocalDateTime.now()

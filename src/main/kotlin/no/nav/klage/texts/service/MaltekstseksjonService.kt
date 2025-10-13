@@ -16,10 +16,7 @@ import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
 import no.nav.klage.texts.exceptions.ClientErrorException
 import no.nav.klage.texts.exceptions.MaltekstseksjonNotFoundException
-import no.nav.klage.texts.repositories.MaltekstseksjonRepository
-import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepository
-import no.nav.klage.texts.repositories.TextRepository
-import no.nav.klage.texts.repositories.TextVersionRepository
+import no.nav.klage.texts.repositories.*
 import no.nav.klage.texts.util.getLogger
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.stereotype.Service
@@ -33,11 +30,12 @@ import kotlin.system.measureTimeMillis
 class MaltekstseksjonService(
     private val maltekstseksjonRepository: MaltekstseksjonRepository,
     private val maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository,
+    private val maltekstseksjonVersionRepositoryStreamingFacade: MaltekstseksjonVersionRepositoryStreamingFacade,
     private val textRepository: TextRepository,
-    private val textVersionRepository: TextVersionRepository,
     private val textService: TextService,
     private val searchMaltekstseksjonService: SearchMaltekstseksjonService,
     private val publishService: PublishService,
+    private val textVersionRepositoryStreamingFacade: TextVersionRepositoryStreamingFacade,
 ) {
 
     companion object {
@@ -90,7 +88,7 @@ class MaltekstseksjonService(
 
     fun getMaltekstseksjonVersions(maltekstseksjonId: UUID): List<MaltekstseksjonView> {
         //find all published texts from cache
-        val allPublishedTextVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
+        val allPublishedTextVersions = textVersionRepositoryStreamingFacade.findByPublishedIsTrueForConsumer()
         return maltekstseksjonVersionRepository.findByMaltekstseksjonId(maltekstseksjonId)
             .sortedByDescending { it.publishedDateTime ?: LocalDateTime.now() }
             .map { maltekstseksjonVersion ->
@@ -282,7 +280,7 @@ class MaltekstseksjonService(
         ) ?: throw ClientErrorException("det fins hverken utkast eller publisert versjon")
 
         //find all published texts from cache
-        val allPublishedTextVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
+        val allPublishedTextVersions = textVersionRepositoryStreamingFacade.findByPublishedIsTrueForConsumer()
 
         return mapToMaltekstseksjonView(
             maltekstseksjonVersion = maltekstseksjonVersion,
@@ -464,7 +462,7 @@ class MaltekstseksjonService(
 
         val millis = measureTimeMillis {
             maltekstseksjonVersions =
-                maltekstseksjonVersionRepository.findByPublishedIsTrueForConsumer()
+                maltekstseksjonVersionRepositoryStreamingFacade.findByPublishedIsTrueForConsumer()
         }
 
         logger.debug(
@@ -498,7 +496,7 @@ class MaltekstseksjonService(
         }
 
         //find all published texts from cache
-        val allPublishedTextVersions = textVersionRepository.findByPublishedIsTrueForConsumer()
+        val allPublishedTextVersions = textVersionRepositoryStreamingFacade.findByPublishedIsTrueForConsumer()
 
         return searchMaltekstseksjonService.searchMaltekstseksjoner(
             maltekstseksjonVersions = maltekstseksjonVersions,
@@ -546,9 +544,9 @@ class MaltekstseksjonService(
         val millis = measureTimeMillis {
             //get all drafts
             val drafts =
-                maltekstseksjonVersionRepository.findByPublishedDateTimeIsNull()
+                maltekstseksjonVersionRepositoryStreamingFacade.findByPublishedDateTimeIsNull()
             //get published
-            val published = maltekstseksjonVersionRepository.findByPublishedIsTrue()
+            val published = maltekstseksjonVersionRepositoryStreamingFacade.findByPublishedIsTrue()
 
             val draftsMaltekstseksjonList = drafts.map { it.maltekstseksjon }
 
