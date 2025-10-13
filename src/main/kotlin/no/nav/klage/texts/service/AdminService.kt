@@ -7,6 +7,7 @@ import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_TEXT_SEAR
 import no.nav.klage.texts.config.CacheConfiguration.Companion.PUBLISHED_MALTEKSTSEKSJON_VERSIONS
 import no.nav.klage.texts.config.CacheConfiguration.Companion.PUBLISHED_TEXT_VERSIONS
 import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepository
+import no.nav.klage.texts.repositories.MaltekstseksjonVersionRepositoryStreamingFacade
 import no.nav.klage.texts.repositories.TextVersionRepository
 import no.nav.klage.texts.repositories.TextVersionRepositoryStreamingFacade
 import org.springframework.cache.annotation.CacheEvict
