@@ -59,8 +59,7 @@ class TextVersionRepositoryTest {
         testEntityManager.flush()
         testEntityManager.clear()
 
-        val foundUnpublishedTextVersions = mutableListOf<TextVersion>()
-        textVersionRepository.findByPublishedDateTimeIsNull().use { stream -> stream.forEach { foundUnpublishedTextVersions += it } }
+        val foundUnpublishedTextVersions = textVersionRepository.findByPublishedDateTimeIsNull().toList()
         assertThat(foundUnpublishedTextVersions.size).isEqualTo(2)
     }
 
@@ -77,8 +76,7 @@ class TextVersionRepositoryTest {
         testEntityManager.flush()
         testEntityManager.clear()
 
-        val foundPublishedTextVersions = mutableListOf<TextVersion>()
-        textVersionRepository.findByPublishedIsTrue().use { stream -> stream.forEach { foundPublishedTextVersions += it } }
+        val foundPublishedTextVersions = textVersionRepository.findByPublishedIsTrue().toList()
         assertThat(foundPublishedTextVersions.size).isEqualTo(2)
     }
 
