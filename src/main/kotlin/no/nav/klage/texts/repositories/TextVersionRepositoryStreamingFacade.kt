@@ -35,7 +35,7 @@ class TextVersionRepositoryStreamingFacade(
             }
         }
 
-        logger.debug("findByPublishedIsTrue took {} millis. Found {} texts", millis, textVersions.size)
+        logger.debug("findByPublishedIsTrueForConsumer streamed took {} millis. Found {} texts", millis, textVersions.size)
         return textVersions
     }
 
@@ -52,7 +52,7 @@ class TextVersionRepositoryStreamingFacade(
             }
         }
 
-        logger.debug("findByPublishedDateTimeIsNull took {} millis. Found {} texts", millis, textVersions.size)
+        logger.debug("findByPublishedDateTimeIsNull streamed took {} millis. Found {} texts", millis, textVersions.size)
 
         return textVersions
     }
@@ -70,7 +70,7 @@ class TextVersionRepositoryStreamingFacade(
             }
         }
 
-        logger.debug("findByPublishedIsTrue took {} millis. Found {} texts", millis, textVersions.size)
+        logger.debug("findByPublishedIsTrue streamed took {} millis. Found {} texts", millis, textVersions.size)
 
         return textVersions
     }

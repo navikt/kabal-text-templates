@@ -35,7 +35,7 @@ class MaltekstseksjonVersionRepositoryStreamingFacade(
         }
 
         logger.debug(
-            "findByPublishedIsTrueForConsumer took {} millis. Found {} maltekstseksjonVersions",
+            "findByPublishedIsTrueForConsumer streamed took {} millis. Found {} maltekstseksjonVersions",
             millis,
             maltekstseksjonVersions.size
         )
@@ -57,7 +57,7 @@ class MaltekstseksjonVersionRepositoryStreamingFacade(
         }
 
         logger.debug(
-            "findByPublishedIsTrue took {} millis. Found {} maltekstseksjonVersions",
+            "findByPublishedIsTrue streamed took {} millis. Found {} maltekstseksjonVersions",
             millis,
             maltekstseksjonVersions.size
         )
@@ -79,7 +79,7 @@ class MaltekstseksjonVersionRepositoryStreamingFacade(
         }
 
         logger.debug(
-            "findByPublishedDateTimeIsNull took {} millis. Found {} maltekstseksjonVersions",
+            "findByPublishedDateTimeIsNull streamed took {} millis. Found {} maltekstseksjonVersions",
             millis,
             maltekstseksjonVersions.size
         )

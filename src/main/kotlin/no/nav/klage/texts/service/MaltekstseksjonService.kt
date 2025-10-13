@@ -458,18 +458,7 @@ class MaltekstseksjonService(
         templateSectionIdList: List<String>,
         ytelseHjemmelIdList: List<String>,
     ): List<MaltekstseksjonVersion> {
-        var maltekstseksjonVersions: List<MaltekstseksjonVersion>
-
-        val millis = measureTimeMillis {
-            maltekstseksjonVersions =
-                maltekstseksjonVersionRepositoryStreamingFacade.findByPublishedIsTrueForConsumer()
-        }
-
-        logger.debug(
-            "searchMaltekstseksjoner getting all texts took {} millis. Found {} texts",
-            millis,
-            maltekstseksjonVersions.size
-        )
+        val maltekstseksjonVersions = maltekstseksjonVersionRepositoryStreamingFacade.findByPublishedIsTrueForConsumer()
 
         return searchMaltekstseksjonService.searchMaltekstseksjoner(
             maltekstseksjonVersions = maltekstseksjonVersions,
@@ -558,7 +547,7 @@ class MaltekstseksjonService(
         }
 
         logger.debug(
-            "searchMaltekstseksjoner getting all maltekstseksjonVersions took {} millis. Found {} maltekstseksjonVersions",
+            "searchMaltekstseksjoner getting all maltekstseksjonVersions combined took {} millis. Found {} maltekstseksjonVersions",
             millis,
             maltekstseksjonVersions.size
         )
