@@ -43,7 +43,7 @@ class TextVersionRepositoryStreamingFacade(
     fun findByPublishedDateTimeIsNull(): List<TextVersion> {
         val textVersions = mutableListOf<TextVersion>()
         val millis = measureTimeMillis {
-            textVersionRepository.findByPublishedDateTimeIsNull().use { stream ->
+            textVersionRepository.findByPublishedDateTimeIsNullOrderById().use { stream ->
                 stream.forEach { textVersion ->
                     textVersions += textVersion
                     //detach to avoid memory leaks
@@ -61,7 +61,7 @@ class TextVersionRepositoryStreamingFacade(
     fun findByPublishedIsTrue(): List<TextVersion> {
         val textVersions = mutableListOf<TextVersion>()
         val millis = measureTimeMillis {
-            textVersionRepository.findByPublishedIsTrue().use { stream ->
+            textVersionRepository.findByPublishedIsTrueOrderById().use { stream ->
                 stream.forEach { textVersion ->
                     textVersions += textVersion
                     //detach to avoid memory leaks
