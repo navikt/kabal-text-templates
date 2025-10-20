@@ -19,17 +19,18 @@ interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
         SELECT tv
         FROM TextVersion tv
         WHERE tv.published = true
+        ORDER BY tv.id
         """
     )
     fun findByPublishedIsTrueForConsumer(): Stream<TextVersion>
 
     @QueryHints(QueryHint(name = HINT_FETCH_SIZE, value = "100"))
     @EntityGraph("TextVersion.fullWithoutEditors")
-    fun findByPublishedIsTrue(): Stream<TextVersion>
+    fun findByPublishedIsTrueOrderById(): Stream<TextVersion>
 
     @QueryHints(QueryHint(name = HINT_FETCH_SIZE, value = "100"))
     @EntityGraph("TextVersion.fullWithoutEditors")
-    fun findByPublishedDateTimeIsNull(): Stream<TextVersion>
+    fun findByPublishedDateTimeIsNullOrderById(): Stream<TextVersion>
 
     @EntityGraph("TextVersion.full")
     fun findByPublishedIsTrueAndTextId(

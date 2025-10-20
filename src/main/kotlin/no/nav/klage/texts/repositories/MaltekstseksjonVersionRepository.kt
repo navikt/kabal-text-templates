@@ -19,17 +19,18 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
         SELECT mv
         FROM MaltekstseksjonVersion mv
         WHERE mv.published = true
+        ORDER BY mv.id
         """
     )
     fun findByPublishedIsTrueForConsumer(): Stream<MaltekstseksjonVersion>
 
     @QueryHints(QueryHint(name = HINT_FETCH_SIZE, value = "50"))
     @EntityGraph("MaltekstseksjonVersion.full")
-    fun findByPublishedIsTrue(): Stream<MaltekstseksjonVersion>
+    fun findByPublishedIsTrueOrderById(): Stream<MaltekstseksjonVersion>
 
     @QueryHints(QueryHint(name = HINT_FETCH_SIZE, value = "50"))
     @EntityGraph("MaltekstseksjonVersion.full")
-    fun findByPublishedDateTimeIsNull(): Stream<MaltekstseksjonVersion>
+    fun findByPublishedDateTimeIsNullOrderById(): Stream<MaltekstseksjonVersion>
 
     @EntityGraph("MaltekstseksjonVersion.full")
     fun findByPublishedIsTrueAndMaltekstseksjonId(

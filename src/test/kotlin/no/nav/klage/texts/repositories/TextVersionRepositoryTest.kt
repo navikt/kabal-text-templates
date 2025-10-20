@@ -59,7 +59,7 @@ class TextVersionRepositoryTest {
         testEntityManager.flush()
         testEntityManager.clear()
 
-        val foundUnpublishedTextVersions = textVersionRepository.findByPublishedDateTimeIsNull().toList()
+        val foundUnpublishedTextVersions = textVersionRepository.findByPublishedDateTimeIsNullOrderById().toList()
         assertThat(foundUnpublishedTextVersions.size).isEqualTo(2)
     }
 
@@ -76,7 +76,7 @@ class TextVersionRepositoryTest {
         testEntityManager.flush()
         testEntityManager.clear()
 
-        val foundPublishedTextVersions = textVersionRepository.findByPublishedIsTrue().toList()
+        val foundPublishedTextVersions = textVersionRepository.findByPublishedIsTrueOrderById().toList()
         assertThat(foundPublishedTextVersions.size).isEqualTo(2)
     }
 

@@ -47,7 +47,7 @@ class MaltekstseksjonVersionRepositoryStreamingFacade(
     fun findByPublishedIsTrue(): List<MaltekstseksjonVersion> {
         val maltekstseksjonVersions = mutableListOf<MaltekstseksjonVersion>()
         val millis = measureTimeMillis {
-            maltekstseksjonVersionRepository.findByPublishedIsTrue().use { stream ->
+            maltekstseksjonVersionRepository.findByPublishedIsTrueOrderById().use { stream ->
                 stream.forEach { maltekstseksjonVersion ->
                     maltekstseksjonVersions += maltekstseksjonVersion
                     //detach to avoid memory leaks
@@ -69,7 +69,7 @@ class MaltekstseksjonVersionRepositoryStreamingFacade(
     fun findByPublishedDateTimeIsNull(): List<MaltekstseksjonVersion> {
         val maltekstseksjonVersions = mutableListOf<MaltekstseksjonVersion>()
         val millis = measureTimeMillis {
-            maltekstseksjonVersionRepository.findByPublishedDateTimeIsNull().use { stream ->
+            maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullOrderById().use { stream ->
                 stream.forEach { maltekstseksjonVersion ->
                     maltekstseksjonVersions += maltekstseksjonVersion
                     //detach to avoid memory leaks
