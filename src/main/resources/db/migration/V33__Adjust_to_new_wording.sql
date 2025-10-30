@@ -688,6 +688,35 @@ WHERE tvo.id in (SELECT id
                  WHERE matches.match_array IS NOT NULL
                    AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 
+UPDATE klage.text_version tvo
+SET title =
+        REGEXP_REPLACE(title, ' ledd:', ' avsnitt:', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.title, ' ledd:') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET title =
+        REGEXP_REPLACE(title, '\.ledd\.', '. avsnitt."', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.title, '\.ledd\.') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET title =
+        REGEXP_REPLACE(title, ' ledd\u202F', ' avsnitt "', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.title, ' ledd\u202F') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 --ledd, content
 UPDATE klage.text_version tvo
 SET content =
@@ -720,6 +749,35 @@ WHERE tvo.id in (SELECT id
                  WHERE matches.match_array IS NOT NULL
                    AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 
+UPDATE klage.text_version tvo
+SET content =
+        REGEXP_REPLACE(content, ' ledd:', ' avsnitt:', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.content, ' ledd:') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET content =
+        REGEXP_REPLACE(content, '\.ledd\.', '. avsnitt."', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.content, '\.ledd\.') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET content =
+        REGEXP_REPLACE(content, ' ledd\u202F', ' avsnitt "', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.content, ' ledd\u202F') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 --ledd, plain_text
 
 UPDATE klage.text_version tvo
@@ -753,6 +811,35 @@ WHERE tvo.id in (SELECT id
                  WHERE matches.match_array IS NOT NULL
                    AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 
+UPDATE klage.text_version tvo
+SET plain_text =
+        REGEXP_REPLACE(plain_text, ' ledd:', ' avsnitt:', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.plain_text, ' ledd:') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET plain_text =
+        REGEXP_REPLACE(plain_text, '\.ledd\.', '. avsnitt."', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.plain_text, '\.ledd\.') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET plain_text =
+        REGEXP_REPLACE(plain_text, ' ledd\u202F', ' avsnitt "', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.plain_text, ' ledd\u202F') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 --ledd, rich_text_nn
 
 UPDATE klage.text_version tvo
@@ -786,6 +873,35 @@ WHERE tvo.id in (SELECT id
                  WHERE matches.match_array IS NOT NULL
                    AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 
+UPDATE klage.text_version tvo
+SET rich_text_nn =
+        REGEXP_REPLACE(rich_text_nn, ' ledd:', ' avsnitt:', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.rich_text_nn, ' ledd:') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET rich_text_nn =
+        REGEXP_REPLACE(rich_text_nn, '\.ledd\.', '. avsnitt."', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.rich_text_nn, '\.ledd\.') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET rich_text_nn =
+        REGEXP_REPLACE(rich_text_nn, ' ledd\u202F', ' avsnitt "', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.rich_text_nn, ' ledd\u202F') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 --ledd, rich_text_nb
 UPDATE klage.text_version tvo
 SET rich_text_nb =
@@ -818,6 +934,35 @@ WHERE tvo.id in (SELECT id
                  WHERE matches.match_array IS NOT NULL
                    AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 
+UPDATE klage.text_version tvo
+SET rich_text_nb =
+        REGEXP_REPLACE(rich_text_nb, ' ledd:', ' avsnitt:', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.rich_text_nb, ' ledd:') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET rich_text_nb =
+        REGEXP_REPLACE(rich_text_nb, '\.ledd\.', '. avsnitt."', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.rich_text_nb, '\.ledd\.') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET rich_text_nb =
+        REGEXP_REPLACE(rich_text_nb, ' ledd\u202F', ' avsnitt "', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.rich_text_nb, ' ledd\u202F') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 --ledd, plain_text_nn
 UPDATE klage.text_version tvo
 SET plain_text_nn =
@@ -850,6 +995,35 @@ WHERE tvo.id in (SELECT id
                  WHERE matches.match_array IS NOT NULL
                    AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 
+UPDATE klage.text_version tvo
+SET plain_text_nn =
+        REGEXP_REPLACE(plain_text_nn, ' ledd:', ' avsnitt:', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.plain_text_nn, ' ledd:') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET plain_text_nn =
+        REGEXP_REPLACE(plain_text_nn, '\.ledd\.', '. avsnitt."', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.plain_text_nn, '\.ledd\.') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET plain_text_nn =
+        REGEXP_REPLACE(plain_text_nn, ' ledd\u202F', ' avsnitt "', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.plain_text_nn, ' ledd\u202F') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 --ledd, plain_text_nb
 UPDATE klage.text_version tvo
 SET plain_text_nb =
@@ -879,6 +1053,36 @@ WHERE tvo.id in (SELECT id
                  FROM klage.text_version tv
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nb, ' ledd\.') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET plain_text_nb =
+        REGEXP_REPLACE(plain_text_nb, ' ledd:', ' avsnitt:', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.plain_text_nb, ' ledd:') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET plain_text_nb =
+        REGEXP_REPLACE(plain_text_nb, '\.ledd\.', '. avsnitt."', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.plain_text_nb, '\.ledd\.') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET plain_text_nb =
+        REGEXP_REPLACE(plain_text_nb, ' ledd\u202F', ' avsnitt "', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.plain_text_nb, ' ledd\u202F') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
                    AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 --ledd, rich_text_untranslated
@@ -913,6 +1117,35 @@ WHERE tvo.id in (SELECT id
                  WHERE matches.match_array IS NOT NULL
                    AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 
+UPDATE klage.text_version tvo
+SET rich_text_untranslated =
+        REGEXP_REPLACE(rich_text_untranslated, ' ledd:', ' avsnitt:', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.rich_text_untranslated, ' ledd:') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET rich_text_untranslated =
+        REGEXP_REPLACE(rich_text_untranslated, '\.ledd\.', '. avsnitt."', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.rich_text_untranslated, '\.ledd\.') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+
+UPDATE klage.text_version tvo
+SET rich_text_untranslated =
+        REGEXP_REPLACE(rich_text_untranslated, ' ledd\u202F', ' avsnitt "', 'g')
+WHERE tvo.id in (SELECT id
+                 FROM klage.text_version tv
+                          LEFT JOIN LATERAL
+                     regexp_matches(tv.rich_text_untranslated, ' ledd\u202F') AS matches(match_array) ON TRUE
+                 WHERE matches.match_array IS NOT NULL
+                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 --punktum, title
 
 UPDATE klage.text_version tvo
