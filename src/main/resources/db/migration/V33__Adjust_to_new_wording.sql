@@ -1200,30 +1200,30 @@ WHERE tvo.id in (SELECT id
 --punktum, plain_text_nn
 UPDATE klage.text_version tvo
 SET plain_text_nn =
-        REGEXP_REPLACE(rich_text_nb, ' punktum', ' setning', 'g')
+        REGEXP_REPLACE(plain_text_nn, ' punktum', ' setning', 'g')
 WHERE tvo.id in (SELECT id
                  FROM klage.text_version tv
                           LEFT JOIN LATERAL
-                     regexp_matches(tv.rich_text_nb, ' punktum') AS matches(match_array) ON TRUE
+                     regexp_matches(tv.plain_text_nn, ' punktum') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
                    AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 --punktum, plain_text_nb
 UPDATE klage.text_version tvo
 SET plain_text_nb =
-        REGEXP_REPLACE(rich_text_nb, ' punktum', ' setning', 'g')
+        REGEXP_REPLACE(plain_text_nb, ' punktum', ' setning', 'g')
 WHERE tvo.id in (SELECT id
                  FROM klage.text_version tv
                           LEFT JOIN LATERAL
-                     regexp_matches(tv.rich_text_nb, ' punktum') AS matches(match_array) ON TRUE
+                     regexp_matches(tv.plain_text_nb, ' punktum') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
                    AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
 --punktum, rich_text_untranslated
 UPDATE klage.text_version tvo
 SET rich_text_untranslated =
-        REGEXP_REPLACE(rich_text_nb, ' punktum', ' setning', 'g')
+        REGEXP_REPLACE(rich_text_untranslated, ' punktum', ' setning', 'g')
 WHERE tvo.id in (SELECT id
                  FROM klage.text_version tv
                           LEFT JOIN LATERAL
-                     regexp_matches(tv.rich_text_nb, ' punktum') AS matches(match_array) ON TRUE
+                     regexp_matches(tv.rich_text_untranslated, ' punktum') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
                    AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
