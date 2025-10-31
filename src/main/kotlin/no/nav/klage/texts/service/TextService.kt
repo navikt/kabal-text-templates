@@ -629,7 +629,8 @@ class TextService(
             val connections = connectedMaltekstseksjonIdList[it.text.id]!!
             mapToTextViewForLists(
                 textVersion = it,
-                connectedMaltekstseksjonIdList = connections.first.toList() to connections.second.toList()
+                connectedMaltekstseksjonIdList = connections.first.toList() to connections.second.toList(),
+                logger = logger
             )
         }
     }

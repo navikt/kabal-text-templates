@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jsonMapper
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
+import org.slf4j.Logger
 import java.time.LocalDateTime
 import java.util.*
 
@@ -87,12 +88,16 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         ),
     )
 
-fun mapToTextViewForLists(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair<List<UUID>, List<UUID>>): TextViewForLists =
+fun mapToTextViewForLists(
+    textVersion: TextVersion,
+    connectedMaltekstseksjonIdList: Pair<List<UUID>, List<UUID>>,
+    logger: Logger?
+): TextViewForLists =
     TextViewForLists(
         id = textVersion.text.id,
         title = textVersion.title,
         textType = textVersion.textType,
-        richText = fillRichText(textVersion),
+        richText = fillRichText(textVersion, logger),
         plainText = fillPlainText(textVersion),
         created = textVersion.created,
         modified = textVersion.modified,
@@ -102,13 +107,18 @@ fun mapToTextViewForLists(textVersion: TextVersion, connectedMaltekstseksjonIdLi
         draftMaltekstseksjonIdList = connectedMaltekstseksjonIdList.second,
     )
 
-private fun fillRichText(textVersion: TextVersion): RichText? =
+private fun fillRichText(textVersion: TextVersion, logger: Logger? = null): RichText? =
     if (textVersion.richTextNN != null || textVersion.richTextNB != null || textVersion.richTextUntranslated != null) {
-        RichText(
-            nn = if (textVersion.richTextNN != null) jsonMapper().readTree(textVersion.richTextNN) else null,
-            nb = if (textVersion.richTextNB != null) jsonMapper().readTree(textVersion.richTextNB) else null,
-            untranslated = if (textVersion.richTextUntranslated != null) jsonMapper().readTree(textVersion.richTextUntranslated) else null,
-        )
+        try {
+            RichText(
+                nn = if (textVersion.richTextNN != null) jsonMapper().readTree(textVersion.richTextNN) else null,
+                nb = if (textVersion.richTextNB != null) jsonMapper().readTree(textVersion.richTextNB) else null,
+                untranslated = if (textVersion.richTextUntranslated != null) jsonMapper().readTree(textVersion.richTextUntranslated) else null,
+            )
+        } catch (e: Exception) {
+            logger?.error("Rich text version validation failed for textVersionId: {}, message: {}", textVersion.id, e.message)
+            throw e
+        }
     } else {
         null
     }
