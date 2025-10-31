@@ -116,7 +116,7 @@ private fun fillRichText(textVersion: TextVersion, logger: Logger? = null): Rich
                 untranslated = if (textVersion.richTextUntranslated != null) jsonMapper().readTree(textVersion.richTextUntranslated) else null,
             )
         } catch (e: Exception) {
-            logger?.error("Rich text version validation failed: {}", textVersion)
+            logger?.error("Rich text version validation failed for textVersionId: {}, message: {}", textVersion.id, e.message)
             throw e
         }
     } else {
