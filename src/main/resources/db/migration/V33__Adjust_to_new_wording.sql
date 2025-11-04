@@ -8,7 +8,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.title, '"Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET title =
@@ -18,7 +18,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.title, '"\u00A0Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET title =
@@ -28,7 +28,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.title, '\. Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET title =
@@ -38,7 +38,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.title, ': Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET title =
@@ -48,7 +48,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.title, '\\tNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET title =
@@ -58,7 +58,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.title, '\\nNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET title =
@@ -68,7 +68,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.title, 'Nav/Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET title =
@@ -78,7 +78,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.title, ' Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 --Nav klageinstans, content
 
@@ -90,7 +90,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.content, '"Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET content =
@@ -100,7 +100,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.content, '"\u00A0Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET content =
@@ -110,7 +110,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.content, '\. Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET content =
@@ -120,7 +120,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.content, ': Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET content =
@@ -130,7 +130,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.content, '\\tNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET content =
@@ -140,7 +140,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.content, '\\nNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET content =
@@ -150,7 +150,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.content, 'Nav/Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET content =
@@ -160,7 +160,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.content, ' Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 --Nav klageinstans, plain_text
 
@@ -172,7 +172,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text, '"Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text =
@@ -182,7 +182,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text, '"\u00A0Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text =
@@ -192,7 +192,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text, '\. Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text =
@@ -202,7 +202,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text, ': Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text =
@@ -212,7 +212,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text, '\\tNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text =
@@ -222,7 +222,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text, '\\nNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text =
@@ -232,7 +232,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text, 'Nav/Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text =
@@ -242,7 +242,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text, ' Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 --Nav klageinstans, rich_text_nn
 
@@ -254,7 +254,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nn, '"Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_nn =
@@ -264,7 +264,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nn, '"\u00A0Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_nn =
@@ -274,7 +274,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nn, '\. Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_nn =
@@ -284,7 +284,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nn, ': Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_nn =
@@ -294,7 +294,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nn, '\\tNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_nn =
@@ -304,7 +304,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nn, '\\nNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_nn =
@@ -314,7 +314,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nn, 'Nav/Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_nn =
@@ -324,7 +324,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nn, ' Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 --Nav klageinstans, rich_text_nb
 
@@ -336,7 +336,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nb, '"Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_nb =
@@ -346,7 +346,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nb, '"\u00A0Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_nb =
@@ -356,7 +356,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nb, '\. Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_nb =
@@ -366,7 +366,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nb, ': Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_nb =
@@ -376,7 +376,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nb, '\\tNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_nb =
@@ -386,7 +386,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nb, '\\nNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_nb =
@@ -396,7 +396,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nb, 'Nav/Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_nb =
@@ -406,7 +406,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_nb, ' Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 
 --Nav klageinstans, plain_text_nn
@@ -419,7 +419,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nn, '"Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text_nn =
@@ -429,7 +429,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nn, '"\u00A0Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text_nn =
@@ -439,7 +439,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nn, '\. Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text_nn =
@@ -449,7 +449,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nn, ': Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text_nn =
@@ -459,7 +459,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nn, '\\tNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text_nn =
@@ -469,7 +469,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nn, '\\nNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text_nn =
@@ -479,7 +479,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nn, 'Nav/Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text_nn =
@@ -489,7 +489,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nn, ' Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 --Nav klageinstans, plain_text_nb
 
@@ -501,7 +501,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nb, '"Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text_nb =
@@ -511,7 +511,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nb, '"\u00A0Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text_nb =
@@ -521,7 +521,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nb, '\. Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text_nb =
@@ -531,7 +531,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nb, ': Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text_nb =
@@ -541,7 +541,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nb, '\\tNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text_nb =
@@ -551,7 +551,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nb, '\\nNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text_nb =
@@ -561,7 +561,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nb, 'Nav/Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET plain_text_nb =
@@ -571,7 +571,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.plain_text_nb, ' Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 --Nav klageinstans, rich_text_untranslated
 
@@ -583,7 +583,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_untranslated, '"Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_untranslated =
@@ -593,7 +593,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_untranslated, '"\u00A0Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_untranslated =
@@ -603,7 +603,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_untranslated, '\. Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_untranslated =
@@ -613,7 +613,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_untranslated, ': Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_untranslated =
@@ -623,7 +623,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_untranslated, '\\tNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_untranslated =
@@ -633,7 +633,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_untranslated, '\\nNav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_untranslated =
@@ -643,7 +643,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_untranslated, 'Nav/Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET rich_text_untranslated =
@@ -653,7 +653,7 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.rich_text_untranslated, ' Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
 UPDATE klage.text_version tvo
 SET title =
@@ -663,5 +663,5 @@ WHERE tvo.id in (SELECT id
                           LEFT JOIN LATERAL
                      regexp_matches(tv.title, 'Nav klageinstans') AS matches(match_array) ON TRUE
                  WHERE matches.match_array IS NOT NULL
-                   AND text_type IN ('REGELVERK', 'GOD_FORMULERING'));
+                   AND text_type IN ('GOD_FORMULERING'));
 
