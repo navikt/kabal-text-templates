@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val mockkVersion = "1.14.5"
-val logstashVersion = "8.1"
+val mockkVersion = "1.14.7"
+val logstashVersion = "9.0"
 val testContainersVersion = "1.21.3"
-val springDocVersion = "2.8.13"
+val springDocVersion = "3.0.0"
 val tokenValidationVersion = "5.0.30"
 val ehcacheVersion = "3.10.8"
 
@@ -13,8 +13,8 @@ repositories {
 }
 
 plugins {
-    val kotlinVersion = "2.2.20"
-    id("org.springframework.boot") version "3.5.8"
+    val kotlinVersion = "2.2.21"
+    id("org.springframework.boot") version "4.0.0"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
@@ -24,7 +24,7 @@ plugins {
 apply(plugin = "io.spring.dependency-management")
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.2.20")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.2.21")
 
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
