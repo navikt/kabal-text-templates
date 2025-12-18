@@ -48,8 +48,6 @@ server:
     mime-types: application/json
     min-response-size: 5KB
 
-navCallIdName: Nav-Callid
-
 management:
   endpoint:
     health:
@@ -66,12 +64,7 @@ management:
       export:
         enabled: true
   tracing:
-    baggage:
-      remote-fields:
-        - ${navCallIdName}
-      correlation:
-        fields:
-          - ${navCallIdName}
+    enabled: false
   health:
     redis:
       enabled: false
