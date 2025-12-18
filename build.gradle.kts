@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val mockkVersion = "1.14.7"
 val logstashVersion = "9.0"
-val testContainersVersion = "1.21.4"
+val testContainersVersion = "2.0.3"
 val springDocVersion = "3.0.0"
 val tokenValidationVersion = "5.0.30"
 val ehcacheVersion = "3.10.8"
@@ -31,6 +31,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-flyway")
 
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
@@ -41,7 +42,6 @@ dependencies {
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
 
-    implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")
     implementation("com.zaxxer:HikariCP")
     implementation("org.postgresql:postgresql")
@@ -53,9 +53,13 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
+    testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test") {
+        exclude(group = "org.junit.vintage")
+        exclude(group = "org.mockito")
+    }
     testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
-    testImplementation("org.testcontainers:junit-jupiter:$testContainersVersion")
-    testImplementation("org.testcontainers:postgresql:$testContainersVersion")
+    testImplementation("org.testcontainers:testcontainers-junit-jupiter:$testContainersVersion")
+    testImplementation("org.testcontainers:testcontainers-postgresql:$testContainersVersion")
     testImplementation("io.mockk:mockk:$mockkVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.mockito:mockito-inline:5.2.0")
