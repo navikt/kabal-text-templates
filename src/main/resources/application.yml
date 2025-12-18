@@ -3,8 +3,6 @@ spring:
     name: kabal-text-templates
   main:
     banner-mode: OFF
-  mvc:
-    throw-exception-if-no-handler-found: true
   lifecycle:
     timeout-per-shutdown-phase: 20s
   servlet:
@@ -20,7 +18,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   flyway:
     enabled: true
-    clean-on-validation-error: false
+    clean-disabled: true
     schemas: flyway_history_schema,klage
   sql:
     init:
