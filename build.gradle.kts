@@ -10,6 +10,7 @@ val ehcacheVersion = "3.10.8"
 
 repositories {
     mavenCentral()
+    maven("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
 }
 
 plugins {
