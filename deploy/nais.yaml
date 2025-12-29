@@ -38,19 +38,19 @@ spec:
     timeout: 2
   liveness:
     path: /internal/health
-    initialDelay: 20
-    timeout: 1
+    timeout: 3
     periodSeconds: 5
-    failureThreshold: 10
+    failureThreshold: 3
   readiness:
     path: /internal/health
-    initialDelay: 20
-    timeout: 1
+    timeout: 3
+    periodSeconds: 5
+    failureThreshold: 3
   resources:
     limits:
       memory: 4096Mi
     requests:
-      cpu: 600m
+      cpu: 20m
       memory: 2048Mi
   {{#if ingresses}}
   ingresses:
@@ -59,9 +59,9 @@ spec:
   {{/each}}
   {{/if}}
   replicas:
-    min: 2
-    max: 5
-    cpuThresholdPercentage: 80
+    min: {{replicasMin}}
+    max: {{replicasMax}}
+    cpuThresholdPercentage: 90
   prometheus:
     enabled: true
     path: /internal/prometheus

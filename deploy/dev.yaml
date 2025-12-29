@@ -8,6 +8,9 @@ db_ha: false
 db_type: POSTGRES_15
 tenant: trygdeetaten.no
 
+replicasMin: 2
+replicasMax: 2
+
 spring:
   datasource:
     hikari:
