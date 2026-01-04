@@ -1,7 +1,7 @@
 ingresses:
   - https://kabal-text-templates.intern.dev.nav.no
 externalHosts:
-springProfile: dev-gcp
+springProfile: dev
 db_tier: db-f1-micro
 db_size: 10
 db_ha: false
