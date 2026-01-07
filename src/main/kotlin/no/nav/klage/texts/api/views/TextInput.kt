@@ -1,7 +1,7 @@
 package no.nav.klage.texts.api.views
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.databind.JsonNode
+import tools.jackson.databind.JsonNode
 import java.util.*
 
 data class VersionInput(
