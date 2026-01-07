@@ -1,10 +1,10 @@
 package no.nav.klage.texts.service
 
-import com.fasterxml.jackson.module.kotlin.jsonMapper
 import no.nav.klage.texts.api.views.*
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
 import org.slf4j.Logger
+import tools.jackson.module.kotlin.jsonMapper
 import java.time.LocalDateTime
 import java.util.*
 

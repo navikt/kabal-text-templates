@@ -1,6 +1,5 @@
 package no.nav.klage.texts.api
 
-import com.fasterxml.jackson.module.kotlin.jsonMapper
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.*
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import tools.jackson.module.kotlin.jsonMapper
 import java.util.*
 
 @RestController
