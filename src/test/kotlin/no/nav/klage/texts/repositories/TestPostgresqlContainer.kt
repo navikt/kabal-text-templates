@@ -7,7 +7,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer
 
 abstract class TestPostgresqlContainer {
     companion object {
-        private val postgres = PostgreSQLContainer("postgres:15.4").apply {
+        private val postgres = PostgreSQLContainer("postgres:16.0").apply {
             waitingFor(HostPortWaitStrategy())
             withReuse(true)
             start()
