@@ -4,8 +4,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 val mockkVersion = "1.14.11"
 val logstashVersion = "9.0"
 val testContainersVersion = "2.0.5"
-val springDocVersion = "3.0.3"
-val tokenValidationVersion = "6.0.11"
+val springDocVersion = "3.1.0"
+val tokenValidationVersion = "6.0.12"
 val ehcacheVersion = "3.10.8"
 
 repositories {
