@@ -1,6 +1,10 @@
 package no.nav.klage.texts.config.problem
 
-import no.nav.klage.texts.exceptions.*
+import no.nav.klage.texts.exceptions.ClientErrorException
+import no.nav.klage.texts.exceptions.LanguageNotFoundException
+import no.nav.klage.texts.exceptions.MaltekstseksjonNotFoundException
+import no.nav.klage.texts.exceptions.MissingTilgangException
+import no.nav.klage.texts.exceptions.TextNotFoundException
 import no.nav.klage.texts.util.getLogger
 import org.springframework.http.HttpStatus
 import org.springframework.http.ProblemDetail
@@ -10,47 +14,37 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @RestControllerAdvice
 class ProblemHandlingControllerAdvice : ResponseEntityExceptionHandler() {
-
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val ourLogger = getLogger(javaClass.enclosingClass)
     }
 
     @ExceptionHandler
-    fun handleTextNotFound(
-        ex: TextNotFoundException,
-    ): ProblemDetail =
-        create(HttpStatus.NOT_FOUND, ex)
+    fun handleTextNotFound(ex: TextNotFoundException): ProblemDetail = create(httpStatus = HttpStatus.NOT_FOUND, ex = ex)
 
     @ExceptionHandler
-    fun handleLanguageNotFound(
-        ex: LanguageNotFoundException,
-    ): ProblemDetail =
-        create(HttpStatus.NOT_FOUND, ex)
+    fun handleLanguageNotFound(ex: LanguageNotFoundException): ProblemDetail = create(httpStatus = HttpStatus.NOT_FOUND, ex = ex)
 
     @ExceptionHandler
-    fun handleMaltekstseksjonNotFound(
-        ex: MaltekstseksjonNotFoundException,
-    ): ProblemDetail =
-        create(HttpStatus.NOT_FOUND, ex)
+    fun handleMaltekstseksjonNotFound(ex: MaltekstseksjonNotFoundException): ProblemDetail =
+        create(httpStatus = HttpStatus.NOT_FOUND, ex = ex)
 
     @ExceptionHandler
-    fun handleClientError(
-        ex: ClientErrorException,
-    ): ProblemDetail =
-        create(HttpStatus.BAD_REQUEST, ex)
+    fun handleClientError(ex: ClientErrorException): ProblemDetail = create(httpStatus = HttpStatus.BAD_REQUEST, ex = ex)
 
     @ExceptionHandler
-    fun handleMissingTilgang(ex: MissingTilgangException): ProblemDetail =
-        create(HttpStatus.FORBIDDEN, ex)
+    fun handleMissingTilgang(ex: MissingTilgangException): ProblemDetail = create(httpStatus = HttpStatus.FORBIDDEN, ex = ex)
 
-    private fun create(httpStatus: HttpStatus, ex: Exception): ProblemDetail {
+    private fun create(
+        httpStatus: HttpStatus,
+        ex: Exception,
+    ): ProblemDetail {
         val errorMessage = ex.message ?: "No error message available"
 
         logError(
             httpStatus = httpStatus,
             errorMessage = errorMessage,
-            exception = ex
+            exception = ex,
         )
 
         return ProblemDetail.forStatusAndDetail(httpStatus, errorMessage).apply {
@@ -58,7 +52,11 @@ class ProblemHandlingControllerAdvice : ResponseEntityExceptionHandler() {
         }
     }
 
-    private fun logError(httpStatus: HttpStatus, errorMessage: String, exception: Exception) {
+    private fun logError(
+        httpStatus: HttpStatus,
+        errorMessage: String,
+        exception: Exception,
+    ) {
         when {
             httpStatus.is5xxServerError -> {
                 ourLogger.error("Exception thrown to client: ${httpStatus.reasonPhrase}, $errorMessage", exception)

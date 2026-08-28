@@ -1,4 +1,4 @@
-package no.nav.klage.texts.api;
+package no.nav.klage.texts.api
 
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.exceptions.MissingTilgangException
@@ -17,7 +17,6 @@ class AdminController(
     private val tokenUtil: TokenUtil,
     private val adminService: AdminService,
 ) {
-
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val logger = getLogger(javaClass.enclosingClass)

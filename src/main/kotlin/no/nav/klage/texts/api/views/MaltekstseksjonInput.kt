@@ -1,7 +1,7 @@
 package no.nav.klage.texts.api.views
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import java.util.*
+import java.util.UUID
 
 data class MaltekstseksjonInput(
     val id: UUID? = null,
@@ -24,21 +24,21 @@ data class UpdateMaltekstseksjonInput(
 )
 
 data class TextIdListInput(
-    val textIdList: List<String>
+    val textIdList: List<String>,
 )
 
 data class UtfallIdListInput(
-    val utfallIdList: Set<String>
+    val utfallIdList: Set<String>,
 )
 
 data class EnhetIdListInput(
-    val enhetIdList: Set<String>
+    val enhetIdList: Set<String>,
 )
 
 data class TemplateSectionIdListInput(
-    val templateSectionIdList: Set<String>
+    val templateSectionIdList: Set<String>,
 )
 
 data class YtelseHjemmelIdListInput(
-    val ytelseHjemmelIdList: Set<String>
+    val ytelseHjemmelIdList: Set<String>,
 )

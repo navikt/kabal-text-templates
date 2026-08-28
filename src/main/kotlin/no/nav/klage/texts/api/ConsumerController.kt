@@ -2,7 +2,11 @@ package no.nav.klage.texts.api
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import no.nav.klage.texts.api.views.*
+import no.nav.klage.texts.api.views.ConsumerMaltekstseksjonView
+import no.nav.klage.texts.api.views.ConsumerTextView
+import no.nav.klage.texts.api.views.Language
+import no.nav.klage.texts.api.views.SearchMaltekstseksjonQueryParams
+import no.nav.klage.texts.api.views.SearchTextQueryParams
 import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_MALTEKSTSEKSJON_SEARCH
 import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_MALTEKSTSEKSJON_TEXTS
 import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_TEXT
@@ -23,7 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import tools.jackson.module.kotlin.jsonMapper
-import java.util.*
+import java.util.UUID
 
 @RestController
 @Tag(name = "kabal-text-templates", description = "API for text templates")
@@ -34,7 +38,6 @@ class ConsumerController(
     private val maltekstseksjonService: MaltekstseksjonService,
     private val tokenUtil: TokenUtil,
 ) {
-
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val logger = getLogger(javaClass.enclosingClass)
@@ -43,12 +46,12 @@ class ConsumerController(
     @Cacheable(CONSUMER_TEXT_SEARCH)
     @Operation(
         summary = "Search texts",
-        description = "Search texts"
+        description = "Search texts",
     )
     @GetMapping("/texts/{language}")
     fun searchTexts(
         @PathVariable("language") language: Language,
-        searchTextQueryParams: SearchTextQueryParams
+        searchTextQueryParams: SearchTextQueryParams,
     ): List<ConsumerTextView> {
         logMethodDetails(
             methodName = ::searchTexts.name,
@@ -60,13 +63,14 @@ class ConsumerController(
         logger.debug("searchTexts called with params {}", searchTextQueryParams)
 
         val textVersions =
-            textService.searchPublishedTextVersions(
-                textType = searchTextQueryParams.textType,
-                utfallIdList = searchTextQueryParams.utfallIdList ?: emptyList(),
-                enhetIdList = searchTextQueryParams.enhetIdList ?: emptyList(),
-                templateSectionIdList = searchTextQueryParams.templateSectionIdList ?: emptyList(),
-                ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
-            ).sortedByDescending { it.created }
+            textService
+                .searchPublishedTextVersions(
+                    textType = searchTextQueryParams.textType,
+                    utfallIdList = searchTextQueryParams.utfallIdList ?: emptyList(),
+                    enhetIdList = searchTextQueryParams.enhetIdList ?: emptyList(),
+                    templateSectionIdList = searchTextQueryParams.templateSectionIdList ?: emptyList(),
+                    ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
+                ).sortedByDescending { it.created }
 
         return textVersions.mapNotNull {
             mapToConsumerTextView(
@@ -79,12 +83,10 @@ class ConsumerController(
     @Cacheable(CONSUMER_MALTEKSTSEKSJON_SEARCH)
     @Operation(
         summary = "Search maltekstseksjoner",
-        description = "Search maltekstseksjoner"
+        description = "Search maltekstseksjoner",
     )
     @GetMapping("/maltekstseksjoner")
-    fun searchMalteksts(
-        searchMaltekstseksjonQueryParams: SearchMaltekstseksjonQueryParams
-    ): List<ConsumerMaltekstseksjonView> {
+    fun searchMalteksts(searchMaltekstseksjonQueryParams: SearchMaltekstseksjonQueryParams): List<ConsumerMaltekstseksjonView> {
         logMethodDetails(
             methodName = ::searchMalteksts.name,
             innloggetIdent = tokenUtil.getIdent(),
@@ -95,13 +97,14 @@ class ConsumerController(
         logger.debug("searchMalteksts called with params {}", searchMaltekstseksjonQueryParams)
 
         val maltekstseksjonsVersions =
-            maltekstseksjonService.searchPublishedMaltekstseksjoner(
-                textIdList = searchMaltekstseksjonQueryParams.textIdList ?: emptyList(),
-                utfallIdList = searchMaltekstseksjonQueryParams.utfallIdList ?: emptyList(),
-                enhetIdList = searchMaltekstseksjonQueryParams.enhetIdList ?: emptyList(),
-                templateSectionIdList = searchMaltekstseksjonQueryParams.templateSectionIdList ?: emptyList(),
-                ytelseHjemmelIdList = searchMaltekstseksjonQueryParams.ytelseHjemmelIdList ?: emptyList(),
-            ).sortedByDescending { it.created }
+            maltekstseksjonService
+                .searchPublishedMaltekstseksjoner(
+                    textIdList = searchMaltekstseksjonQueryParams.textIdList ?: emptyList(),
+                    utfallIdList = searchMaltekstseksjonQueryParams.utfallIdList ?: emptyList(),
+                    enhetIdList = searchMaltekstseksjonQueryParams.enhetIdList ?: emptyList(),
+                    templateSectionIdList = searchMaltekstseksjonQueryParams.templateSectionIdList ?: emptyList(),
+                    ytelseHjemmelIdList = searchMaltekstseksjonQueryParams.ytelseHjemmelIdList ?: emptyList(),
+                ).sortedByDescending { it.created }
 
         return maltekstseksjonsVersions.map {
             mapToConsumerMaltekstView(it)
@@ -111,7 +114,7 @@ class ConsumerController(
     @Cacheable(CONSUMER_MALTEKSTSEKSJON_TEXTS)
     @Operation(
         summary = "Get published maltekstseksjon texts",
-        description = "Get published maltekstseksjon texts"
+        description = "Get published maltekstseksjon texts",
     )
     @GetMapping("/maltekstseksjoner/{maltekstseksjonId}/texts/{language}")
     fun getMaltekstseksjonTexts(
@@ -136,7 +139,7 @@ class ConsumerController(
     @Cacheable(CONSUMER_TEXT)
     @Operation(
         summary = "Get published text version",
-        description = "Get published text version"
+        description = "Get published text version",
     )
     @GetMapping("/texts/{textId}/{language}")
     fun getText(
@@ -155,34 +158,59 @@ class ConsumerController(
         ) ?: throw LanguageNotFoundException("Fant ikke tekst for språk $language")
     }
 
-    private fun mapToConsumerTextView(textVersion: TextVersion, language: Language): ConsumerTextView? {
+    private fun mapToConsumerTextView(
+        textVersion: TextVersion,
+        language: Language,
+    ): ConsumerTextView? {
         when (language) {
-            Language.NN -> if (textVersion.richTextNN == null && textVersion.plainTextNN == null) {
-                return null
+            Language.NN -> {
+                if (textVersion.richTextNN == null && textVersion.plainTextNN == null) {
+                    return null
+                }
             }
 
-            Language.NB -> if (textVersion.richTextNB == null && textVersion.plainTextNB == null) {
-                return null
+            Language.NB -> {
+                if (textVersion.richTextNB == null && textVersion.plainTextNB == null) {
+                    return null
+                }
             }
 
-            Language.UNTRANSLATED -> if (textVersion.richTextUntranslated == null) {
-                return null
+            Language.UNTRANSLATED -> {
+                if (textVersion.richTextUntranslated == null) {
+                    return null
+                }
             }
         }
         return ConsumerTextView(
             id = textVersion.text.id,
             title = textVersion.title,
             textType = textVersion.textType,
-            richText = when (language) {
-                Language.NN -> if (textVersion.richTextNN != null) jsonMapper().readTree(textVersion.richTextNN) else null
-                Language.NB -> if (textVersion.richTextNB != null) jsonMapper().readTree(textVersion.richTextNB) else null
-                Language.UNTRANSLATED -> if (textVersion.richTextUntranslated != null) jsonMapper().readTree(textVersion.richTextUntranslated) else null
-            },
-            plainText = when (language) {
-                Language.NN -> textVersion.plainTextNN
-                Language.NB -> textVersion.plainTextNB
-                Language.UNTRANSLATED -> null
-            },
+            richText =
+                when (language) {
+                    Language.NN -> {
+                        if (textVersion.richTextNN != null) jsonMapper().readTree(textVersion.richTextNN) else null
+                    }
+
+                    Language.NB -> {
+                        if (textVersion.richTextNB != null) jsonMapper().readTree(textVersion.richTextNB) else null
+                    }
+
+                    Language.UNTRANSLATED -> {
+                        if (textVersion.richTextUntranslated !=
+                            null
+                        ) {
+                            jsonMapper().readTree(textVersion.richTextUntranslated)
+                        } else {
+                            null
+                        }
+                    }
+                },
+            plainText =
+                when (language) {
+                    Language.NN -> textVersion.plainTextNN
+                    Language.NB -> textVersion.plainTextNB
+                    Language.UNTRANSLATED -> null
+                },
             utfallIdList = textVersion.utfallIdList,
             enhetIdList = textVersion.enhetIdList,
             templateSectionIdList = textVersion.templateSectionIdList,
@@ -201,5 +229,4 @@ class ConsumerController(
             templateSectionIdList = maltekstseksjonVersion.templateSectionIdList,
             ytelseHjemmelIdList = maltekstseksjonVersion.ytelseHjemmelIdList,
         )
-
 }

@@ -1,6 +1,9 @@
 package no.nav.klage.texts.util
 
-fun testSets(queryValues: List<String>, dbValues: Set<String>): Boolean {
+fun testSets(
+    queryValues: List<String>,
+    dbValues: Set<String>,
+): Boolean {
     if (queryValues.contains("NONE") && queryValues.size == 1 && dbValues.isEmpty()) {
         return true
     }
@@ -9,13 +12,15 @@ fun testSets(queryValues: List<String>, dbValues: Set<String>): Boolean {
         return true
     }
 
-    val queryValueSets = queryValues.map { valueString ->
-        valueString.split(":").toSet()
-    }
+    val queryValueSets =
+        queryValues.map { valueString ->
+            valueString.split(":").toSet()
+        }
 
-    val dbValueSets = dbValues.map { dbString ->
-        dbString.split(":").toSet()
-    }
+    val dbValueSets =
+        dbValues.map { dbString ->
+            dbString.split(":").toSet()
+        }
 
     return dbValueSets.any { dbValueSet ->
         queryValueSets.any { queryValueSet ->
@@ -24,7 +29,10 @@ fun testSets(queryValues: List<String>, dbValues: Set<String>): Boolean {
     }
 }
 
-fun testCompositeValues(queryValues: List<String>, dbValues: Set<String>): Boolean {
+fun testCompositeValues(
+    queryValues: List<String>,
+    dbValues: Set<String>,
+): Boolean {
     if (queryValues.contains("NONE") && queryValues.size == 1 && dbValues.isEmpty()) {
         return true
     }
@@ -35,7 +43,7 @@ fun testCompositeValues(queryValues: List<String>, dbValues: Set<String>): Boole
 
     for (query in queryValues) {
         for (dbValue in dbValues) {
-            val regex = Regex(query.replace("*", ".*"))
+            val regex = Regex(query.replace(oldValue = "*", newValue = ".*"))
             if (dbValue.matches(regex)) {
                 return true
             }

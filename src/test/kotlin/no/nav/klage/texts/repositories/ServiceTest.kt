@@ -18,13 +18,11 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager
 import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDateTime
-import java.util.*
-
+import java.util.UUID
 
 @ActiveProfiles("local")
 @DataJpaTest
-class ServiceTest: TestPostgresqlContainer() {
-
+class ServiceTest : TestPostgresqlContainer() {
     @Autowired
     lateinit var maltekstseksjonRepository: MaltekstseksjonRepository
 
@@ -50,31 +48,35 @@ class ServiceTest: TestPostgresqlContainer() {
 
     @BeforeEach
     fun setup() {
-        textService = TextService(
-            textRepository = textRepository,
-            textVersionRepository = textVersionRepository,
-            maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
-            searchTextService = mockk(),
-            publishService = PublishService(
-                maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
+        textService =
+            TextService(
+                textRepository = textRepository,
                 textVersionRepository = textVersionRepository,
-            ),
-            textVersionRepositoryStreamingFacade = mockk(),
-        )
-
-        maltekstseksjonService = MaltekstseksjonService(
-            maltekstseksjonRepository = maltekstseksjonRepository,
-            maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
-            textRepository = textRepository,
-            textService = textService,
-            searchMaltekstseksjonService = mockk(),
-            publishService = PublishService(
                 maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
-                textVersionRepository = textVersionRepository
-            ),
-            textVersionRepositoryStreamingFacade = mockk(),
-            maltekstseksjonVersionRepositoryStreamingFacade = mockk(),
-        )
+                searchTextService = mockk(),
+                publishService =
+                    PublishService(
+                        maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
+                        textVersionRepository = textVersionRepository,
+                    ),
+                textVersionRepositoryStreamingFacade = mockk(),
+            )
+
+        maltekstseksjonService =
+            MaltekstseksjonService(
+                maltekstseksjonRepository = maltekstseksjonRepository,
+                maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
+                textRepository = textRepository,
+                textService = textService,
+                searchMaltekstseksjonService = mockk(),
+                publishService =
+                    PublishService(
+                        maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
+                        textVersionRepository = textVersionRepository,
+                    ),
+                textVersionRepositoryStreamingFacade = mockk(),
+                maltekstseksjonVersionRepositoryStreamingFacade = mockk(),
+            )
     }
 
     @AfterEach
@@ -141,11 +143,12 @@ class ServiceTest: TestPostgresqlContainer() {
         assertThat(maltekstseksjonVersions.find { !it.published }!!.texts).hasSize(2)
         assertThat(maltekstseksjonVersions.find { it.published }!!.texts).hasSize(2)
 
-        val result = textService.unpublishText(
-            textId = currentTextID,
-            saksbehandlerIdent = "abc",
-            saksbehandlerName = "abc",
-        )
+        val result =
+            textService.unpublishText(
+                textId = currentTextID,
+                saksbehandlerIdent = "abc",
+                saksbehandlerName = "abc",
+            )
 
         testEntityManager.flush()
         testEntityManager.clear()
@@ -155,7 +158,12 @@ class ServiceTest: TestPostgresqlContainer() {
         assertThat(maltekstseksjonVersions).hasSize(3)
 
         assertThat(maltekstseksjonVersions.map { it.maltekstseksjon.id }.toSet())
-            .containsAll(result.maltekstseksjonVersions.flatMap { it.maltekstseksjonVersions }.map { it.id }.toSet())
+            .containsAll(
+                result.maltekstseksjonVersions
+                    .flatMap { it.maltekstseksjonVersions }
+                    .map { it.id }
+                    .toSet(),
+            )
 
         assertThat(maltekstseksjonVersions.find { !it.published && it.publishedDateTime != null }!!.texts).hasSize(2)
         assertThat(maltekstseksjonVersions.find { it.published }!!.texts).hasSize(1)
@@ -172,20 +180,22 @@ class ServiceTest: TestPostgresqlContainer() {
 
         val now = LocalDateTime.now()
 
-        val text1 = Text(
-            created = now,
-            modified = now,
-            createdBy = "abc",
-            createdByName = "abc",
-            maltekstseksjonVersions = mutableListOf()
-        )
-        val text2 = Text(
-            created = now,
-            modified = now,
-            createdBy = "abc",
-            createdByName = "abc",
-            maltekstseksjonVersions = mutableListOf()
-        )
+        val text1 =
+            Text(
+                created = now,
+                modified = now,
+                createdBy = "abc",
+                createdByName = "abc",
+                maltekstseksjonVersions = mutableListOf(),
+            )
+        val text2 =
+            Text(
+                created = now,
+                modified = now,
+                createdBy = "abc",
+                createdByName = "abc",
+                maltekstseksjonVersions = mutableListOf(),
+            )
 
         textRepository.save(text1)
         textRepository.save(text2)
@@ -212,55 +222,62 @@ class ServiceTest: TestPostgresqlContainer() {
         testEntityManager.clear()
 
         assertThat(
-            maltekstseksjonVersionRepository.findByPublishedDateTimeIsNullAndMaltekstseksjonId(
-                currentMaltekstseksjonID
-            )!!.texts
+            maltekstseksjonVersionRepository
+                .findByPublishedDateTimeIsNullAndMaltekstseksjonId(
+                    currentMaltekstseksjonID,
+                )!!
+                .texts,
         ).containsExactly(text2, text1)
     }
 
     private fun setupDataForPublishedMaltekstseksjon() {
         val now = LocalDateTime.now()
 
-        val maltekstseksjon = testEntityManager.persist(
-            Maltekstseksjon(
-                created = now,
-                modified = now,
-                createdBy = "abc",
-                createdByName = "abc",
+        val maltekstseksjon =
+            testEntityManager.persist(
+                Maltekstseksjon(
+                    created = now,
+                    modified = now,
+                    createdBy = "abc",
+                    createdByName = "abc",
+                ),
             )
-        )
 
-        val textVersion1 = textService.createNewText(
-            textInput = TextInput(
-                title = "",
-                textType = "",
-                richText = null,
-                plainText = null,
-                version = null,
-                utfallIdList = setOf(),
-                enhetIdList = setOf(),
-                templateSectionIdList = setOf(),
-                ytelseHjemmelIdList = setOf(),
-            ),
-            saksbehandlerIdent = "abc",
-            saksbehandlerName = "abc",
-        )
+        val textVersion1 =
+            textService.createNewText(
+                textInput =
+                    TextInput(
+                        title = "",
+                        textType = "",
+                        richText = null,
+                        plainText = null,
+                        version = null,
+                        utfallIdList = setOf(),
+                        enhetIdList = setOf(),
+                        templateSectionIdList = setOf(),
+                        ytelseHjemmelIdList = setOf(),
+                    ),
+                saksbehandlerIdent = "abc",
+                saksbehandlerName = "abc",
+            )
 
-        val textVersion2 = textService.createNewText(
-            textInput = TextInput(
-                title = "",
-                textType = "",
-                richText = null,
-                plainText = null,
-                version = null,
-                utfallIdList = setOf(),
-                enhetIdList = setOf(),
-                templateSectionIdList = setOf(),
-                ytelseHjemmelIdList = setOf(),
-            ),
-            saksbehandlerIdent = "abc",
-            saksbehandlerName = "abc",
-        )
+        val textVersion2 =
+            textService.createNewText(
+                textInput =
+                    TextInput(
+                        title = "",
+                        textType = "",
+                        richText = null,
+                        plainText = null,
+                        version = null,
+                        utfallIdList = setOf(),
+                        enhetIdList = setOf(),
+                        templateSectionIdList = setOf(),
+                        ytelseHjemmelIdList = setOf(),
+                    ),
+                saksbehandlerIdent = "abc",
+                saksbehandlerName = "abc",
+            )
 
         textService.publishTextVersion(textId = textVersion2.id, saksbehandlerIdent = "abc", saksbehandlerName = "abc")
 
@@ -269,29 +286,31 @@ class ServiceTest: TestPostgresqlContainer() {
         val text1 = textRepository.findById(textVersion1.id).get()
         val text2 = textRepository.findById(textVersion2.id).get()
 
-        val maltekstseksjonVersionPublished = MaltekstseksjonVersion(
-            title = "title",
-            maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(text1, text2),
-            publishedDateTime = now,
-            publishedBy = "noen",
-            publishedByName = "noen",
-            published = true,
-            utfallIdList = setOf("1"),
-            enhetIdList = setOf("1"),
-            templateSectionIdList = setOf("1"),
-            ytelseHjemmelIdList = setOf("1"),
-            editors = mutableSetOf(
-                Editor(
-                    navIdent = "saksbehandlerIdent",
-                    name = "saksbehandlerName",
-                    created = now,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
-                )
-            ),
-            created = now,
-            modified = now,
-        )
+        val maltekstseksjonVersionPublished =
+            MaltekstseksjonVersion(
+                title = "title",
+                maltekstseksjon = maltekstseksjon,
+                texts = mutableListOf(text1, text2),
+                publishedDateTime = now,
+                publishedBy = "noen",
+                publishedByName = "noen",
+                published = true,
+                utfallIdList = setOf("1"),
+                enhetIdList = setOf("1"),
+                templateSectionIdList = setOf("1"),
+                ytelseHjemmelIdList = setOf("1"),
+                editors =
+                    mutableSetOf(
+                        Editor(
+                            navIdent = "saksbehandlerIdent",
+                            name = "saksbehandlerName",
+                            created = now,
+                            changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
+                        ),
+                    ),
+                created = now,
+                modified = now,
+            )
 
         testEntityManager.persist(maltekstseksjonVersionPublished)
 
@@ -300,7 +319,7 @@ class ServiceTest: TestPostgresqlContainer() {
             textId = currentTextID,
             versionInput = null,
             saksbehandlerIdent = "abc",
-            saksbehandlerName = "abc"
+            saksbehandlerName = "abc",
         )
 
         testEntityManager.flush()
@@ -310,59 +329,63 @@ class ServiceTest: TestPostgresqlContainer() {
     private fun setupDataForOnlyDraftMaltekstseksjon() {
         val now = LocalDateTime.now()
 
-        val maltekstseksjon = testEntityManager.persist(
-            Maltekstseksjon(
-                created = now,
-                modified = now,
-                createdBy = "abc",
-                createdByName = "abc",
+        val maltekstseksjon =
+            testEntityManager.persist(
+                Maltekstseksjon(
+                    created = now,
+                    modified = now,
+                    createdBy = "abc",
+                    createdByName = "abc",
+                ),
             )
-        )
 
-        val textVersion = textService.createNewText(
-            textInput = TextInput(
-                title = "",
-                textType = "",
-                version = null,
-                richText = null,
-                plainText = null,
-                utfallIdList = setOf(),
-                enhetIdList = setOf(),
-                templateSectionIdList = setOf(),
-                ytelseHjemmelIdList = setOf(),
-            ),
-            saksbehandlerIdent = "abc",
-            saksbehandlerName = "abc",
-        )
+        val textVersion =
+            textService.createNewText(
+                textInput =
+                    TextInput(
+                        title = "",
+                        textType = "",
+                        version = null,
+                        richText = null,
+                        plainText = null,
+                        utfallIdList = setOf(),
+                        enhetIdList = setOf(),
+                        templateSectionIdList = setOf(),
+                        ytelseHjemmelIdList = setOf(),
+                    ),
+                saksbehandlerIdent = "abc",
+                saksbehandlerName = "abc",
+            )
 
         currentTextID = textVersion.id
 
         val text = textRepository.findById(textVersion.id).get()
 
-
-        val maltekstseksjonVersionDraft = MaltekstseksjonVersion(
-            title = "title",
-            maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(text),
-            publishedDateTime = null,
-            publishedBy = null,
-            publishedByName = null,
-            published = false,
-            utfallIdList = setOf("1"),
-            enhetIdList = setOf("1"),
-            templateSectionIdList = setOf("1"),
-            ytelseHjemmelIdList = setOf("1"),
-            editors = mutableSetOf(
-                Editor(
-                    navIdent = "saksbehandlerIdent",
-                    name = "saksbehandlerName",
-                    created = now,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
-                )
-            ),
-            created = now,
-            modified = now,
-        )
+        val maltekstseksjonVersionDraft =
+            MaltekstseksjonVersion(
+                title = "title",
+                maltekstseksjon = maltekstseksjon,
+                texts = mutableListOf(text),
+                publishedDateTime = null,
+                publishedBy = null,
+                publishedByName = null,
+                published = false,
+                utfallIdList = setOf("1"),
+                enhetIdList = setOf("1"),
+                templateSectionIdList = setOf("1"),
+                ytelseHjemmelIdList = setOf("1"),
+                editors =
+                    mutableSetOf(
+                        Editor(
+                            navIdent = "saksbehandlerIdent",
+                            name = "saksbehandlerName",
+                            created = now,
+                            changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
+                        ),
+                    ),
+                created = now,
+                modified = now,
+            )
 
         testEntityManager.persist(maltekstseksjonVersionDraft)
 
@@ -381,46 +404,51 @@ class ServiceTest: TestPostgresqlContainer() {
     private fun setupDataForDraftAndPublishedMaltekstseksjon() {
         var someDateTime = LocalDateTime.now().minusDays(10)
 
-        val maltekstseksjon = testEntityManager.persist(
-            Maltekstseksjon(
-                created = someDateTime,
-                modified = someDateTime,
-                createdBy = "abc",
-                createdByName = "abc",
+        val maltekstseksjon =
+            testEntityManager.persist(
+                Maltekstseksjon(
+                    created = someDateTime,
+                    modified = someDateTime,
+                    createdBy = "abc",
+                    createdByName = "abc",
+                ),
             )
-        )
 
-        val textVersion1 = textService.createNewText(
-            textInput = TextInput(
-                title = "",
-                textType = "",
-                richText = null,
-                plainText = null,
-                version = null,
-                utfallIdList = setOf(),
-                enhetIdList = setOf(),
-                templateSectionIdList = setOf(),
-                ytelseHjemmelIdList = setOf(),
-            ),
-            saksbehandlerIdent = "abc",
-            saksbehandlerName = "abc",
-        )
+        val textVersion1 =
+            textService.createNewText(
+                textInput =
+                    TextInput(
+                        title = "",
+                        textType = "",
+                        richText = null,
+                        plainText = null,
+                        version = null,
+                        utfallIdList = setOf(),
+                        enhetIdList = setOf(),
+                        templateSectionIdList = setOf(),
+                        ytelseHjemmelIdList = setOf(),
+                    ),
+                saksbehandlerIdent = "abc",
+                saksbehandlerName = "abc",
+            )
 
-        val textVersion2 = textService.createNewText(
-            textInput = TextInput(
-                title = "",
-                textType = "",
-                richText = null,
-                plainText = null,
-                version = null,
-                utfallIdList = setOf(),
-                enhetIdList = setOf(),
-                templateSectionIdList = setOf(),
-                ytelseHjemmelIdList = setOf(),
-            ),
-            saksbehandlerIdent = "abc",
-            saksbehandlerName = "abc",
-        )
+        val textVersion2 =
+            textService.createNewText(
+                textInput =
+                    TextInput(
+                        title = "",
+                        textType = "",
+                        richText = null,
+                        plainText = null,
+                        version = null,
+                        utfallIdList = setOf(),
+                        enhetIdList = setOf(),
+                        templateSectionIdList = setOf(),
+                        ytelseHjemmelIdList = setOf(),
+                    ),
+                saksbehandlerIdent = "abc",
+                saksbehandlerName = "abc",
+            )
 
         textService.publishTextVersion(textId = textVersion2.id, saksbehandlerIdent = "abc", saksbehandlerName = "abc")
 
@@ -431,55 +459,59 @@ class ServiceTest: TestPostgresqlContainer() {
         val text1 = textRepository.findById(textVersion1.id).get()
         val text2 = textRepository.findById(textVersion2.id).get()
 
-        val maltekstseksjonVersionPublished = MaltekstseksjonVersion(
-            title = "title",
-            maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(text1, text2),
-            publishedDateTime = someDateTime,
-            publishedBy = "noen",
-            publishedByName = "noen",
-            published = true,
-            utfallIdList = setOf("1"),
-            enhetIdList = setOf("1"),
-            templateSectionIdList = setOf("1"),
-            ytelseHjemmelIdList = setOf("1"),
-            editors = mutableSetOf(
-                Editor(
-                    navIdent = "saksbehandlerIdent",
-                    name = "saksbehandlerName",
-                    created = someDateTime,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
-                )
-            ),
-            created = someDateTime,
-            modified = someDateTime,
-        )
+        val maltekstseksjonVersionPublished =
+            MaltekstseksjonVersion(
+                title = "title",
+                maltekstseksjon = maltekstseksjon,
+                texts = mutableListOf(text1, text2),
+                publishedDateTime = someDateTime,
+                publishedBy = "noen",
+                publishedByName = "noen",
+                published = true,
+                utfallIdList = setOf("1"),
+                enhetIdList = setOf("1"),
+                templateSectionIdList = setOf("1"),
+                ytelseHjemmelIdList = setOf("1"),
+                editors =
+                    mutableSetOf(
+                        Editor(
+                            navIdent = "saksbehandlerIdent",
+                            name = "saksbehandlerName",
+                            created = someDateTime,
+                            changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
+                        ),
+                    ),
+                created = someDateTime,
+                modified = someDateTime,
+            )
 
         someDateTime = LocalDateTime.now().minusDays(8)
 
-        val maltekstseksjonVersionDraft = MaltekstseksjonVersion(
-            title = "new title",
-            maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(text1, text2),
-            publishedDateTime = null,
-            publishedBy = null,
-            publishedByName = null,
-            published = false,
-            utfallIdList = setOf("1", "2"),
-            enhetIdList = setOf("1"),
-            templateSectionIdList = setOf("1"),
-            ytelseHjemmelIdList = setOf("1"),
-            editors = mutableSetOf(
-                Editor(
-                    navIdent = "saksbehandlerIdent",
-                    name = "saksbehandlerName",
-                    created = someDateTime,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
-                )
-            ),
-            created = someDateTime,
-            modified = someDateTime,
-        )
+        val maltekstseksjonVersionDraft =
+            MaltekstseksjonVersion(
+                title = "new title",
+                maltekstseksjon = maltekstseksjon,
+                texts = mutableListOf(text1, text2),
+                publishedDateTime = null,
+                publishedBy = null,
+                publishedByName = null,
+                published = false,
+                utfallIdList = setOf("1", "2"),
+                enhetIdList = setOf("1"),
+                templateSectionIdList = setOf("1"),
+                ytelseHjemmelIdList = setOf("1"),
+                editors =
+                    mutableSetOf(
+                        Editor(
+                            navIdent = "saksbehandlerIdent",
+                            name = "saksbehandlerName",
+                            created = someDateTime,
+                            changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
+                        ),
+                    ),
+                created = someDateTime,
+                modified = someDateTime,
+            )
 
         testEntityManager.persist(maltekstseksjonVersionPublished)
         testEntityManager.persist(maltekstseksjonVersionDraft)
@@ -499,68 +531,73 @@ class ServiceTest: TestPostgresqlContainer() {
     private fun setupDataForUpdatingTextList() {
         var someDateTime = LocalDateTime.now().minusDays(10)
 
-        val maltekstseksjon = testEntityManager.persist(
-            Maltekstseksjon(
-                created = someDateTime,
-                modified = someDateTime,
-                createdBy = "abc",
-                createdByName = "abc"
+        val maltekstseksjon =
+            testEntityManager.persist(
+                Maltekstseksjon(
+                    created = someDateTime,
+                    modified = someDateTime,
+                    createdBy = "abc",
+                    createdByName = "abc",
+                ),
             )
-        )
 
         currentMaltekstseksjonID = maltekstseksjon.id
 
         someDateTime = LocalDateTime.now().minusDays(9)
 
-        val maltekstseksjonVersionPublished = MaltekstseksjonVersion(
-            title = "title",
-            maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(),
-            publishedDateTime = someDateTime,
-            publishedBy = "noen",
-            publishedByName = "noen",
-            published = true,
-            utfallIdList = setOf("1"),
-            enhetIdList = setOf("1"),
-            templateSectionIdList = setOf("1"),
-            ytelseHjemmelIdList = setOf("1"),
-            editors = mutableSetOf(
-                Editor(
-                    navIdent = "saksbehandlerIdent",
-                    name = "saksbehandlerName",
-                    created = someDateTime,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
-                )
-            ),
-            created = someDateTime,
-            modified = someDateTime,
-        )
+        val maltekstseksjonVersionPublished =
+            MaltekstseksjonVersion(
+                title = "title",
+                maltekstseksjon = maltekstseksjon,
+                texts = mutableListOf(),
+                publishedDateTime = someDateTime,
+                publishedBy = "noen",
+                publishedByName = "noen",
+                published = true,
+                utfallIdList = setOf("1"),
+                enhetIdList = setOf("1"),
+                templateSectionIdList = setOf("1"),
+                ytelseHjemmelIdList = setOf("1"),
+                editors =
+                    mutableSetOf(
+                        Editor(
+                            navIdent = "saksbehandlerIdent",
+                            name = "saksbehandlerName",
+                            created = someDateTime,
+                            changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
+                        ),
+                    ),
+                created = someDateTime,
+                modified = someDateTime,
+            )
 
         someDateTime = LocalDateTime.now().minusDays(8)
 
-        val maltekstseksjonVersionDraft = MaltekstseksjonVersion(
-            title = "new title",
-            maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(),
-            publishedDateTime = null,
-            publishedBy = null,
-            publishedByName = null,
-            published = false,
-            utfallIdList = setOf("1", "2"),
-            enhetIdList = setOf("1"),
-            templateSectionIdList = setOf("1"),
-            ytelseHjemmelIdList = setOf("1"),
-            editors = mutableSetOf(
-                Editor(
-                    navIdent = "saksbehandlerIdent",
-                    name = "saksbehandlerName",
-                    created = someDateTime,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
-                )
-            ),
-            created = someDateTime,
-            modified = someDateTime,
-        )
+        val maltekstseksjonVersionDraft =
+            MaltekstseksjonVersion(
+                title = "new title",
+                maltekstseksjon = maltekstseksjon,
+                texts = mutableListOf(),
+                publishedDateTime = null,
+                publishedBy = null,
+                publishedByName = null,
+                published = false,
+                utfallIdList = setOf("1", "2"),
+                enhetIdList = setOf("1"),
+                templateSectionIdList = setOf("1"),
+                ytelseHjemmelIdList = setOf("1"),
+                editors =
+                    mutableSetOf(
+                        Editor(
+                            navIdent = "saksbehandlerIdent",
+                            name = "saksbehandlerName",
+                            created = someDateTime,
+                            changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
+                        ),
+                    ),
+                created = someDateTime,
+                modified = someDateTime,
+            )
 
         testEntityManager.persist(maltekstseksjonVersionPublished)
         testEntityManager.persist(maltekstseksjonVersionDraft)
@@ -568,5 +605,4 @@ class ServiceTest: TestPostgresqlContainer() {
         testEntityManager.flush()
         testEntityManager.clear()
     }
-
 }

@@ -6,7 +6,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.io.Serializable
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @Entity
 @Table(name = "maltekstseksjon", schema = "klage")
@@ -33,8 +33,5 @@ class Maltekstseksjon(
 
     override fun hashCode() = id.hashCode()
 
-    override fun toString(): String {
-        return "Maltekstseksjon(id=$id, created=$created, modified=$modified, createdBy=$createdBy)"
-    }
-
+    override fun toString(): String = "Maltekstseksjon(id=$id, created=$created, modified=$modified, createdBy=$createdBy)"
 }

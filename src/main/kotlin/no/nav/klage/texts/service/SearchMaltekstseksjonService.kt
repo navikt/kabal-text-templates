@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class SearchMaltekstseksjonService {
-
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val logger = getLogger(javaClass.enclosingClass)
@@ -21,14 +20,12 @@ class SearchMaltekstseksjonService {
         enhetIdList: List<String>,
         templateSectionIdList: List<String>,
         ytelseHjemmelIdList: List<String>,
-    ): List<MaltekstseksjonVersion> {
-
-        return maltekstseksjonVersions.filter { maltekstseksjonVersion ->
-            testSets(textIdList, maltekstseksjonVersion.texts.map { it.id.toString() }.toSet()) &&
-            testSets(utfallIdList, maltekstseksjonVersion.utfallIdList) &&
-            testSets(enhetIdList, maltekstseksjonVersion.enhetIdList) &&
-            testCompositeValues(templateSectionIdList, maltekstseksjonVersion.templateSectionIdList) &&
-            testCompositeValues(ytelseHjemmelIdList, maltekstseksjonVersion.ytelseHjemmelIdList)
+    ): List<MaltekstseksjonVersion> =
+        maltekstseksjonVersions.filter { maltekstseksjonVersion ->
+            testSets(queryValues = textIdList, dbValues = maltekstseksjonVersion.texts.map { it.id.toString() }.toSet()) &&
+                testSets(queryValues = utfallIdList, dbValues = maltekstseksjonVersion.utfallIdList) &&
+                testSets(queryValues = enhetIdList, dbValues = maltekstseksjonVersion.enhetIdList) &&
+                testCompositeValues(queryValues = templateSectionIdList, dbValues = maltekstseksjonVersion.templateSectionIdList) &&
+                testCompositeValues(queryValues = ytelseHjemmelIdList, dbValues = maltekstseksjonVersion.ytelseHjemmelIdList)
         }
-    }
 }

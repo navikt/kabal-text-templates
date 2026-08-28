@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.jpa.repository.QueryHints
-import java.util.*
+import java.util.Optional
+import java.util.UUID
 import java.util.stream.Stream
 
 interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
-
     @QueryHints(QueryHint(name = HINT_FETCH_SIZE, value = "100"))
     @EntityGraph("TextVersion.fullWithoutEditors")
     @Query(
@@ -20,7 +20,7 @@ interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
         FROM TextVersion tv
         WHERE tv.published = true
         ORDER BY tv.id
-        """
+        """,
     )
     fun findByPublishedIsTrueForConsumer(): Stream<TextVersion>
 
@@ -33,19 +33,13 @@ interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
     fun findByPublishedDateTimeIsNullOrderById(): Stream<TextVersion>
 
     @EntityGraph("TextVersion.full")
-    fun findByPublishedIsTrueAndTextId(
-        textId: UUID
-    ): TextVersion?
+    fun findByPublishedIsTrueAndTextId(textId: UUID): TextVersion?
 
     @EntityGraph("TextVersion.full")
-    fun findByPublishedDateTimeIsNotNullAndTextId(
-        textId: UUID
-    ): List<TextVersion>
+    fun findByPublishedDateTimeIsNotNullAndTextId(textId: UUID): List<TextVersion>
 
     @EntityGraph("TextVersion.full")
-    fun findByPublishedDateTimeIsNullAndTextId(
-        textId: UUID
-    ): TextVersion?
+    fun findByPublishedDateTimeIsNullAndTextId(textId: UUID): TextVersion?
 
     @EntityGraph("TextVersion.full")
     fun findByTextId(textId: UUID): List<TextVersion>
@@ -62,11 +56,10 @@ interface TextVersionRepository : JpaRepository<TextVersion, UUID> {
             WHERE ((tv2.publishedDateTime is null) OR (tv2.published = true))
             GROUP BY tv2.text
           )
-        """
+        """,
     )
     fun findHiddenTextVersions(): List<TextVersion>
 
     @EntityGraph("TextVersion.full")
     override fun findById(textVersionId: UUID): Optional<TextVersion>
-
 }

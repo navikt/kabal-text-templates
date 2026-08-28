@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 
 @ActiveProfiles("local")
 @DataJpaTest
-class TextVersionRepositoryTest: TestPostgresqlContainer() {
+class TextVersionRepositoryTest : TestPostgresqlContainer() {
     @Autowired
     lateinit var testEntityManager: TestEntityManager
 
@@ -87,9 +87,7 @@ class TextVersionRepositoryTest: TestPostgresqlContainer() {
         assertThat(foundHiddenTexts).containsExactlyInAnyOrder(publishedTextVersion1)
     }
 
-    private fun getUnpublishedTextVersion(
-        text: Text,
-    ): TextVersion {
+    private fun getUnpublishedTextVersion(text: Text): TextVersion {
         val now = LocalDateTime.now()
         return TextVersion(
             title = "title",
@@ -108,22 +106,21 @@ class TextVersionRepositoryTest: TestPostgresqlContainer() {
             enhetIdList = setOf("1"),
             templateSectionIdList = setOf("1"),
             ytelseHjemmelIdList = setOf("1"),
-            editors = mutableSetOf(
-                Editor(
-                    navIdent = "saksbehandlerIdent",
-                    name = "saksbehandlerName",
-                    created = now,
-                    changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
-                )
-            ),
+            editors =
+                mutableSetOf(
+                    Editor(
+                        navIdent = "saksbehandlerIdent",
+                        name = "saksbehandlerName",
+                        created = now,
+                        changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
+                    ),
+                ),
             created = now,
             modified = now,
         )
     }
 
-    private fun getPublishedTextVersion(
-        text: Text,
-    ): TextVersion {
+    private fun getPublishedTextVersion(text: Text): TextVersion {
         val now = LocalDateTime.now()
         return TextVersion(
             title = "title",
@@ -142,14 +139,15 @@ class TextVersionRepositoryTest: TestPostgresqlContainer() {
             enhetIdList = setOf("1"),
             templateSectionIdList = setOf("1"),
             ytelseHjemmelIdList = setOf("1"),
-            editors = mutableSetOf(
-                Editor(
-                    navIdent = "saksbehandlerIdent",
-                    name = "saksbehandlerName",
-                    created = now,
-                    changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
-                )
-            ),
+            editors =
+                mutableSetOf(
+                    Editor(
+                        navIdent = "saksbehandlerIdent",
+                        name = "saksbehandlerName",
+                        created = now,
+                        changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
+                    ),
+                ),
             created = now,
             modified = now,
         )
@@ -157,15 +155,16 @@ class TextVersionRepositoryTest: TestPostgresqlContainer() {
 
     private fun getText(): Text {
         val now = LocalDateTime.now()
-        val text = testEntityManager.persist(
-            Text(
-                created = now,
-                modified = now,
-                maltekstseksjonVersions = mutableListOf(),
-                createdBy = "abc",
-                createdByName = "abc"
+        val text =
+            testEntityManager.persist(
+                Text(
+                    created = now,
+                    modified = now,
+                    maltekstseksjonVersions = mutableListOf(),
+                    createdBy = "abc",
+                    createdByName = "abc",
+                ),
             )
-        )
         return text
     }
 }

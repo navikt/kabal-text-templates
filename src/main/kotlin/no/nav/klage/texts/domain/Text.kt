@@ -1,9 +1,13 @@
 package no.nav.klage.texts.domain
 
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.ManyToMany
+import jakarta.persistence.Table
 import java.io.Serializable
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @Entity
 @Table(name = "text", schema = "klage")
@@ -18,9 +22,8 @@ class Text(
     var createdBy: String,
     @Column(name = "created_by_name")
     var createdByName: String,
-
     @ManyToMany(mappedBy = "texts")
-    val maltekstseksjonVersions: MutableList<MaltekstseksjonVersion>
+    val maltekstseksjonVersions: MutableList<MaltekstseksjonVersion>,
 ) : Serializable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -33,8 +36,8 @@ class Text(
 
     override fun hashCode() = id.hashCode()
 
-    override fun toString(): String {
-        return "Text(id=$id, created=$created, modified=$modified, createdBy=$createdBy, maltekstseksjonVersions=${maltekstseksjonVersions.map { it.id }})"
-    }
-
+    override fun toString(): String =
+        "Text(id=$id, created=$created, modified=$modified, createdBy=$createdBy, maltekstseksjonVersions=${maltekstseksjonVersions.map {
+            it.id
+        }})"
 }

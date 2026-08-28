@@ -1,13 +1,11 @@
 package no.nav.klage.texts.config
 
-
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Configuration
 
 @EnableCaching
 @Configuration
 class CacheConfiguration {
-
     companion object {
         const val CONSUMER_TEXT_SEARCH = "consumerTextSearch"
         const val CONSUMER_MALTEKSTSEKSJON_SEARCH = "consumerMaltekstseksjonSearch"

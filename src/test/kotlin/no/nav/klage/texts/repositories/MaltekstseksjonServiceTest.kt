@@ -14,12 +14,11 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest
 import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager
 import org.springframework.test.context.ActiveProfiles
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @ActiveProfiles("local")
 @DataJpaTest
-class MaltekstseksjonServiceTest: TestPostgresqlContainer() {
-
+class MaltekstseksjonServiceTest : TestPostgresqlContainer() {
     @Autowired
     lateinit var maltekstseksjonVersionRepository: MaltekstseksjonVersionRepository
 
@@ -36,65 +35,71 @@ class MaltekstseksjonServiceTest: TestPostgresqlContainer() {
 
     @BeforeEach
     fun setup() {
-        maltekstseksjonService = MaltekstseksjonService(
-            maltekstseksjonRepository = maltekstseksjonRepository,
-            maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
-            textRepository = mockk(),
-            textService = mockk(),
-            searchMaltekstseksjonService = mockk(),
-            publishService = PublishService(
+        maltekstseksjonService =
+            MaltekstseksjonService(
+                maltekstseksjonRepository = maltekstseksjonRepository,
                 maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
-                textVersionRepository = textVersionRepository
-            ),
-            textVersionRepositoryStreamingFacade = mockk(),
-            maltekstseksjonVersionRepositoryStreamingFacade = mockk(),
-        )
+                textRepository = mockk(),
+                textService = mockk(),
+                searchMaltekstseksjonService = mockk(),
+                publishService =
+                    PublishService(
+                        maltekstseksjonVersionRepository = maltekstseksjonVersionRepository,
+                        textVersionRepository = textVersionRepository,
+                    ),
+                textVersionRepositoryStreamingFacade = mockk(),
+                maltekstseksjonVersionRepositoryStreamingFacade = mockk(),
+            )
 
         val now = LocalDateTime.now()
 
-        val maltekstseksjon = testEntityManager.persist(
-            Maltekstseksjon(
-                id = UUID.fromString("368f1610-7463-4688-b069-c07667a86b33"),
-                created = now,
-                modified = now,
-                createdBy = "abc",
-                createdByName = "abc",
-            )
-        )
-
-        val text = testEntityManager.persist(
-            Text(
-                created = now,
-                modified = now,
-                maltekstseksjonVersions = mutableListOf(),
-                createdBy = "abc",
-                createdByName = "abc",
-            )
-        )
-
-        val maltekstseksjonVersionPublished = MaltekstseksjonVersion(
-            title = "title",
-            maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(text),
-            publishedDateTime = now,
-            publishedBy = "noen",
-            publishedByName = "noen",
-            published = true,
-            utfallIdList = setOf("1"),
-            enhetIdList = setOf("1"),
-            templateSectionIdList = setOf("1"),
-            ytelseHjemmelIdList = setOf("1"),
-            editors = mutableSetOf(
-                Editor(
-                    navIdent = "saksbehandlerIdent",
-                    name = "saksbehandlerNavn",
+        val maltekstseksjon =
+            testEntityManager.persist(
+                Maltekstseksjon(
+                    id = UUID.fromString("368f1610-7463-4688-b069-c07667a86b33"),
                     created = now,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
-                )
-            ),
-            created = now,
-            modified = now,
-        )
+                    modified = now,
+                    createdBy = "abc",
+                    createdByName = "abc",
+                ),
+            )
+
+        val text =
+            testEntityManager.persist(
+                Text(
+                    created = now,
+                    modified = now,
+                    maltekstseksjonVersions = mutableListOf(),
+                    createdBy = "abc",
+                    createdByName = "abc",
+                ),
+            )
+
+        val maltekstseksjonVersionPublished =
+            MaltekstseksjonVersion(
+                title = "title",
+                maltekstseksjon = maltekstseksjon,
+                texts = mutableListOf(text),
+                publishedDateTime = now,
+                publishedBy = "noen",
+                publishedByName = "noen",
+                published = true,
+                utfallIdList = setOf("1"),
+                enhetIdList = setOf("1"),
+                templateSectionIdList = setOf("1"),
+                ytelseHjemmelIdList = setOf("1"),
+                editors =
+                    mutableSetOf(
+                        Editor(
+                            navIdent = "saksbehandlerIdent",
+                            name = "saksbehandlerNavn",
+                            created = now,
+                            changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
+                        ),
+                    ),
+                created = now,
+                modified = now,
+            )
 
         testEntityManager.persist(maltekstseksjonVersionPublished)
 
@@ -111,5 +116,4 @@ class MaltekstseksjonServiceTest: TestPostgresqlContainer() {
             saksbehandlerName = "abc",
         )
     }
-
 }

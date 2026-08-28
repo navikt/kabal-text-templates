@@ -1,9 +1,14 @@
 package no.nav.klage.texts.domain
 
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import java.io.Serializable
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @Entity
 @Table(name = "version_editor", schema = "klage")
@@ -20,7 +25,6 @@ class Editor(
     @Column(name = "created")
     var created: LocalDateTime = LocalDateTime.now(),
 ) : Serializable {
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -39,9 +43,7 @@ class Editor(
         return result
     }
 
-    override fun toString(): String {
-        return "Editor(id=$id, navIdent='$navIdent', changeType=$changeType, created=$created)"
-    }
+    override fun toString(): String = "Editor(id=$id, navIdent='$navIdent', changeType=$changeType, created=$created)"
 
     enum class ChangeType {
         RICH_TEXT_NB,
@@ -71,5 +73,4 @@ class Editor(
 
         UNKNOWN,
     }
-
 }

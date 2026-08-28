@@ -14,7 +14,7 @@ import java.time.LocalDateTime
 
 @ActiveProfiles("local")
 @DataJpaTest
-class MaltekstseksjonVersionRepositoryTest: TestPostgresqlContainer() {
+class MaltekstseksjonVersionRepositoryTest : TestPostgresqlContainer() {
     @Autowired
     lateinit var testEntityManager: TestEntityManager
 
@@ -28,48 +28,52 @@ class MaltekstseksjonVersionRepositoryTest: TestPostgresqlContainer() {
     fun `add maltekstseksjonVersion works`() {
         val now = LocalDateTime.now()
 
-        val maltekstseksjon = testEntityManager.persist(
-            Maltekstseksjon(
-                created = now,
-                modified = now,
-                createdBy = "abc",
-                createdByName = "abc",
-            )
-        )
-
-        val text = textRepository.save(
-            Text(
-                created = now,
-                modified = now,
-                maltekstseksjonVersions = mutableListOf(),
-                createdBy = "abc",
-                createdByName = "abc",
-            )
-        )
-
-        val maltekstseksjonVersion = MaltekstseksjonVersion(
-            title = "title",
-            maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(text),
-            publishedDateTime = null,
-            publishedBy = null,
-            publishedByName = null,
-            published = false,
-            utfallIdList = setOf("1"),
-            enhetIdList = setOf("1"),
-            templateSectionIdList = setOf("1"),
-            ytelseHjemmelIdList = setOf("1"),
-            editors = mutableSetOf(
-                Editor(
-                    navIdent = "saksbehandlerIdent",
-                    name = "saksbehandlerName",
+        val maltekstseksjon =
+            testEntityManager.persist(
+                Maltekstseksjon(
                     created = now,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
-                )
-            ),
-            created = now,
-            modified = now,
-        )
+                    modified = now,
+                    createdBy = "abc",
+                    createdByName = "abc",
+                ),
+            )
+
+        val text =
+            textRepository.save(
+                Text(
+                    created = now,
+                    modified = now,
+                    maltekstseksjonVersions = mutableListOf(),
+                    createdBy = "abc",
+                    createdByName = "abc",
+                ),
+            )
+
+        val maltekstseksjonVersion =
+            MaltekstseksjonVersion(
+                title = "title",
+                maltekstseksjon = maltekstseksjon,
+                texts = mutableListOf(text),
+                publishedDateTime = null,
+                publishedBy = null,
+                publishedByName = null,
+                published = false,
+                utfallIdList = setOf("1"),
+                enhetIdList = setOf("1"),
+                templateSectionIdList = setOf("1"),
+                ytelseHjemmelIdList = setOf("1"),
+                editors =
+                    mutableSetOf(
+                        Editor(
+                            navIdent = "saksbehandlerIdent",
+                            name = "saksbehandlerName",
+                            created = now,
+                            changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
+                        ),
+                    ),
+                created = now,
+                modified = now,
+            )
 
         maltekstseksjonVersionRepository.save(maltekstseksjonVersion)
 
@@ -84,48 +88,52 @@ class MaltekstseksjonVersionRepositoryTest: TestPostgresqlContainer() {
     fun `delete text also removes from maltekstseksjonVersion works`() {
         val now = LocalDateTime.now()
 
-        val maltekstseksjon = testEntityManager.persist(
-            Maltekstseksjon(
-                created = now,
-                modified = now,
-                createdBy = "abc",
-                createdByName = "abc",
-            )
-        )
-
-        val text = testEntityManager.persist(
-            Text(
-                created = now,
-                modified = now,
-                maltekstseksjonVersions = mutableListOf(),
-                createdBy = "abc",
-                createdByName = "abc",
-            )
-        )
-
-        val maltekstseksjonVersion = MaltekstseksjonVersion(
-            title = "title",
-            maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(text),
-            publishedDateTime = null,
-            publishedBy = null,
-            publishedByName = null,
-            published = false,
-            utfallIdList = setOf("1"),
-            enhetIdList = setOf("1"),
-            templateSectionIdList = setOf("1"),
-            ytelseHjemmelIdList = setOf("1"),
-            editors = mutableSetOf(
-                Editor(
-                    navIdent = "saksbehandlerIdent",
-                    name = "saksbehandlerName",
+        val maltekstseksjon =
+            testEntityManager.persist(
+                Maltekstseksjon(
                     created = now,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
-                )
-            ),
-            created = now,
-            modified = now,
-        )
+                    modified = now,
+                    createdBy = "abc",
+                    createdByName = "abc",
+                ),
+            )
+
+        val text =
+            testEntityManager.persist(
+                Text(
+                    created = now,
+                    modified = now,
+                    maltekstseksjonVersions = mutableListOf(),
+                    createdBy = "abc",
+                    createdByName = "abc",
+                ),
+            )
+
+        val maltekstseksjonVersion =
+            MaltekstseksjonVersion(
+                title = "title",
+                maltekstseksjon = maltekstseksjon,
+                texts = mutableListOf(text),
+                publishedDateTime = null,
+                publishedBy = null,
+                publishedByName = null,
+                published = false,
+                utfallIdList = setOf("1"),
+                enhetIdList = setOf("1"),
+                templateSectionIdList = setOf("1"),
+                ytelseHjemmelIdList = setOf("1"),
+                editors =
+                    mutableSetOf(
+                        Editor(
+                            navIdent = "saksbehandlerIdent",
+                            name = "saksbehandlerName",
+                            created = now,
+                            changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
+                        ),
+                    ),
+                created = now,
+                modified = now,
+            )
 
         maltekstseksjonVersionRepository.save(maltekstseksjonVersion)
 
@@ -154,48 +162,52 @@ class MaltekstseksjonVersionRepositoryTest: TestPostgresqlContainer() {
     fun `find published bulk works`() {
         val now = LocalDateTime.now()
 
-        val maltekstseksjon = testEntityManager.persist(
-            Maltekstseksjon(
-                created = now,
-                modified = now,
-                createdBy = "abc",
-                createdByName = "abc",
-            )
-        )
-
-        val text = textRepository.save(
-            Text(
-                created = now,
-                modified = now,
-                maltekstseksjonVersions = mutableListOf(),
-                createdBy = "abc",
-                createdByName = "abc",
-            )
-        )
-
-        val maltekstseksjonVersion = MaltekstseksjonVersion(
-            title = "title",
-            maltekstseksjon = maltekstseksjon,
-            texts = mutableListOf(text),
-            publishedDateTime = now,
-            publishedBy = "null",
-            publishedByName = "null",
-            published = true,
-            utfallIdList = setOf("1"),
-            enhetIdList = setOf("1"),
-            templateSectionIdList = setOf("1"),
-            ytelseHjemmelIdList = setOf("1"),
-            editors = mutableSetOf(
-                Editor(
-                    navIdent = "saksbehandlerIdent",
-                    name = "saksbehandlerName",
+        val maltekstseksjon =
+            testEntityManager.persist(
+                Maltekstseksjon(
                     created = now,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
-                )
-            ),
-            created = now,
-            modified = now,
-        )
+                    modified = now,
+                    createdBy = "abc",
+                    createdByName = "abc",
+                ),
+            )
+
+        val text =
+            textRepository.save(
+                Text(
+                    created = now,
+                    modified = now,
+                    maltekstseksjonVersions = mutableListOf(),
+                    createdBy = "abc",
+                    createdByName = "abc",
+                ),
+            )
+
+        val maltekstseksjonVersion =
+            MaltekstseksjonVersion(
+                title = "title",
+                maltekstseksjon = maltekstseksjon,
+                texts = mutableListOf(text),
+                publishedDateTime = now,
+                publishedBy = "null",
+                publishedByName = "null",
+                published = true,
+                utfallIdList = setOf("1"),
+                enhetIdList = setOf("1"),
+                templateSectionIdList = setOf("1"),
+                ytelseHjemmelIdList = setOf("1"),
+                editors =
+                    mutableSetOf(
+                        Editor(
+                            navIdent = "saksbehandlerIdent",
+                            name = "saksbehandlerName",
+                            created = now,
+                            changeType = Editor.ChangeType.MALTEKSTSEKSJON_TITLE,
+                        ),
+                    ),
+                created = now,
+                modified = now,
+            )
 
         maltekstseksjonVersionRepository.save(maltekstseksjonVersion)
 
@@ -207,5 +219,4 @@ class MaltekstseksjonVersionRepositoryTest: TestPostgresqlContainer() {
         assertThat(bulk.first().first()).isEqualTo(maltekstseksjon.id)
         assertThat(bulk.first().last()).isEqualTo(text.id)
     }
-
 }

@@ -8,27 +8,38 @@ import org.springframework.stereotype.Service
 @Service
 class TokenUtil(
     private val tokenValidationContextHolder: TokenValidationContextHolder,
-    @Value("\${KABAL_ADMIN_ROLE_ID}") private val kabalAdminRoleId: String,
+    @Value($$"${KABAL_ADMIN_ROLE_ID}") private val kabalAdminRoleId: String,
 ) {
-
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val logger = getLogger(javaClass.enclosingClass)
     }
 
     fun getIdent(): String =
-        tokenValidationContextHolder.getTokenValidationContext().getJwtToken(SecurityConfiguration.ISSUER_AAD)
-            ?.jwtTokenClaims?.get("NAVident")?.toString()
+        tokenValidationContextHolder
+            .getTokenValidationContext()
+            .getJwtToken(SecurityConfiguration.ISSUER_AAD)
+            ?.jwtTokenClaims
+            ?.get("NAVident")
+            ?.toString()
             ?: throw RuntimeException("Ident not found in token")
 
     fun getName(): String =
-        tokenValidationContextHolder.getTokenValidationContext().getJwtToken(SecurityConfiguration.ISSUER_AAD)
-            ?.jwtTokenClaims?.get("name")?.toString()
+        tokenValidationContextHolder
+            .getTokenValidationContext()
+            .getJwtToken(SecurityConfiguration.ISSUER_AAD)
+            ?.jwtTokenClaims
+            ?.get("name")
+            ?.toString()
             ?: throw RuntimeException("Name not found in token")
 
     fun isAdmin(): Boolean {
-        val roleIds = tokenValidationContextHolder.getTokenValidationContext().getJwtToken(SecurityConfiguration.ISSUER_AAD)
-            ?.jwtTokenClaims?.getAsList("groups")
+        val roleIds =
+            tokenValidationContextHolder
+                .getTokenValidationContext()
+                .getJwtToken(SecurityConfiguration.ISSUER_AAD)
+                ?.jwtTokenClaims
+                ?.getAsList("groups")
 
         return roleIds?.contains(kabalAdminRoleId) ?: false
     }
