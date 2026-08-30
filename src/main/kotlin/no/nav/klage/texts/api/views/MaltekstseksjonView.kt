@@ -2,7 +2,7 @@ package no.nav.klage.texts.api.views
 
 import java.io.Serializable
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 data class MaltekstseksjonView(
     val id: UUID,
@@ -18,7 +18,6 @@ data class MaltekstseksjonView(
     val createdBy: String,
     val createdByActor: Employee,
     val modifiedOrTextsModified: LocalDateTime?,
-
     val edits: List<MaltekstseksjonEditView>,
     val publishedDateTime: LocalDateTime?,
     val publishedBy: String?,

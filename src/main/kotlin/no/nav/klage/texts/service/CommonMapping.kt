@@ -1,14 +1,24 @@
 package no.nav.klage.texts.service
 
-import no.nav.klage.texts.api.views.*
+import no.nav.klage.texts.api.views.Employee
+import no.nav.klage.texts.api.views.MaltekstseksjonEditView
+import no.nav.klage.texts.api.views.MaltekstseksjonView
+import no.nav.klage.texts.api.views.PlainText
+import no.nav.klage.texts.api.views.RichText
+import no.nav.klage.texts.api.views.TextEditView
+import no.nav.klage.texts.api.views.TextView
+import no.nav.klage.texts.api.views.TextViewForLists
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
 import org.slf4j.Logger
 import tools.jackson.module.kotlin.jsonMapper
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
-fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion, modifiedOrTextsModified: LocalDateTime?): MaltekstseksjonView =
+fun mapToMaltekstseksjonView(
+    maltekstseksjonVersion: MaltekstseksjonVersion,
+    modifiedOrTextsModified: LocalDateTime?,
+): MaltekstseksjonView =
     MaltekstseksjonView(
         id = maltekstseksjonVersion.maltekstseksjon.id,
         title = maltekstseksjonVersion.title,
@@ -20,34 +30,44 @@ fun mapToMaltekstseksjonView(maltekstseksjonVersion: MaltekstseksjonVersion, mod
         ytelseHjemmelIdList = maltekstseksjonVersion.ytelseHjemmelIdList,
         created = maltekstseksjonVersion.created,
         modified = maltekstseksjonVersion.modified,
-        edits = maltekstseksjonVersion.editors.map {
-            MaltekstseksjonEditView(
-                actor = Employee(
-                    navIdent = it.navIdent,
-                    navn = it.name
-                ),
-                created = it.created,
-                changeType = MaltekstseksjonEditView.ChangeTypeMaltekstseksjon.valueOf(it.changeType.name),
-            )
-        }.sortedByDescending { it.created },
+        edits =
+            maltekstseksjonVersion.editors
+                .map {
+                    MaltekstseksjonEditView(
+                        actor =
+                            Employee(
+                                navIdent = it.navIdent,
+                                navn = it.name,
+                            ),
+                        created = it.created,
+                        changeType = MaltekstseksjonEditView.ChangeTypeMaltekstseksjon.valueOf(it.changeType.name),
+                    )
+                }.sortedByDescending { it.created },
         publishedDateTime = maltekstseksjonVersion.publishedDateTime,
         publishedBy = maltekstseksjonVersion.publishedBy,
-        publishedByActor = if (maltekstseksjonVersion.publishedBy != null && maltekstseksjonVersion.publishedByName != null) {
-            Employee(
-                navIdent = maltekstseksjonVersion.publishedBy!!,
-                navn = maltekstseksjonVersion.publishedByName!!,
-            )
-        } else null,
+        publishedByActor =
+            if (maltekstseksjonVersion.publishedBy != null && maltekstseksjonVersion.publishedByName != null) {
+                Employee(
+                    navIdent = maltekstseksjonVersion.publishedBy!!,
+                    navn = maltekstseksjonVersion.publishedByName!!,
+                )
+            } else {
+                null
+            },
         published = maltekstseksjonVersion.published,
         createdBy = maltekstseksjonVersion.maltekstseksjon.createdBy,
-        createdByActor = Employee(
-            navIdent = maltekstseksjonVersion.maltekstseksjon.createdBy,
-            navn = maltekstseksjonVersion.maltekstseksjon.createdByName,
-        ),
+        createdByActor =
+            Employee(
+                navIdent = maltekstseksjonVersion.maltekstseksjon.createdBy,
+                navn = maltekstseksjonVersion.maltekstseksjon.createdByName,
+            ),
         modifiedOrTextsModified = modifiedOrTextsModified,
     )
 
-fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair<List<UUID>, List<UUID>>): TextView =
+fun mapToTextView(
+    textVersion: TextVersion,
+    connectedMaltekstseksjonIdList: Pair<List<UUID>, List<UUID>>,
+): TextView =
     TextView(
         id = textVersion.text.id,
         versionId = textVersion.id,
@@ -61,37 +81,44 @@ fun mapToTextView(textVersion: TextVersion, connectedMaltekstseksjonIdList: Pair
         enhetIdList = textVersion.enhetIdList,
         templateSectionIdList = textVersion.templateSectionIdList,
         ytelseHjemmelIdList = textVersion.ytelseHjemmelIdList,
-        edits = textVersion.editors.map {
-            TextEditView(
-                actor = Employee(
-                    navIdent = it.navIdent,
-                    navn = it.name,
-                ),
-                created = it.created,
-                changeType = TextEditView.ChangeTypeText.valueOf(it.changeType.name),
-            )
-        }.sortedByDescending { it.created },
+        edits =
+            textVersion.editors
+                .map {
+                    TextEditView(
+                        actor =
+                            Employee(
+                                navIdent = it.navIdent,
+                                navn = it.name,
+                            ),
+                        created = it.created,
+                        changeType = TextEditView.ChangeTypeText.valueOf(it.changeType.name),
+                    )
+                }.sortedByDescending { it.created },
         publishedDateTime = textVersion.publishedDateTime,
-        publishedByActor = if (textVersion.publishedBy != null && textVersion.publishedByName != null) {
-            Employee(
-                navIdent = textVersion.publishedBy!!,
-                navn = textVersion.publishedByName!!,
-            )
-        } else null,
+        publishedByActor =
+            if (textVersion.publishedBy != null && textVersion.publishedByName != null) {
+                Employee(
+                    navIdent = textVersion.publishedBy!!,
+                    navn = textVersion.publishedByName!!,
+                )
+            } else {
+                null
+            },
         published = textVersion.published,
         publishedMaltekstseksjonIdList = connectedMaltekstseksjonIdList.first,
         draftMaltekstseksjonIdList = connectedMaltekstseksjonIdList.second,
         createdBy = textVersion.text.createdBy,
-        createdByActor = Employee(
-            navIdent = textVersion.text.createdBy,
-            navn = textVersion.text.createdByName,
-        ),
+        createdByActor =
+            Employee(
+                navIdent = textVersion.text.createdBy,
+                navn = textVersion.text.createdByName,
+            ),
     )
 
 fun mapToTextViewForLists(
     textVersion: TextVersion,
     connectedMaltekstseksjonIdList: Pair<List<UUID>, List<UUID>>,
-    logger: Logger?
+    logger: Logger?,
 ): TextViewForLists =
     TextViewForLists(
         id = textVersion.text.id,
@@ -107,13 +134,23 @@ fun mapToTextViewForLists(
         draftMaltekstseksjonIdList = connectedMaltekstseksjonIdList.second,
     )
 
-private fun fillRichText(textVersion: TextVersion, logger: Logger? = null): RichText? =
+private fun fillRichText(
+    textVersion: TextVersion,
+    logger: Logger? = null,
+): RichText? =
     if (textVersion.richTextNN != null || textVersion.richTextNB != null || textVersion.richTextUntranslated != null) {
         try {
             RichText(
                 nn = if (textVersion.richTextNN != null) jsonMapper().readTree(textVersion.richTextNN) else null,
                 nb = if (textVersion.richTextNB != null) jsonMapper().readTree(textVersion.richTextNB) else null,
-                untranslated = if (textVersion.richTextUntranslated != null) jsonMapper().readTree(textVersion.richTextUntranslated) else null,
+                untranslated =
+                    if (textVersion.richTextUntranslated !=
+                        null
+                    ) {
+                        jsonMapper().readTree(textVersion.richTextUntranslated)
+                    } else {
+                        null
+                    },
             )
         } catch (e: Exception) {
             logger?.error("Rich text version validation failed for textVersionId: {}, message: {}", textVersion.id, e.message)

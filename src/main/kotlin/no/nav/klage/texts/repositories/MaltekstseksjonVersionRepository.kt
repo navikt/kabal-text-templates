@@ -7,11 +7,11 @@ import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.jpa.repository.QueryHints
-import java.util.*
+import java.util.Optional
+import java.util.UUID
 import java.util.stream.Stream
 
 interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersion, UUID> {
-
     @QueryHints(QueryHint(name = HINT_FETCH_SIZE, value = "50"))
     @EntityGraph("MaltekstseksjonVersion.full")
     @Query(
@@ -20,7 +20,7 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
         FROM MaltekstseksjonVersion mv
         WHERE mv.published = true
         ORDER BY mv.id
-        """
+        """,
     )
     fun findByPublishedIsTrueForConsumer(): Stream<MaltekstseksjonVersion>
 
@@ -33,14 +33,10 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
     fun findByPublishedDateTimeIsNullOrderById(): Stream<MaltekstseksjonVersion>
 
     @EntityGraph("MaltekstseksjonVersion.full")
-    fun findByPublishedIsTrueAndMaltekstseksjonId(
-        maltekstseksjonId: UUID
-    ): MaltekstseksjonVersion?
+    fun findByPublishedIsTrueAndMaltekstseksjonId(maltekstseksjonId: UUID): MaltekstseksjonVersion?
 
     @EntityGraph("MaltekstseksjonVersion.full")
-    fun findByPublishedDateTimeIsNullAndMaltekstseksjonId(
-        maltekstseksjonId: UUID
-    ): MaltekstseksjonVersion?
+    fun findByPublishedDateTimeIsNullAndMaltekstseksjonId(maltekstseksjonId: UUID): MaltekstseksjonVersion?
 
     @EntityGraph("MaltekstseksjonVersion.full")
     fun findByMaltekstseksjonId(maltekstseksjonId: UUID): List<MaltekstseksjonVersion>
@@ -51,7 +47,7 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
             select mv.maltekstseksjon.id from Text t inner join t.maltekstseksjonVersions mv
                 where mv.published = true
                 and t.id = :textId
-        """
+        """,
     )
     fun findConnectedMaltekstseksjonPublishedIdList(textId: UUID): List<UUID>
 
@@ -61,7 +57,7 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
             select mv.maltekstseksjon.id, t.id from Text t inner join t.maltekstseksjonVersions mv
                 where mv.published = true
                 and t.id in (:textIdList)
-        """
+        """,
     )
     fun findConnectedMaltekstseksjonPublishedIdListBulk(textIdList: List<UUID>): List<List<UUID>>
 
@@ -71,7 +67,7 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
             select mvl.maltekstseksjon.id from Text t inner join t.maltekstseksjonVersions mvl
                 where mvl.publishedDateTime IS NULL
                 and t.id = :textId
-        """
+        """,
     )
     fun findConnectedMaltekstseksjonDraftsIdList(textId: UUID): List<UUID>
 
@@ -81,7 +77,7 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
             select mvl.maltekstseksjon.id, t.id from Text t inner join t.maltekstseksjonVersions mvl
                 where mvl.publishedDateTime IS NULL                
                 and t.id in (:textIdList)
-        """
+        """,
     )
     fun findConnectedMaltekstseksjonDraftsIdListBulk(textIdList: List<UUID>): List<List<UUID>>
 
@@ -103,11 +99,10 @@ interface MaltekstseksjonVersionRepository : JpaRepository<MaltekstseksjonVersio
             WHERE ((mv2.publishedDateTime is null) OR (mv2.published = true))
             GROUP BY mv2.maltekstseksjon
           )
-        """
+        """,
     )
     fun findHiddenMaltekstseksjonVersions(): List<MaltekstseksjonVersion>
 
     @EntityGraph("MaltekstseksjonVersion.full")
     override fun findById(maltekstseksjonVersionId: UUID): Optional<MaltekstseksjonVersion>
-
 }

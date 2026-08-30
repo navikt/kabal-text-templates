@@ -1,9 +1,25 @@
 package no.nav.klage.texts.domain
 
-import jakarta.persistence.*
+import jakarta.persistence.CascadeType
+import jakarta.persistence.CollectionTable
+import jakarta.persistence.Column
+import jakarta.persistence.ElementCollection
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.JoinTable
+import jakarta.persistence.ManyToMany
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.NamedAttributeNode
+import jakarta.persistence.NamedEntityGraph
+import jakarta.persistence.NamedEntityGraphs
+import jakarta.persistence.OneToMany
+import jakarta.persistence.OrderColumn
+import jakarta.persistence.Table
 import java.io.Serializable
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @Entity
 @Table(name = "maltekstseksjon_version", schema = "klage")
@@ -18,62 +34,53 @@ import java.util.*
             NamedAttributeNode("texts"),
             NamedAttributeNode("editors"),
             NamedAttributeNode("maltekstseksjon"),
-        ]
+        ],
     ),
 )
 class MaltekstseksjonVersion(
     @Id
     val id: UUID = UUID.randomUUID(),
-
     @Column(name = "title")
     var title: String,
-
     @ManyToOne(optional = false)
     @JoinColumn(name = "maltekstseksjon_id", nullable = false, updatable = false)
     var maltekstseksjon: Maltekstseksjon,
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         schema = "klage",
         name = "maltekstseksjon_version_text",
         joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")],
-        inverseJoinColumns = [JoinColumn(name = "text_id")]
+        inverseJoinColumns = [JoinColumn(name = "text_id")],
     )
     @OrderColumn(name = "index", nullable = false)
     val texts: MutableList<Text> = mutableListOf(),
-
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(schema = "klage", name = "utfall", joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")])
     @Column(name = "utfall")
     var utfallIdList: Set<String> = emptySet(),
-
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(schema = "klage", name = "enhet", joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")])
     @Column(name = "enhet")
     var enhetIdList: Set<String> = emptySet(),
-
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
         schema = "klage",
         name = "template_section",
-        joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")]
+        joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")],
     )
     @Column(name = "template_section")
     var templateSectionIdList: Set<String> = emptySet(),
-
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(
         schema = "klage",
         name = "ytelse_hjemmel",
-        joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")]
+        joinColumns = [JoinColumn(name = "maltekstseksjon_version_id")],
     )
     @Column(name = "ytelse_hjemmel")
     var ytelseHjemmelIdList: Set<String> = emptySet(),
-
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "maltekstseksjon_version_id", referencedColumnName = "id", nullable = false)
     val editors: MutableSet<Editor> = mutableSetOf(),
-
     @Column(name = "published_date_time")
     var publishedDateTime: LocalDateTime?,
     @Column(name = "published_by")
@@ -83,18 +90,18 @@ class MaltekstseksjonVersion(
     /** Is it currently published? */
     @Column(name = "published")
     var published: Boolean,
-
     @Column(name = "created")
     var created: LocalDateTime,
     @Column(name = "modified")
     var modified: LocalDateTime,
-): Serializable {
+) : Serializable {
+    fun isDepublished(): Boolean = !published && publishedDateTime != null
 
-    fun isDepublished(): Boolean {
-        return !published && publishedDateTime != null
-    }
-
-    fun createDraft(saksbehandlerIdent: String, saksbehandlerName: String, newMaltekstseksjonParent: Maltekstseksjon? = null): MaltekstseksjonVersion {
+    fun createDraft(
+        saksbehandlerIdent: String,
+        saksbehandlerName: String,
+        newMaltekstseksjonParent: Maltekstseksjon? = null,
+    ): MaltekstseksjonVersion {
         val now = LocalDateTime.now()
         return MaltekstseksjonVersion(
             title = title,
@@ -110,13 +117,14 @@ class MaltekstseksjonVersion(
             publishedByName = null,
             created = now,
             modified = now,
-            editors = mutableSetOf(
-                Editor(
-                    navIdent = saksbehandlerIdent,
-                    name = saksbehandlerName,
-                    changeType = Editor.ChangeType.MALTEKSTSEKSJON_VERSION_CREATED
-                )
-            )
+            editors =
+                mutableSetOf(
+                    Editor(
+                        navIdent = saksbehandlerIdent,
+                        name = saksbehandlerName,
+                        changeType = Editor.ChangeType.MALTEKSTSEKSJON_VERSION_CREATED,
+                    ),
+                ),
         )
     }
 
@@ -176,7 +184,6 @@ class MaltekstseksjonVersion(
         return result
     }
 
-    override fun toString(): String {
-        return "MaltekstseksjonVersion(id=$id, title='$title', maltekstseksjon=$maltekstseksjon, texts=$texts, utfallIdList=$utfallIdList, enhetIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, editors=$editors, publishedDateTime=$publishedDateTime, publishedBy=$publishedBy, publishedByName=$publishedByName, published=$published, created=$created, modified=$modified)"
-    }
+    override fun toString(): String =
+        "MaltekstseksjonVersion(id=$id, title='$title', maltekstseksjon=$maltekstseksjon, texts=$texts, utfallIdList=$utfallIdList, enhetIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, editors=$editors, publishedDateTime=$publishedDateTime, publishedBy=$publishedBy, publishedByName=$publishedByName, published=$published, created=$created, modified=$modified)"
 }

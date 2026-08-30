@@ -1,7 +1,7 @@
 package no.nav.klage.texts.api.views
 
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 data class TextEditView(
     val actor: Employee,

@@ -12,9 +12,13 @@ import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.logMethodDetails
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @RestController
 @Tag(name = "kabal-text-templates")
@@ -25,7 +29,6 @@ class MaltekstseksjonVersionsMigrationsController(
     private val textRepository: TextRepository,
     private val tokenUtil: TokenUtil,
 ) {
-
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val logger = getLogger(javaClass.enclosingClass)
@@ -33,11 +36,11 @@ class MaltekstseksjonVersionsMigrationsController(
 
     @Operation(
         summary = "Get all maltekstseksjon versions",
-        description = "Get all maltekstseksjon versions"
+        description = "Get all maltekstseksjon versions",
     )
     @GetMapping
     fun getMaltekstseksjonVersions(): List<MaltekstseksjonView> {
-        //TODO must be admin
+        // TODO must be admin
         logMethodDetails(
             methodName = ::getMaltekstseksjonVersions.name,
             innloggetIdent = tokenUtil.getIdent(),
@@ -55,11 +58,11 @@ class MaltekstseksjonVersionsMigrationsController(
 
     @Operation(
         summary = "Update maltekstseksjon versions",
-        description = "Update maltekstseksjon versions"
+        description = "Update maltekstseksjon versions",
     )
     @PutMapping
     fun updateMaltekstseksjonVersions(
-        @RequestBody input: List<MaltekstseksjonInput>
+        @RequestBody input: List<MaltekstseksjonInput>,
     ): List<MaltekstseksjonView> {
         logMethodDetails(
             methodName = ::updateMaltekstseksjonVersions.name,
@@ -68,22 +71,24 @@ class MaltekstseksjonVersionsMigrationsController(
             logger = logger,
         )
 
-        val updatedMaltekstseksjonVersions = maltekstseksjonService.getMaltekstseksjonVersionsById(input.map { requireNotNull(it.id) }).map { maltekstseksjonVersion ->
+        val updatedMaltekstseksjonVersions =
+            maltekstseksjonService.getMaltekstseksjonVersionsById(input.map { requireNotNull(it.id) }).map { maltekstseksjonVersion ->
 
-            val currentMaltekstseksjonInput = input.find { it.id == maltekstseksjonVersion.id } ?: error("No matching input for id ${maltekstseksjonVersion.id}")
+                val currentMaltekstseksjonInput =
+                    input.find { it.id == maltekstseksjonVersion.id } ?: error("No matching input for id ${maltekstseksjonVersion.id}")
 
-            maltekstseksjonVersion.apply {
-                title = currentMaltekstseksjonInput.title
-                texts.clear()
-                texts.addAll(currentMaltekstseksjonInput.textIdList.map { textRepository.getReferenceById(UUID.fromString(it)) })
-                utfallIdList = currentMaltekstseksjonInput.utfallIdList
-                enhetIdList = currentMaltekstseksjonInput.enhetIdList
-                templateSectionIdList = currentMaltekstseksjonInput.templateSectionIdList
-                ytelseHjemmelIdList = currentMaltekstseksjonInput.ytelseHjemmelIdList
+                maltekstseksjonVersion.apply {
+                    title = currentMaltekstseksjonInput.title
+                    texts.clear()
+                    texts.addAll(currentMaltekstseksjonInput.textIdList.map { textRepository.getReferenceById(UUID.fromString(it)) })
+                    utfallIdList = currentMaltekstseksjonInput.utfallIdList
+                    enhetIdList = currentMaltekstseksjonInput.enhetIdList
+                    templateSectionIdList = currentMaltekstseksjonInput.templateSectionIdList
+                    ytelseHjemmelIdList = currentMaltekstseksjonInput.ytelseHjemmelIdList
 
-                modified = LocalDateTime.now()
+                    modified = LocalDateTime.now()
+                }
             }
-        }
 
         return maltekstseksjonService.updateAll(updatedMaltekstseksjonVersions).map {
             mapToMaltekstseksjonView(
@@ -93,4 +98,3 @@ class MaltekstseksjonVersionsMigrationsController(
         }
     }
 }
-

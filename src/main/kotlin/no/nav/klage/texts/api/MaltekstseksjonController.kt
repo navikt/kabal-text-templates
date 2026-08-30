@@ -2,15 +2,32 @@ package no.nav.klage.texts.api
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import no.nav.klage.texts.api.views.*
+import no.nav.klage.texts.api.views.EnhetIdListInput
+import no.nav.klage.texts.api.views.MaltekstseksjonInput
+import no.nav.klage.texts.api.views.MaltekstseksjonView
+import no.nav.klage.texts.api.views.MaltekstseksjonWithTextsView
+import no.nav.klage.texts.api.views.SearchMaltekstseksjonQueryParams
+import no.nav.klage.texts.api.views.TemplateSectionIdListInput
+import no.nav.klage.texts.api.views.TextIdListInput
+import no.nav.klage.texts.api.views.TitleInput
+import no.nav.klage.texts.api.views.UtfallIdListInput
+import no.nav.klage.texts.api.views.VersionInput
+import no.nav.klage.texts.api.views.YtelseHjemmelIdListInput
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.logMethodDetails
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.springframework.web.bind.annotation.*
-import java.util.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @Tag(name = "kabal-text-templates", description = "API for template texts")
@@ -20,7 +37,6 @@ class MaltekstseksjonController(
     private val maltekstseksjonService: MaltekstseksjonService,
     private val tokenUtil: TokenUtil,
 ) {
-
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val logger = getLogger(javaClass.enclosingClass)
@@ -28,7 +44,7 @@ class MaltekstseksjonController(
 
     @Operation(
         summary = "Get versions for maltekstseksjon",
-        description = "Get versions for maltekstseksjon"
+        description = "Get versions for maltekstseksjon",
     )
     @GetMapping("/{maltekstseksjonId}/versions")
     fun getMaltekstseksjonVersions(
@@ -46,7 +62,7 @@ class MaltekstseksjonController(
 
     @Operation(
         summary = "Publish maltekstseksjon",
-        description = "Publish maltekstseksjon using current draft"
+        description = "Publish maltekstseksjon using current draft",
     )
     @PostMapping("/{maltekstseksjonId}/publish")
     fun publishMaltekstseksjon(
@@ -68,7 +84,7 @@ class MaltekstseksjonController(
 
     @Operation(
         summary = "Publish maltekstseksjon and belonging texts (drafts)",
-        description = "Publish maltekstseksjon and belonging texts (drafts)"
+        description = "Publish maltekstseksjon and belonging texts (drafts)",
     )
     @PostMapping("/{maltekstseksjonId}/publish-with-texts")
     fun publishMaltekstseksjonWithTexts(
@@ -90,11 +106,11 @@ class MaltekstseksjonController(
 
     @Operation(
         summary = "Create maltekstseksjon",
-        description = "Create maltekstseksjon"
+        description = "Create maltekstseksjon",
     )
     @PostMapping
     fun createMaltekst(
-        @RequestBody input: MaltekstseksjonInput
+        @RequestBody input: MaltekstseksjonInput,
     ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::createMaltekst.name,
@@ -112,12 +128,12 @@ class MaltekstseksjonController(
 
     @Operation(
         summary = "Create maltekstseksjon draft",
-        description = "Create maltekstseksjon draft, possibly based on existing version"
+        description = "Create maltekstseksjon draft, possibly based on existing version",
     )
     @PostMapping("/{maltekstseksjonId}/draft")
     fun createDraft(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
-        @RequestBody input: VersionInput?
+        @RequestBody input: VersionInput?,
     ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::createDraft.name,
@@ -136,12 +152,12 @@ class MaltekstseksjonController(
 
     @Operation(
         summary = "Create duplicate of maltekstseksjon as draft",
-        description = "Create duplicate of maltekstseksjon as draft, possibly based on existing version"
+        description = "Create duplicate of maltekstseksjon as draft, possibly based on existing version",
     )
     @PostMapping("/{maltekstseksjonId}/duplicate")
     fun createDuplicate(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
-        @RequestBody input: VersionInput?
+        @RequestBody input: VersionInput?,
     ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::createDuplicate.name,
@@ -160,12 +176,12 @@ class MaltekstseksjonController(
 
     @Operation(
         summary = "Update title",
-        description = "Update title"
+        description = "Update title",
     )
     @PutMapping("/{maltekstseksjonId}/title")
     fun updateTitle(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
-        @RequestBody input: TitleInput
+        @RequestBody input: TitleInput,
     ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::updateTitle.name,
@@ -184,12 +200,12 @@ class MaltekstseksjonController(
 
     @Operation(
         summary = "Update textIdList",
-        description = "Update textIdList"
+        description = "Update textIdList",
     )
     @PutMapping("/{maltekstseksjonId}/text-id-list")
     fun updateTextIdList(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
-        @RequestBody input: TextIdListInput
+        @RequestBody input: TextIdListInput,
     ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::updateTextIdList.name,
@@ -208,12 +224,12 @@ class MaltekstseksjonController(
 
     @Operation(
         summary = "Update utfall",
-        description = "Update utfall"
+        description = "Update utfall",
     )
     @PutMapping("/{maltekstseksjonId}/utfall-id-list")
     fun updateUtfallIdList(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
-        @RequestBody input: UtfallIdListInput
+        @RequestBody input: UtfallIdListInput,
     ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::updateUtfallIdList.name,
@@ -232,12 +248,12 @@ class MaltekstseksjonController(
 
     @Operation(
         summary = "Update enheter",
-        description = "Update enheter"
+        description = "Update enheter",
     )
     @PutMapping("/{maltekstseksjonId}/enhet-id-list")
     fun updateEnhetIdList(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
-        @RequestBody input: EnhetIdListInput
+        @RequestBody input: EnhetIdListInput,
     ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::updateEnhetIdList.name,
@@ -256,12 +272,12 @@ class MaltekstseksjonController(
 
     @Operation(
         summary = "Update templateSectionList",
-        description = "Update templateSectionList"
+        description = "Update templateSectionList",
     )
     @PutMapping("/{maltekstseksjonId}/template-section-id-list")
     fun updateTemplateSectionIdList(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
-        @RequestBody input: TemplateSectionIdListInput
+        @RequestBody input: TemplateSectionIdListInput,
     ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::updateTemplateSectionIdList.name,
@@ -280,12 +296,12 @@ class MaltekstseksjonController(
 
     @Operation(
         summary = "Update ytelseHjemmelList",
-        description = "Update ytelseHjemmelList"
+        description = "Update ytelseHjemmelList",
     )
     @PutMapping("/{maltekstseksjonId}/ytelse-hjemmel-id-list")
     fun updateYtelseHjemmelIdList(
         @PathVariable("maltekstseksjonId") maltekstseksjonId: UUID,
-        @RequestBody input: YtelseHjemmelIdListInput
+        @RequestBody input: YtelseHjemmelIdListInput,
     ): MaltekstseksjonView {
         logMethodDetails(
             methodName = ::updateYtelseHjemmelIdList.name,
@@ -304,7 +320,7 @@ class MaltekstseksjonController(
 
     @Operation(
         summary = "Unpublish maltekstseksjon",
-        description = "Unpublish maltekstseksjon"
+        description = "Unpublish maltekstseksjon",
     )
     @PostMapping("/{maltekstseksjonId}/unpublish")
     fun unpublishMaltekstseksjon(
@@ -326,7 +342,7 @@ class MaltekstseksjonController(
 
     @Operation(
         summary = "Delete maltekstseksjon draft version",
-        description = "Delete maltekstseksjon draft version"
+        description = "Delete maltekstseksjon draft version",
     )
     @DeleteMapping("/{maltekstseksjonId}/draft")
     fun deleteMaltekstDraftVersion(
@@ -347,12 +363,10 @@ class MaltekstseksjonController(
 
     @Operation(
         summary = "Search maltekstseksjoner",
-        description = "Search maltekstseksjoner"
+        description = "Search maltekstseksjoner",
     )
     @GetMapping
-    fun searchMaltekstseksjoner(
-        searchMaltekstseksjonQueryParams: SearchMaltekstseksjonQueryParams
-    ): List<MaltekstseksjonView> {
+    fun searchMaltekstseksjoner(searchMaltekstseksjonQueryParams: SearchMaltekstseksjonQueryParams): List<MaltekstseksjonView> {
         logMethodDetails(
             methodName = ::searchMaltekstseksjoner.name,
             innloggetIdent = tokenUtil.getIdent(),
@@ -362,19 +376,20 @@ class MaltekstseksjonController(
 
         logger.debug("searchMaltekstseksjoner called with params {}", searchMaltekstseksjonQueryParams)
 
-        return maltekstseksjonService.searchMaltekstseksjoner(
-            textIdList = searchMaltekstseksjonQueryParams.textIdList ?: emptyList(),
-            utfallIdList = searchMaltekstseksjonQueryParams.utfallIdList ?: emptyList(),
-            enhetIdList = searchMaltekstseksjonQueryParams.enhetIdList ?: emptyList(),
-            templateSectionIdList = searchMaltekstseksjonQueryParams.templateSectionIdList ?: emptyList(),
-            ytelseHjemmelIdList = searchMaltekstseksjonQueryParams.ytelseHjemmelIdList ?: emptyList(),
-            trash = searchMaltekstseksjonQueryParams.trash,
-        ).sortedByDescending { it.created }
+        return maltekstseksjonService
+            .searchMaltekstseksjoner(
+                textIdList = searchMaltekstseksjonQueryParams.textIdList ?: emptyList(),
+                utfallIdList = searchMaltekstseksjonQueryParams.utfallIdList ?: emptyList(),
+                enhetIdList = searchMaltekstseksjonQueryParams.enhetIdList ?: emptyList(),
+                templateSectionIdList = searchMaltekstseksjonQueryParams.templateSectionIdList ?: emptyList(),
+                ytelseHjemmelIdList = searchMaltekstseksjonQueryParams.ytelseHjemmelIdList ?: emptyList(),
+                trash = searchMaltekstseksjonQueryParams.trash,
+            ).sortedByDescending { it.created }
     }
 
     @Operation(
         summary = "Get current maltekstseksjon",
-        description = "Get current maltekstseksjon. Draft or published."
+        description = "Get current maltekstseksjon. Draft or published.",
     )
     @GetMapping("/{maltekstseksjonId}")
     fun getMaltekst(
@@ -387,7 +402,7 @@ class MaltekstseksjonController(
             logger = logger,
         )
         return maltekstseksjonService.getCurrentMaltekstseksjonVersion(
-            maltekstseksjonId
+            maltekstseksjonId,
         )
     }
 }

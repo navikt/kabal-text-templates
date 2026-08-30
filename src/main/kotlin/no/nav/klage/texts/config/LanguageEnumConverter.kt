@@ -6,7 +6,6 @@ import org.springframework.core.convert.converter.Converter
 import org.springframework.format.FormatterRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
-
 @Configuration
 class Config : WebMvcConfigurer {
     override fun addFormatters(registry: FormatterRegistry) {
@@ -15,7 +14,5 @@ class Config : WebMvcConfigurer {
 }
 
 class LanguageEnumConverter : Converter<String, Language> {
-    override fun convert(source: String): Language {
-        return Language.valueOf(source.uppercase())
-    }
+    override fun convert(source: String): Language = Language.valueOf(source.uppercase())
 }

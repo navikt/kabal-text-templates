@@ -1,9 +1,22 @@
 package no.nav.klage.texts.domain
 
-import jakarta.persistence.*
+import jakarta.persistence.CascadeType
+import jakarta.persistence.CollectionTable
+import jakarta.persistence.Column
+import jakarta.persistence.ElementCollection
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.NamedAttributeNode
+import jakarta.persistence.NamedEntityGraph
+import jakarta.persistence.NamedEntityGraphs
+import jakarta.persistence.OneToMany
+import jakarta.persistence.Table
 import java.io.Serializable
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @Entity
 @Table(name = "text_version", schema = "klage")
@@ -16,7 +29,7 @@ import java.util.*
             NamedAttributeNode("templateSectionIdList"),
             NamedAttributeNode("ytelseHjemmelIdList"),
             NamedAttributeNode("text"),
-        ]
+        ],
     ),
     NamedEntityGraph(
         name = "TextVersion.full",
@@ -27,7 +40,7 @@ import java.util.*
             NamedAttributeNode("ytelseHjemmelIdList"),
             NamedAttributeNode("text"),
             NamedAttributeNode("editors"),
-        ]
+        ],
     ),
 )
 class TextVersion(
@@ -47,35 +60,28 @@ class TextVersion(
     var plainTextNN: String?,
     @Column(name = "plain_text_nb")
     var plainTextNB: String?,
-
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(schema = "klage", name = "utfall", joinColumns = [JoinColumn(name = "text_version_id")])
     @Column(name = "utfall")
     var utfallIdList: Set<String> = emptySet(),
-
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(schema = "klage", name = "enhet", joinColumns = [JoinColumn(name = "text_version_id")])
     @Column(name = "enhet")
     var enhetIdList: Set<String> = emptySet(),
-
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(schema = "klage", name = "template_section", joinColumns = [JoinColumn(name = "text_version_id")])
     @Column(name = "template_section")
     var templateSectionIdList: Set<String> = emptySet(),
-
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(schema = "klage", name = "ytelse_hjemmel", joinColumns = [JoinColumn(name = "text_version_id")])
     @Column(name = "ytelse_hjemmel")
     var ytelseHjemmelIdList: Set<String> = emptySet(),
-
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     @JoinColumn(name = "text_version_id", referencedColumnName = "id", nullable = false)
     val editors: MutableSet<Editor> = mutableSetOf(),
-
     @ManyToOne(optional = false)
     @JoinColumn(name = "text_id", nullable = false, updatable = false)
     var text: Text,
-
     @Column(name = "published_date_time")
     var publishedDateTime: LocalDateTime?,
     @Column(name = "published_by")
@@ -85,14 +91,16 @@ class TextVersion(
     /** Is it currently published? */
     @Column(name = "published")
     var published: Boolean,
-
     @Column(name = "created")
     var created: LocalDateTime,
     @Column(name = "modified")
     var modified: LocalDateTime,
 ) : Serializable {
-
-    fun createDraft(saksbehandlerIdent: String, saksbehandlerName: String, newTextParent: Text? = null): TextVersion {
+    fun createDraft(
+        saksbehandlerIdent: String,
+        saksbehandlerName: String,
+        newTextParent: Text? = null,
+    ): TextVersion {
         val now = LocalDateTime.now()
         return TextVersion(
             title = title,
@@ -113,13 +121,14 @@ class TextVersion(
             publishedByName = null,
             created = now,
             modified = now,
-            editors = mutableSetOf(
-                Editor(
-                    navIdent = saksbehandlerIdent,
-                    name = saksbehandlerName,
-                    changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
-                )
-            )
+            editors =
+                mutableSetOf(
+                    Editor(
+                        navIdent = saksbehandlerIdent,
+                        name = saksbehandlerName,
+                        changeType = Editor.ChangeType.TEXT_VERSION_CREATED,
+                    ),
+                ),
         )
     }
 
@@ -132,12 +141,8 @@ class TextVersion(
         return id == other.id
     }
 
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
+    override fun hashCode(): Int = id.hashCode()
 
-    override fun toString(): String {
-        return "TextVersion(id=$id, title='$title', textType='$textType', richTextNN=$richTextNN, richTextNB=$richTextNB, richTextUntranslated=$richTextUntranslated, plainTextNN=$plainTextNN, plainTextNB=$plainTextNB, utfallIdList=$utfallIdList, enhetIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, editors=$editors, text=$text, publishedDateTime=$publishedDateTime, publishedBy=$publishedBy, publishedByName=$publishedByName, published=$published, created=$created, modified=$modified)"
-    }
-
+    override fun toString(): String =
+        "TextVersion(id=$id, title='$title', textType='$textType', richTextNN=$richTextNN, richTextNB=$richTextNB, richTextUntranslated=$richTextUntranslated, plainTextNN=$plainTextNN, plainTextNB=$plainTextNB, utfallIdList=$utfallIdList, enhetIdList=$enhetIdList, templateSectionIdList=$templateSectionIdList, ytelseHjemmelIdList=$ytelseHjemmelIdList, editors=$editors, text=$text, publishedDateTime=$publishedDateTime, publishedBy=$publishedBy, publishedByName=$publishedByName, published=$published, created=$created, modified=$modified)"
 }

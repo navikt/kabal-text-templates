@@ -2,15 +2,36 @@ package no.nav.klage.texts.api
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import no.nav.klage.texts.api.views.*
+import no.nav.klage.texts.api.views.DeletedText
+import no.nav.klage.texts.api.views.EnhetIdListCompatibleInput
+import no.nav.klage.texts.api.views.Language
+import no.nav.klage.texts.api.views.PlainTextInput
+import no.nav.klage.texts.api.views.RichTextInput
+import no.nav.klage.texts.api.views.SearchTextQueryParams
+import no.nav.klage.texts.api.views.TemplateSectionIdListCompatibleInput
+import no.nav.klage.texts.api.views.TextInput
+import no.nav.klage.texts.api.views.TextTypeInput
+import no.nav.klage.texts.api.views.TextView
+import no.nav.klage.texts.api.views.TextViewForLists
+import no.nav.klage.texts.api.views.TitleInput
+import no.nav.klage.texts.api.views.UtfallIdListCompatibleInput
+import no.nav.klage.texts.api.views.VersionInput
+import no.nav.klage.texts.api.views.YtelseHjemmelIdListCompatibleInput
 import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.logMethodDetails
 import no.nav.security.token.support.core.api.ProtectedWithClaims
-import org.springframework.web.bind.annotation.*
-import java.util.*
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 @RestController
 @Tag(name = "kabal-text-templates", description = "API for text templates")
@@ -20,7 +41,6 @@ class TextController(
     private val textService: TextService,
     private val tokenUtil: TokenUtil,
 ) {
-
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val logger = getLogger(javaClass.enclosingClass)
@@ -28,7 +48,7 @@ class TextController(
 
     @Operation(
         summary = "Get versions for text",
-        description = "Get versions for text"
+        description = "Get versions for text",
     )
     @GetMapping("/{textId}/versions")
     fun getTextVersions(
@@ -45,7 +65,7 @@ class TextController(
 
     @Operation(
         summary = "Publish text",
-        description = "Publish text using current draft"
+        description = "Publish text using current draft",
     )
     @PostMapping("/{textId}/publish")
     fun publishText(
@@ -67,11 +87,11 @@ class TextController(
 
     @Operation(
         summary = "Create text",
-        description = "Create text"
+        description = "Create text",
     )
     @PostMapping
     fun createText(
-        @RequestBody input: TextInput
+        @RequestBody input: TextInput,
     ): TextView {
         logMethodDetails(
             methodName = ::createText.name,
@@ -89,12 +109,12 @@ class TextController(
 
     @Operation(
         summary = "Create text draft",
-        description = "Create text draft, possibly based on existing version"
+        description = "Create text draft, possibly based on existing version",
     )
     @PostMapping("/{textId}/draft")
     fun createDraft(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: VersionInput?
+        @RequestBody input: VersionInput?,
     ): TextView {
         logMethodDetails(
             methodName = ::createDraft.name,
@@ -113,12 +133,12 @@ class TextController(
 
     @Operation(
         summary = "Create duplicate of text as draft",
-        description = "Create duplicate of text as draft, possibly based on existing version"
+        description = "Create duplicate of text as draft, possibly based on existing version",
     )
     @PostMapping("/{textId}/duplicate")
     fun createDuplicate(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: VersionInput?
+        @RequestBody input: VersionInput?,
     ): TextView {
         logMethodDetails(
             methodName = ::createDuplicate.name,
@@ -137,12 +157,12 @@ class TextController(
 
     @Operation(
         summary = "Update title",
-        description = "Update title"
+        description = "Update title",
     )
     @PutMapping("/{textId}/title")
     fun updateTitle(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: TitleInput
+        @RequestBody input: TitleInput,
     ): TextView {
         logMethodDetails(
             methodName = ::updateTitle.name,
@@ -161,12 +181,12 @@ class TextController(
 
     @Operation(
         summary = "Update textVersion type",
-        description = "Update textVersion type"
+        description = "Update textVersion type",
     )
     @PutMapping("/{textId}/texttype")
     fun updateTextType(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: TextTypeInput
+        @RequestBody input: TextTypeInput,
     ): TextView {
         logMethodDetails(
             methodName = ::updateTextType.name,
@@ -185,13 +205,13 @@ class TextController(
 
     @Operation(
         summary = "Update richtext",
-        description = "Update richtext"
+        description = "Update richtext",
     )
     @PutMapping("/{textId}/{language}/richtext")
     fun updateRichText(
         @PathVariable("textId") textId: UUID,
         @PathVariable("language") language: Language,
-        @RequestBody input: RichTextInput
+        @RequestBody input: RichTextInput,
     ): TextView {
         logMethodDetails(
             methodName = ::updateRichText.name,
@@ -211,13 +231,13 @@ class TextController(
 
     @Operation(
         summary = "Update plainText",
-        description = "Update plainText"
+        description = "Update plainText",
     )
     @PutMapping("/{textId}/{language}/plaintext")
     fun updatePlainText(
         @PathVariable("textId") textId: UUID,
         @PathVariable("language") language: Language,
-        @RequestBody input: PlainTextInput
+        @RequestBody input: PlainTextInput,
     ): TextView {
         logMethodDetails(
             methodName = ::updatePlainText.name,
@@ -237,12 +257,12 @@ class TextController(
 
     @Operation(
         summary = "Update utfall",
-        description = "Update utfall"
+        description = "Update utfall",
     )
     @PutMapping("/{textId}/utfall-id-list")
     fun updateUtfall(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: UtfallIdListCompatibleInput
+        @RequestBody input: UtfallIdListCompatibleInput,
     ): TextView {
         logMethodDetails(
             methodName = ::updateUtfall.name,
@@ -261,12 +281,12 @@ class TextController(
 
     @Operation(
         summary = "Update enheter",
-        description = "Update enheter"
+        description = "Update enheter",
     )
     @PutMapping("/{textId}/enhet-id-list")
     fun updateEnheter(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: EnhetIdListCompatibleInput
+        @RequestBody input: EnhetIdListCompatibleInput,
     ): TextView {
         logMethodDetails(
             methodName = ::updateEnheter.name,
@@ -285,12 +305,12 @@ class TextController(
 
     @Operation(
         summary = "Update templateSectionList",
-        description = "Update templateSectionList"
+        description = "Update templateSectionList",
     )
     @PutMapping("/{textId}/template-section-id-list")
     fun updateTemplateSectionList(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: TemplateSectionIdListCompatibleInput
+        @RequestBody input: TemplateSectionIdListCompatibleInput,
     ): TextView {
         logMethodDetails(
             methodName = ::updateTemplateSectionList.name,
@@ -309,12 +329,12 @@ class TextController(
 
     @Operation(
         summary = "Update ytelseHjemmelList",
-        description = "Update ytelseHjemmelList"
+        description = "Update ytelseHjemmelList",
     )
     @PutMapping("/{textId}/ytelse-hjemmel-id-list")
     fun updateYtelseHjemmelList(
         @PathVariable("textId") textId: UUID,
-        @RequestBody input: YtelseHjemmelIdListCompatibleInput
+        @RequestBody input: YtelseHjemmelIdListCompatibleInput,
     ): TextView {
         logMethodDetails(
             methodName = ::updateYtelseHjemmelList.name,
@@ -333,7 +353,7 @@ class TextController(
 
     @Operation(
         summary = "Unpublish text",
-        description = "Unpublish text"
+        description = "Unpublish text",
     )
     @PostMapping("/{textId}/unpublish")
     fun unpublishText(
@@ -354,7 +374,7 @@ class TextController(
 
     @Operation(
         summary = "Delete text draft version",
-        description = "Delete text draft version"
+        description = "Delete text draft version",
     )
     @DeleteMapping("/{textId}/draft")
     fun deleteTextDraftVersion(
@@ -375,12 +395,10 @@ class TextController(
 
     @Operation(
         summary = "Search texts",
-        description = "Search texts"
+        description = "Search texts",
     )
     @GetMapping
-    fun searchTexts(
-        searchTextQueryParams: SearchTextQueryParams
-    ): List<TextViewForLists> {
+    fun searchTexts(searchTextQueryParams: SearchTextQueryParams): List<TextViewForLists> {
         logMethodDetails(
             methodName = ::searchTexts.name,
             innloggetIdent = tokenUtil.getIdent(),
@@ -390,20 +408,20 @@ class TextController(
 
         logger.debug("searchTexts called with params {}", searchTextQueryParams)
 
-        return textService.searchTextVersions(
-            textType = searchTextQueryParams.textType,
-            utfallIdList = searchTextQueryParams.utfallIdList ?: emptyList(),
-            enhetIdList = searchTextQueryParams.enhetIdList ?: emptyList(),
-            templateSectionIdList = searchTextQueryParams.templateSectionIdList ?: emptyList(),
-            ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
-            trash = searchTextQueryParams.trash,
-        ).sortedByDescending { it.created }
-
+        return textService
+            .searchTextVersions(
+                textType = searchTextQueryParams.textType,
+                utfallIdList = searchTextQueryParams.utfallIdList ?: emptyList(),
+                enhetIdList = searchTextQueryParams.enhetIdList ?: emptyList(),
+                templateSectionIdList = searchTextQueryParams.templateSectionIdList ?: emptyList(),
+                ytelseHjemmelIdList = searchTextQueryParams.ytelseHjemmelIdList ?: emptyList(),
+                trash = searchTextQueryParams.trash,
+            ).sortedByDescending { it.created }
     }
 
     @Operation(
         summary = "Get current text version",
-        description = "Get current text version"
+        description = "Get current text version",
     )
     @GetMapping("/{textId}")
     fun getText(

@@ -30,10 +30,9 @@ class AdminService(
             PUBLISHED_TEXT_VERSIONS,
             PUBLISHED_MALTEKSTSEKSJON_VERSIONS,
         ],
-        allEntries = true
+        allEntries = true,
     )
     fun evictAllCaches() {
-
     }
 
     fun refillCaches() {
@@ -50,11 +49,11 @@ class AdminService(
             PUBLISHED_TEXT_VERSIONS,
             PUBLISHED_MALTEKSTSEKSJON_VERSIONS,
         ],
-        allEntries = true
+        allEntries = true,
     )
     @Transactional
     fun fixNavSpelling() {
-        //Replace NAV with Nav in all titles and texts
+        // Replace NAV with Nav in all titles and texts
 
         val navFrom = "NAV"
         val navTo = "Nav"
@@ -66,52 +65,52 @@ class AdminService(
         val nayTo = "Nav arbeid og ytelser"
 
         textVersionRepository.findAll().forEach {
-            //NAV Klageinstans til Nav klageinstans
+            // NAV Klageinstans til Nav klageinstans
 
-            it.title = it.title.replace(navKlageinstansFrom, navKlageinstansTo)
+            it.title = it.title.replace(oldValue = navKlageinstansFrom, newValue = navKlageinstansTo)
 
-            it.richTextNB = it.richTextNB?.replace(navKlageinstansFrom, navKlageinstansTo)
-            it.richTextNN = it.richTextNN?.replace(navKlageinstansFrom, navKlageinstansTo)
+            it.richTextNB = it.richTextNB?.replace(oldValue = navKlageinstansFrom, newValue = navKlageinstansTo)
+            it.richTextNN = it.richTextNN?.replace(oldValue = navKlageinstansFrom, newValue = navKlageinstansTo)
 
-            it.plainTextNB = it.plainTextNB?.replace(navKlageinstansFrom, navKlageinstansTo)
-            it.plainTextNN = it.plainTextNN?.replace(navKlageinstansFrom, navKlageinstansTo)
+            it.plainTextNB = it.plainTextNB?.replace(oldValue = navKlageinstansFrom, newValue = navKlageinstansTo)
+            it.plainTextNN = it.plainTextNN?.replace(oldValue = navKlageinstansFrom, newValue = navKlageinstansTo)
 
-            it.richTextUntranslated = it.richTextUntranslated?.replace(navKlageinstansFrom, navKlageinstansTo)
+            it.richTextUntranslated = it.richTextUntranslated?.replace(oldValue = navKlageinstansFrom, newValue = navKlageinstansTo)
 
-            //NAV Arbeid og ytelser til Nav arbeid og ytelser
+            // NAV Arbeid og ytelser til Nav arbeid og ytelser
 
-            it.title = it.title.replace(nayFrom, nayTo)
+            it.title = it.title.replace(oldValue = nayFrom, newValue = nayTo)
 
-            it.richTextNB = it.richTextNB?.replace(nayFrom, nayTo)
-            it.richTextNN = it.richTextNN?.replace(nayFrom, nayTo)
+            it.richTextNB = it.richTextNB?.replace(oldValue = nayFrom, newValue = nayTo)
+            it.richTextNN = it.richTextNN?.replace(oldValue = nayFrom, newValue = nayTo)
 
-            it.plainTextNB = it.plainTextNB?.replace(nayFrom, nayTo)
-            it.plainTextNN = it.plainTextNN?.replace(nayFrom, nayTo)
+            it.plainTextNB = it.plainTextNB?.replace(oldValue = nayFrom, newValue = nayTo)
+            it.plainTextNN = it.plainTextNN?.replace(oldValue = nayFrom, newValue = nayTo)
 
-            it.richTextUntranslated = it.richTextUntranslated?.replace(nayFrom, nayTo)
+            it.richTextUntranslated = it.richTextUntranslated?.replace(oldValue = nayFrom, newValue = nayTo)
 
-            //The rest
+            // The rest
 
-            it.title = it.title.replace(navFrom, navTo)
+            it.title = it.title.replace(oldValue = navFrom, newValue = navTo)
 
-            it.richTextNB = it.richTextNB?.replace(navFrom, navTo)
-            it.richTextNN = it.richTextNN?.replace(navFrom, navTo)
+            it.richTextNB = it.richTextNB?.replace(oldValue = navFrom, newValue = navTo)
+            it.richTextNN = it.richTextNN?.replace(oldValue = navFrom, newValue = navTo)
 
-            it.plainTextNB = it.plainTextNB?.replace(navFrom, navTo)
-            it.plainTextNN = it.plainTextNN?.replace(navFrom, navTo)
+            it.plainTextNB = it.plainTextNB?.replace(oldValue = navFrom, newValue = navTo)
+            it.plainTextNN = it.plainTextNN?.replace(oldValue = navFrom, newValue = navTo)
 
-            it.richTextUntranslated = it.richTextUntranslated?.replace(navFrom, navTo)
+            it.richTextUntranslated = it.richTextUntranslated?.replace(oldValue = navFrom, newValue = navTo)
         }
 
         maltekstseksjonVersionRepository.findAll().forEach {
-            //NAV Klageinstans til Nav klageinstans
-            it.title = it.title.replace(navKlageinstansFrom, navKlageinstansTo)
+            // NAV Klageinstans til Nav klageinstans
+            it.title = it.title.replace(oldValue = navKlageinstansFrom, newValue = navKlageinstansTo)
 
-            //NAV Arbeid og ytelser til Nav arbeid og ytelser
-            it.title = it.title.replace(nayFrom, nayTo)
+            // NAV Arbeid og ytelser til Nav arbeid og ytelser
+            it.title = it.title.replace(oldValue = nayFrom, newValue = nayTo)
 
-            //The rest
-            it.title = it.title.replace(navFrom, navTo)
+            // The rest
+            it.title = it.title.replace(oldValue = navFrom, newValue = navTo)
         }
     }
 }

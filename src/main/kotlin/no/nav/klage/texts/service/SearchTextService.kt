@@ -9,7 +9,6 @@ import kotlin.system.measureTimeMillis
 
 @Service
 class SearchTextService {
-
     companion object {
         @Suppress("JAVA_CLASS_ON_COMPANION")
         private val logger = getLogger(javaClass.enclosingClass)
@@ -30,24 +29,29 @@ class SearchTextService {
             enhetIdList,
             textType,
             ytelseHjemmelIdList,
-            texts.size
+            texts.size,
         )
 
         val textVersions: List<TextVersion>
 
-        val millis = measureTimeMillis {
-            textVersions = texts.filter { textVersion ->
-                val textTypeCondition = if (textType != null) {
-                    textVersion.textType == textType
-                } else true
+        val millis =
+            measureTimeMillis {
+                textVersions =
+                    texts.filter { textVersion ->
+                        val textTypeCondition =
+                            if (textType != null) {
+                                textVersion.textType == textType
+                            } else {
+                                true
+                            }
 
-                textTypeCondition &&
-                        testSets(utfallIdList, textVersion.utfallIdList) &&
-                        testSets(enhetIdList, textVersion.enhetIdList) &&
-                        testCompositeValues(templateSectionIdList, textVersion.templateSectionIdList) &&
-                        testCompositeValues(ytelseHjemmelIdList, textVersion.ytelseHjemmelIdList)
+                        textTypeCondition &&
+                            testSets(queryValues = utfallIdList, dbValues = textVersion.utfallIdList) &&
+                            testSets(queryValues = enhetIdList, dbValues = textVersion.enhetIdList) &&
+                            testCompositeValues(queryValues = templateSectionIdList, dbValues = textVersion.templateSectionIdList) &&
+                            testCompositeValues(queryValues = ytelseHjemmelIdList, dbValues = textVersion.ytelseHjemmelIdList)
+                    }
             }
-        }
 
         logger.debug("textfiltering took {} millis. Found {} texts", millis, textVersions.size)
 
