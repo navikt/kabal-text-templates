@@ -6,7 +6,7 @@ val mockkVersion = "1.14.11"
 val ktlintVersion = "1.8.0"
 val logstashVersion = "9.0"
 val testContainersVersion = "2.0.5"
-val springDocVersion = "3.1.0"
+val springDocVersion = "3.1.1"
 val tokenValidationVersion = "6.0.12"
 val ehcacheVersion = "3.10.8"
 
