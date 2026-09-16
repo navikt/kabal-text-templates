@@ -17,6 +17,7 @@ spec:
   gcp:
     sqlInstances:
       - type: {{db_type}}
+        name: {{db_instance_name}}
         maintenance:
           day: 1
           hour: 3
