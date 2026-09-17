@@ -19,7 +19,7 @@ import java.time.LocalDateTime
  * Bakgrunn: primærnøkkelen på klage.maltekstseksjon_version_text lå opprinnelig på
  * (maltekstseksjon_version_id, text_id), mens Hibernate adresserer rader i en @OrderColumn-liste
  * på (maltekstseksjon_version_id, index) og oppdaterer text_id. Omorganisering ga derfor
- * transiente nøkkelkollisjoner. V37 flytter nøkkelen til (maltekstseksjon_version_id, index).
+ * transiente nøkkelkollisjoner. V38 flytter nøkkelen til (maltekstseksjon_version_id, index).
  *
  * Kjør med show-sql på og se etter UPDATE-setninger mot koblingstabellen for å forstå
  * hva Hibernate faktisk gjør.
