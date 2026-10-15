@@ -30,4 +30,4 @@ adRoles:
 
 envs:
   - name: JAVA_TOOL_OPTIONS
-    value: "-Xms1g -Xmx6g"
+    value: "-Xms1g -Xmx3g"
