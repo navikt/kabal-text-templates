@@ -16,6 +16,9 @@ spring:
     username: ${NAIS_DATABASE_KABAL_TEXT_TEMPLATES_KABAL_TEXT_TEMPLATES_USERNAME}
     password: ${NAIS_DATABASE_KABAL_TEXT_TEMPLATES_KABAL_TEXT_TEMPLATES_PASSWORD}
     driver-class-name: org.postgresql.Driver
+  jpa:
+    # Controllers map lazy-loaded entity collections outside service transactions.
+    open-in-view: true
   flyway:
     enabled: true
     clean-disabled: true
