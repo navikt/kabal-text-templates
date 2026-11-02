@@ -8,7 +8,7 @@ val ktlintVersion = "1.8.0"
 val logstashVersion = "9.0"
 val testContainersVersion = "2.0.5"
 val springDocVersion = "3.1.1"
-val tokenValidationVersion = "6.0.12"
+val klageAuthVersion = "0.4.0"
 val ehcacheVersion = "3.10.8"
 
 repositories {
@@ -42,8 +42,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("javax.cache:cache-api")
 
-    implementation("no.nav.security:token-validation-spring:$tokenValidationVersion")
-    implementation("no.nav.security:token-client-spring:$tokenValidationVersion")
+    implementation("org.springframework.boot:spring-boot-starter-security-oauth2-resource-server")
+    implementation("no.nav.klage:klage-auth:$klageAuthVersion")
 
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springDocVersion")
 
@@ -57,8 +57,10 @@ dependencies {
     implementation("ch.qos.logback:logback-classic")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("tools.jackson.module:jackson-module-kotlin")
 
     testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("no.nav.klage:klage-auth-test:$klageAuthVersion")
     testImplementation("org.springframework.boot:spring-boot-starter-data-jpa-test") {
         exclude(group = "org.junit.vintage")
         exclude(group = "org.mockito")
