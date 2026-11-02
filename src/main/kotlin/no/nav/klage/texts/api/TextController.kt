@@ -17,12 +17,10 @@ import no.nav.klage.texts.api.views.TitleInput
 import no.nav.klage.texts.api.views.UtfallIdListCompatibleInput
 import no.nav.klage.texts.api.views.VersionInput
 import no.nav.klage.texts.api.views.YtelseHjemmelIdListCompatibleInput
-import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.logMethodDetails
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -36,7 +34,6 @@ import java.util.UUID
 @RestController
 @Tag(name = "kabal-text-templates", description = "API for text templates")
 @RequestMapping(value = ["/texts"])
-@ProtectedWithClaims(issuer = ISSUER_AAD)
 class TextController(
     private val textService: TextService,
     private val tokenUtil: TokenUtil,

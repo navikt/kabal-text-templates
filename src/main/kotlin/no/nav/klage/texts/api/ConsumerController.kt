@@ -11,7 +11,6 @@ import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_MALTEKSTS
 import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_MALTEKSTSEKSJON_TEXTS
 import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_TEXT
 import no.nav.klage.texts.config.CacheConfiguration.Companion.CONSUMER_TEXT_SEARCH
-import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.domain.MaltekstseksjonVersion
 import no.nav.klage.texts.domain.TextVersion
 import no.nav.klage.texts.exceptions.LanguageNotFoundException
@@ -20,7 +19,6 @@ import no.nav.klage.texts.service.TextService
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.logMethodDetails
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -32,7 +30,6 @@ import java.util.UUID
 @RestController
 @Tag(name = "kabal-text-templates", description = "API for text templates")
 @RequestMapping(value = ["/consumer"])
-@ProtectedWithClaims(issuer = ISSUER_AAD)
 class ConsumerController(
     private val textService: TextService,
     private val maltekstseksjonService: MaltekstseksjonService,

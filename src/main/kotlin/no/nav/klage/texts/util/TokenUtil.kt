@@ -1,46 +1,19 @@
 package no.nav.klage.texts.util
 
-import no.nav.klage.texts.config.SecurityConfiguration
-import no.nav.security.token.support.core.context.TokenValidationContextHolder
+import no.nav.klage.auth.currentAzureToken
+import no.nav.klage.auth.displayName
+import no.nav.klage.auth.groups
+import no.nav.klage.auth.navIdent
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
 class TokenUtil(
-    private val tokenValidationContextHolder: TokenValidationContextHolder,
     @Value($$"${KABAL_ADMIN_ROLE_ID}") private val kabalAdminRoleId: String,
 ) {
-    companion object {
-        @Suppress("JAVA_CLASS_ON_COMPANION")
-        private val logger = getLogger(javaClass.enclosingClass)
-    }
+    fun getIdent(): String = currentAzureToken()?.navIdent ?: throw RuntimeException("Ident not found in token")
 
-    fun getIdent(): String =
-        tokenValidationContextHolder
-            .getTokenValidationContext()
-            .getJwtToken(SecurityConfiguration.ISSUER_AAD)
-            ?.jwtTokenClaims
-            ?.get("NAVident")
-            ?.toString()
-            ?: throw RuntimeException("Ident not found in token")
+    fun getName(): String = currentAzureToken()?.displayName ?: throw RuntimeException("Name not found in token")
 
-    fun getName(): String =
-        tokenValidationContextHolder
-            .getTokenValidationContext()
-            .getJwtToken(SecurityConfiguration.ISSUER_AAD)
-            ?.jwtTokenClaims
-            ?.get("name")
-            ?.toString()
-            ?: throw RuntimeException("Name not found in token")
-
-    fun isAdmin(): Boolean {
-        val roleIds =
-            tokenValidationContextHolder
-                .getTokenValidationContext()
-                .getJwtToken(SecurityConfiguration.ISSUER_AAD)
-                ?.jwtTokenClaims
-                ?.getAsList("groups")
-
-        return roleIds?.contains(kabalAdminRoleId) ?: false
-    }
+    fun isAdmin(): Boolean = currentAzureToken()?.groups?.contains(kabalAdminRoleId) ?: false
 }

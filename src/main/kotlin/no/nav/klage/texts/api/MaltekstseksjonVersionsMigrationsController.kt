@@ -4,14 +4,12 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import no.nav.klage.texts.api.views.MaltekstseksjonInput
 import no.nav.klage.texts.api.views.MaltekstseksjonView
-import no.nav.klage.texts.config.SecurityConfiguration.Companion.ISSUER_AAD
 import no.nav.klage.texts.repositories.TextRepository
 import no.nav.klage.texts.service.MaltekstseksjonService
 import no.nav.klage.texts.service.mapToMaltekstseksjonView
 import no.nav.klage.texts.util.TokenUtil
 import no.nav.klage.texts.util.getLogger
 import no.nav.klage.texts.util.logMethodDetails
-import no.nav.security.token.support.core.api.ProtectedWithClaims
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -23,7 +21,6 @@ import java.util.UUID
 @RestController
 @Tag(name = "kabal-text-templates")
 @RequestMapping("/migrations/maltekstseksjon-versions")
-@ProtectedWithClaims(issuer = ISSUER_AAD)
 class MaltekstseksjonVersionsMigrationsController(
     private val maltekstseksjonService: MaltekstseksjonService,
     private val textRepository: TextRepository,
