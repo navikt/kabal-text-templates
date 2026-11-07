@@ -37,4 +37,4 @@ adRoles:
 
 envs:
   - name: JAVA_TOOL_OPTIONS
-    value: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Xms512m -Xmx3g"
+    value: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Xms512m -Xmx3g --enable-native-access=ALL-UNNAMED"
