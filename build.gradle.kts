@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
-val mockkVersion = "1.14.11"
+val mockkVersion = "1.14.12"
 val ktlintVersion = "1.8.0"
 val logstashVersion = "9.0"
 val testContainersVersion = "2.0.5"
